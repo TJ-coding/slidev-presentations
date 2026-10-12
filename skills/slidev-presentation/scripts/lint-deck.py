@@ -29,6 +29,16 @@ CONTENT_LAYOUTS = {"govuk", "govuk-two-cols", "govuk-image-right", "govuk-end"}
 
 SEP = re.compile(r"-{3,}\s*$")
 KEY = re.compile(r"^\s*([\w-]+)\s*:\s*(.*)$")
+FENCE = re.compile(r"```.*?```", re.S)
+STYLE = re.compile(r"<style.*?</style>", re.S)
+TAG = re.compile(r"<[^>]+>")
+
+
+def strip_markup(text: str) -> str:
+    """Remove code fences, style blocks and HTML tags — what's left is prose."""
+    text = FENCE.sub(" ", text)
+    text = STYLE.sub(" ", text)
+    return TAG.sub(" ", text)
 
 
 def split_slides(lines: list[str]) -> list[tuple[list[str], list[str]]]:
@@ -120,6 +130,24 @@ def main() -> int:
         anchors = body.count("govuk-lead") + body.count("govuk-takeaway")
         if anchors > 1:
             problems.append("multiple focal anchors — pick ONE per slide")
+
+        # show-don't-tell: does the slide carry a visual, or is it prose?
+        visual = re.search(
+            r"gov-flow|gov-node|gov-matrix|gov-contrast|gov-bignum|mermaid|image:|<img",
+            body,
+        )
+        words = len(re.findall(r"[A-Za-z][A-Za-z'-]*", strip_markup(body)))
+        if layout in CONTENT_LAYOUTS and not visual:
+            if words > 35:
+                problems.append(
+                    f"text-heavy ({words} words, no diagram) — SHOW it: gov-flow / gov-matrix / "
+                    "gov-contrast / mermaid / figure; move prose to notes"
+                )
+            if bullets >= 4:
+                problems.append(
+                    f"{bullets} bullets with no diagram — encode as gov-steps / gov-flow / "
+                    "gov-matrix instead of a list"
+                )
 
         if problems:
             print(f"  slide {idx} [{layout or 'no-layout'}]")

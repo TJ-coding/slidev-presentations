@@ -5,10 +5,19 @@ the user's reference decks. But structure is worthless without hierarchy: **a sl
 fails if the viewer cannot tell, in one second, what to look at first, what is
 evidence, and what to remember.** This document is the design contract.
 
-## The one law
+## The two laws
 
-> Every slide has exactly ONE focal point. Everything else is arranged in roles
-> around it. If two elements compete, one of them does not belong on the slide.
+> **One focal point.** Every slide has exactly ONE anchor — the lead. Everything
+> else is arranged in roles around it. If two elements compete, one does not
+> belong on the slide.
+>
+> **Show, don't tell.** If the idea has structure, draw it. Diagrams are the
+> default body; text exists to LABEL a diagram, never to replace one. Every
+> sentence you can delete without breaking the diagram gets deleted.
+
+The user's reference decks are built this way: pipelines are arrows between
+boxes, comparisons are columns of colour-coded boxes, results are highlighted
+cells in a score matrix. Your job is to reconstruct that picture, minimally.
 
 ## Reading-order patterns
 
@@ -24,6 +33,27 @@ The quadrant anti-pattern (four equal-weight blocks) is banned: it only appears
 when the model can't decide what matters. Force a decision — that decision is the
 lead.
 
+## The encoding table — always reach for a diagram first
+
+| The idea is… | Draw it as |
+| --- | --- |
+| a pipeline / data flow / algorithm | `gov-flow` — nodes + arrows (blue for the new component) |
+| pairwise scores / alternatives × references | `gov-matrix` table, winning cell `.gov-matrix-win`, red for losers |
+| "X beats Y" / complexity / before-after | `gov-contrast` with `gov-bignum` (green = better, red = worse) |
+| an abstract flow too irregular to box | `mermaid` diagram |
+| an existing figure/results screenshot | `govuk-image-right` + `govuk-caption` |
+| a single headline statistic | the number IS the lead; no box, no table |
+
+Labels inside nodes are data (entity names, symbols like ŷ, 0.7) — prose moves to
+speaker notes or a single grey `govuk-caption` line.
+
+## The removal law
+
+Write the diagram first. Then delete: every word that labels nothing, every
+box that repeats the lead, every legend the colours already say, and any slide
+whose only job was to introduce the next one. If what's left isn't a slide to
+show, it was a slide to say — notes carry it.
+
 ## Budgets (enforced by `scripts/lint-deck.py`)
 
 | Element | Budget per slide | Rationale |
@@ -33,6 +63,7 @@ lead.
 | `govuk-panel` boxes | ≤ 2 | only findings (green) / caveats (red) |
 | bullets | ≤ 5, ≤ ~12 words | bullets are prompts, prose lives in notes |
 | speaker notes | mandatory on every slide except pure section dividers | the actual script |
+| prose on a content slide | ≤ ~35 words **unless a diagram is present** | the message is drawn, not written |
 
 ## Layout anatomy & ordering
 

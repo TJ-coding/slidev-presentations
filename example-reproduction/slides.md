@@ -29,64 +29,54 @@ title: 'Background'
 ---
 layout: govuk
 title: 'MBR Decoding: For Translation'
-lead: 'Score every translation against gold references with a utility function, then pick the lowest-risk candidate.'
+lead: 'Score each sampled translation against gold references — pick the lowest-<span class="govuk-emph">risk</span> candidate.'
 ---
 
-**How MBR selects a translation** — three steps:
+<div class="gov-flow">
+  <span class="gov-node">
+    <span class="gov-node-title">こんにちは</span>
+    <span class="gov-node-sub">source x</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node gov-node--accent-blue">
+    <span class="gov-node-title">Translation Model</span>
+    <span class="gov-node-sub">samples ŷ₁..ŷ₃</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node"><span class="gov-node-title">Hello</span><span class="gov-node-sub">ŷ₁</span></span>
+  <span class="gov-node"><span class="gov-node-title">Hi</span><span class="gov-node-sub">ŷ₂</span></span>
+  <span class="gov-node"><span class="gov-node-title">Hey</span><span class="gov-node-sub">ŷ₃</span></span>
+</div>
 
-<ol class="govuk-steps">
-  <li><strong>Propose</strong> — the model samples candidates: <span class="govuk-emph">Hello</span>, <em>Hi</em>, <em>Hey</em></li>
-  <li><strong>Score</strong> — utility model rates each against gold <span class="govuk-emph-alt">y</span></li>
-  <li><strong>Select</strong> — the candidate with lowest expected risk wins</li>
-</ol>
+<table class="gov-matrix">
+  <tbody>
+  <tr>
+    <th class="gov-matrix-corner"></th>
+    <th>y₁</th><th>y₂</th><th>y₃</th><th>R(ŷ)</th>
+  </tr>
+  <tr>
+    <th>ŷ₁</th><td class="gov-matrix-bad">1.5</td><td>1.5</td><td>1.3</td><td>1.43</td>
+  </tr>
+  <tr>
+    <th>ŷ₂</th><td>1.9</td><td>2.2</td><td>2.4</td><td class="gov-matrix-win">2.17</td>
+  </tr>
+  <tr>
+    <th>ŷ₃</th><td>1.2</td><td>1.4</td><td>1.5</td><td>1.37</td>
+  </tr>
+  </tbody>
+</table>
 
-<template #aside>
-  Utility replaces BLEU: it learns from human preference, so it tracks translation quality where n-gram overlap fails.
-</template>
+<p class="govuk-caption" style="text-align:center;">
+  utility u<sub>i,j</sub> = U(x, y<sub>i</sub>, ŷ<sub>j</sub>) · risk R(ŷ) = mean over gold · win = lowest risk
+</p>
 
 <!--
-Was: four equal quadrants (sampling / utility / formula / matrix). Rebuilt with
-lead + numbered steps; formula and score matrix live on slides 4 and 6 where they
-are the point.
+This slide replaces the two text slides from v1 ("MBR Decoding" + "Utility and
+Risk"). Everything the audience must *see* is on screen: the pipeline, the score
+matrix, the winning candidate (green). The formula only annotates the matrix.
+Prose moved to notes: MBR scores every candidate against every gold reference
+with a utility model; the candidate with the lowest expected loss wins.
 -->
-
----
-layout: govuk
-title: 'Utility and Risk'
-lead: 'Risk is just the average utility over gold references — one formula drives the score matrix.'
----
-
-<div class="govuk-grid-2">
-
-<div>
-
-**Utility** — quality of hypothesis ŷ against gold y:
-
-$$u_{i,j} = U(x,\ y_i,\ \hat{y}_j)$$
-
-**Risk** — expected loss of proposing <span class="govuk-emph">ŷ</span>:
-
-$$R(\hat{y}_j) \propto \sum_i u_{i,j}$$
-
-</div>
-
-<div>
-
-<div class="govuk-takeaway govuk-accent-green">Pick argmin of risk — the majority-safe candidate.</div>
-
-| Pseudo Ref | y₁ | y₂ | y₃ |
-| --- | :-: | :-: | :-: |
-| ŷ₁ Hello | u₁,₁ | u₁,₂ | u₁,₃ |
-| ŷ₂ Hi | u₂,₁ | u₂,₂ | u₂,₃ |
-| ŷ₃ Hey | u₃,₁ | u₃,₂ | u₃,₃ |
-
-<p class="govuk-caption">Score matrix over 3 hypotheses × 3 gold references.</p>
-
-</div>
-
-</div>
-
-<!-- Mirrors p5's formula and score matrix, now with one focal line. -->
 
 ---
 layout: govuk-section
@@ -101,61 +91,82 @@ Bi-encoder based **utility** function with **Linear** scaling order.
 
 ---
 layout: govuk
-title: 'Text-based Knowledge Graph Completion'
-lead: 'Both MBR and KGC ask \"is this a good match?\" — cross-encoders cost O(n²), bi-encoders give O(n).'
+title: 'Text-based KGC: two pipelines'
+lead: 'Same scoring idea, two encodings — pair encoding costs O(n²), entity encoding gives O(n).'
 ---
 
-Common shape of the two pipelines:
+<div class="gov-flow" style="justify-content:center; gap:1.2rem;">
 
-<ol class="govuk-steps">
-  <li>Parse a pair — MBR: source + candidate · KGC: head entity + relation + tail</li>
-  <li>Encode — cross-encoder scores the pair jointly — <span class="govuk-emph">O(n²)</span></li>
-  <li><strong>Proposed</strong> — encode entities once, score by dot product — <span class="govuk-emph-alt">O(n)</span></li>
-</ol>
+  <span class="gov-flow-item">
+    <span class="gov-node">
+      <span class="gov-node-title">MBR</span>
+      <span class="gov-node-sub">cross-encoder</span>
+    </span>
+    <span class="gov-arrow">→</span>
+    <span class="gov-node gov-node--accent-red">
+      <span class="gov-node-title">O(n²)</span>
+      <span class="gov-node-sub">score every pair</span>
+    </span>
+  </span>
+
+  <span class="gov-flow-item">
+    <span class="gov-node">
+      <span class="gov-node-title">KGC</span>
+      <span class="gov-node-sub">bi-encoder</span>
+    </span>
+    <span class="gov-arrow">→</span>
+    <span class="gov-node gov-node--accent-green">
+      <span class="gov-node-title">O(n)</span>
+      <span class="gov-node-sub">encode once</span>
+    </span>
+  </span>
+
+</div>
+
+<p class="govuk-caption" style="text-align:center;">
+  Pairwise scoring (BLEURT-style metric vs KG-BERT link prediction) becomes a dot product once entities are pre-encoded.
+</p>
 
 <!--
-P12 original: two columns each with its own red/green verdict box → four blocks.
-Now: one lead, one 3-step comparison. If the audience needs the side-by-side
-architecture, that's a follow-up slide with a figure.
+P12 original: two columns with bullet lists each ending in a verdict box.
+Now: two pipeline endpoints with their complexity as the only text.
 -->
 
 ---
 layout: govuk
 title: 'Architecture'
-lead: 'Four steps; one dot product per pair — no LLM call inside the score matrix.'
+lead: 'One dot product per pair — no LLM call inside the score matrix.'
 ---
 
-<div class="govuk-grid-2">
-
-<div>
-
-<ol class="govuk-steps">
-  <li>Construct input sequence</li>
-  <li>Make hypothesis encoding</li>
-  <li>Make pseudo-reference encoding</li>
-  <li>Construct score matrix</li>
-</ol>
-
-**Utility** — a dot product:
-
-$$u_{i,j} = \hat{y}_i \cdot y_j$$
-
+<div class="gov-flow">
+  <span class="gov-node"><span class="gov-node-title">1</span><span class="gov-node-sub">input sequence</span></span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node"><span class="gov-node-title">2</span><span class="gov-node-sub">hypothesis encoding</span></span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node"><span class="gov-node-title">3</span><span class="gov-node-sub">pseudo-ref encoding</span></span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node"><span class="gov-node-title">4</span><span class="gov-node-sub">score matrix</span></span>
 </div>
 
-<div>
-
-<div class="govuk-panel govuk-accent-green">
-  <p class="govuk-panel-title">Number of LLM inferences: O(n)</p>
-  Two encodings per item, not per pair.
+<div class="gov-contrast">
+  <div class="gov-bignum gov-bignum--bad">
+    <span class="gov-bignum-n">O(n²)</span>
+    <span class="gov-bignum-label">cross-encoder pairs</span>
+  </div>
+  <div class="gov-bignum gov-bignum--good">
+    <span class="gov-bignum-n">O(n)</span>
+    <span class="gov-bignum-label">2 encodings per item</span>
+  </div>
 </div>
 
-<p class="govuk-caption">Fig. 1 — score matrix, pseudo-reference × hypothesis.</p>
+<p class="govuk-caption" style="text-align:center;">
+  u<sub>i,j</sub> = ŷ<sub>i</sub> · y<sub>j</sub> — one dot product, no per-pair inference.
+</p>
 
-</div>
-
-</div>
-
-<!-- Mirrors p18: pipeline left, complexity box + caption right. -->
+<!--
+P18 original: numbered list + score matrix + complexity box.
+Now: the pipeline itself is the numbered flow; the payoff is two numbers.
+-->
 
 ---
 layout: govuk
@@ -163,14 +174,25 @@ title: 'Conclusion and Future works'
 lead: 'A linear-order utility for MBR; ablations and timing still open.'
 ---
 
-- Proposed a utility function for MBR with linear scaling order
-- Fix training data (uniform), then retrain
-- Ablation studies
-  - Similarity function: cosine or dot product?
-  - Measure computational time
-- Aiming next ARR submission
+<div class="gov-flow">
+  <span class="gov-node">
+    <span class="gov-node-title">Fix data</span>
+    <span class="gov-node-sub">uniform distribution</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node">
+    <span class="gov-node-title">Ablate</span>
+    <span class="gov-node-sub">similarity fn · timing</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node gov-node--accent-green">
+    <span class="gov-node-title">ARR</span>
+    <span class="gov-node-sub">next submission</span>
+  </span>
+</div>
 
-<!-- Mirrors p24; sub-bullets are acceptable inside a ≤5 bullet cap. -->
+<!-- Mirrors p24. A closing list is fine here: a conclusion is inherently
+     verbal — but every future-work could be its own evidence slide. -->
 
 ---
 layout: govuk-end
@@ -179,4 +201,4 @@ kicker: 'github.com/your-repo'
 author: 'Natural Language Processing Laboratory'
 ---
 
-<!-- Invite questions by name where possible; speak to the slide 4 complexity box. -->
+<!-- Invite questions by name where possible; speak to the complexity contrast. -->

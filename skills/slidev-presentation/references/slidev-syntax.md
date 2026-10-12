@@ -56,6 +56,39 @@ Other hierarchy classes: `govuk-takeaway` (green/red/blue accent, ONE per slide)
 Budgets: ≤1 anchor, ≤2 emph spans, ≤2 panels, ≤5 bullets — checked by
 `scripts/lint-deck.py <deck>/slides.md`.
 
+## Diagram primitives (show, don't tell)
+
+Reach for these BEFORE writing bullets. Full doctrine: design-guidelines.md.
+
+```html
+<!-- pipeline: nodes + arrows; blue marks the new component -->
+<div class="gov-flow">
+  <span class="gov-node"><span class="gov-node-title">input</span><span class="gov-node-sub">x</span></span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node gov-node--accent-blue"><span class="gov-node-title">model</span><span class="gov-node-sub">samples</span></span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node"><span class="gov-node-title">out</span><span class="gov-node-sub">ŷ₁</span></span>
+</div>
+
+<!-- pair scores: matrix with winner cells (`.gov-matrix-win`) and legend -->
+<table class="gov-matrix">
+  <tbody>
+  <tr><th class="gov-matrix-corner"></th><th>y₁</th><th>R(ŷ)</th></tr>
+  <tr><th>ŷ₁</th><td>u₁,₁</td><td class="gov-matrix-win">0.17</td></tr>
+  </tbody>
+</table>
+<p class="gov-legend"><span class="lg-red">hypothesis</span><span class="lg-green">selected</span></p>
+
+<!-- "X beats Y": two big numbers, good green / bad red -->
+<div class="gov-contrast">
+  <div class="gov-bignum gov-bignum--bad"><span class="gov-bignum-n">O(n²)</span><span class="gov-bignum-label">pairs</span></div>
+  <div class="gov-bignum gov-bignum--good"><span class="gov-bignum-n">O(n)</span><span class="gov-bignum-label">items</span></div>
+</div>
+```
+
+Lint warns on slides with >35 words or ≥4 bullets and NO diagram — those must be
+redrawn, not reworded.
+
 ## File structure
 
 ```md

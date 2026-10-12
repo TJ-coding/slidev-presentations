@@ -39,7 +39,8 @@ All content lives in `slides.md` (+ `layouts/`, `components/`, `snippets/`). Che
 Read `references/design-guidelines.md` for the doctrine (it is the design contract of this framework). In short:
 
 - **One focal point per slide.** Every content slide states its takeaway in the big `lead:` line right under the band. If you cannot write the takeaway as one sentence, the slide is really two slides.
-- **Explicit reading order.** Sequential content → `govuk-steps` numbered list (never symmetric quadrants). Comparison → `govuk-two-cols` only with distinct roles (left = the argument, right = the evidence). Everything else → single-column flow.
+- **Show, don't tell.** If the idea has structure, DRAW it before writing about it: pipelines → `gov-flow` (nodes + arrows), pairwise scores → `gov-matrix`, "X beats Y" / complexity → `gov-contrast`+`gov-bignum`, irregular flows → `mermaid`. Text only LABELS the diagram; prose goes to speaker notes. Then delete everything the diagram already says.
+- **Reading order, always explicit.** Sequential content → `govuk-steps` or `gov-flow` (never symmetric quadrants). Comparison → `govuk-two-cols` only with distinct roles (left = the argument, right = the evidence). Everything else → single-column flow.
 - **Emphasis budget.** ≤2 `govuk-emph`/`govuk-emph-alt` spans per slide; ≤2 `govuk-panel` boxes; at most ONE anchor (`govuk-lead` or `govuk-takeaway`).
 - **Secondary material** goes in the `#aside` slot or a `govuk-caption` — never competition for the lead.
 - Titles are assertions, ≤12 words; ≤5 bullets; every content slide ends with a `govuk-takeaway` box OR already is its own takeaway (green = finding, red = caveat).

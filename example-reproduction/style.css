@@ -218,6 +218,106 @@ a:hover { text-decoration-thickness: max(3px, 0.1875em, 0.12em); }
 .govuk-takeaway.govuk-accent-blue { border-left-color: var(--govuk-link); }
 .govuk-takeaway.govuk-accent-green { border-left-color: var(--govuk-green); }
 
+/* ============ Diagram primitives — SHOW, don't tell ============ */
+
+/* Horizontal pipeline: nodes + arrows. Encodes order visually. */
+.gov-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 1.2rem 0;
+  flex-wrap: nowrap;
+}
+.gov-flow-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.gov-arrow {
+  font-size: 1.4rem;
+  color: var(--govuk-secondary);
+  flex: 0 0 auto;
+}
+.gov-node {
+  border: 2px solid var(--govuk-text);
+  background: #fff;
+  padding: 0.55rem 0.9rem;
+  min-width: 4rem;
+  text-align: center;
+  flex: 0 0 auto;
+}
+.gov-node--accent-green { border-color: var(--govuk-green); }
+.gov-node--accent-red { border-color: var(--govuk-red); }
+.gov-node--accent-blue { border-color: var(--govuk-link); }
+.gov-node-title { font-weight: 700; font-size: 1.05rem; }
+.gov-node-sub {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--govuk-secondary);
+  margin-top: 0.15rem;
+}
+
+/* Score / comparison matrix with colour-coded legend */
+.gov-matrix {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 0 auto;
+}
+.gov-matrix th {
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+}
+.gov-matrix td {
+  border: 1px solid var(--govuk-border);
+  padding: 0.55rem 0.95rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.gov-matrix .gov-matrix-corner { border: none; }
+.gov-matrix td.gov-matrix-win {
+  border: 2px solid var(--govuk-green);
+  background: rgba(0, 112, 60, 0.12);
+  font-weight: 700;
+}
+.gov-matrix td.gov-matrix-bad { color: var(--govuk-red); }
+.gov-legend {
+  display: flex;
+  gap: 1.4rem;
+  justify-content: center;
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--govuk-secondary);
+}
+.gov-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+  border: 1px solid;
+}
+.gov-legend .lg-red::before { border-color: var(--govuk-red); background: rgba(212, 53, 28, 0.12); }
+.gov-legend .lg-green::before { border-color: var(--govuk-green); background: rgba(0, 112, 60, 0.12); }
+
+/* Big-number contrast: the whole argument as two numbers */
+.gov-contrast {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.gov-bignum {
+  border: 2px solid;
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+.gov-bignum-n { display: block; font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.gov-bignum-label { display: block; font-size: 0.9rem; margin-top: 0.4rem; }
+.gov-bignum--good { border-color: var(--govuk-green); color: var(--govuk-green); }
+.gov-bignum--bad { border-color: var(--govuk-red); color: var(--govuk-red); }
+
 /* Data table, GOV.UK style */
 .govuk-table {
   border-collapse: collapse;

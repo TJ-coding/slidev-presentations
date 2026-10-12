@@ -34,13 +34,24 @@ title: 'The visual-hierarchy doctrine'
 lead: 'Every slide gets <strong>one focal point</strong> — the lead — and everything else is arranged in roles around it.'
 ---
 
-Three components of the reading order:
+The reading order, itself shown in reading order:
 
-<ol class="govuk-steps">
-  <li><strong>Band title</strong> — the assertion (≤ 12 words)</li>
-  <li><strong>Lead</strong> — the takeaway of this slide, one sentence</li>
-  <li><strong>Body</strong> — evidence in an explicit pattern</li>
-</ol>
+<div class="gov-flow">
+  <span class="gov-node">
+    <span class="gov-node-title">Band</span>
+    <span class="gov-node-sub">assertion ≤ 12 words</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node gov-node--accent-green">
+    <span class="gov-node-title">Lead</span>
+    <span class="gov-node-sub">takeaway, one sentence</span>
+  </span>
+  <span class="gov-arrow">→</span>
+  <span class="gov-node gov-node--accent-blue">
+    <span class="gov-node-title">Body</span>
+    <span class="gov-node-sub">evidence pattern</span>
+  </span>
+</div>
 
 <template #aside>
   Full doctrine: <code>references/design-guidelines.md</code>. Budgets enforced by
@@ -144,6 +155,43 @@ Icons are Iconify: <carbon:checkmark class="govuk-check" /> — one collection p
 <style>
 .govuk-check { color: #00703c; }
 </style>
+
+---
+layout: govuk
+title: 'Pattern: diagram'
+lead: 'If the idea has structure, draw it — nodes and arrows beat bullets.'
+---
+
+<div class="gov-contrast">
+  <div class="gov-bignum gov-bignum--bad">
+    <span class="gov-bignum-n">O(n²)</span>
+    <span class="gov-bignum-label">score every pair</span>
+  </div>
+  <div class="gov-bignum gov-bignum--good">
+    <span class="gov-bignum-n">O(n)</span>
+    <span class="gov-bignum-label">encode once</span>
+  </div>
+</div>
+
+<table class="gov-matrix">
+  <tbody>
+  <tr><th class="gov-matrix-corner"></th><th>col A</th><th>col B</th><th>risk</th></tr>
+  <tr><th>row 1</th><td>u₁,₁</td><td>u₁,₂</td><td>0.43</td></tr>
+  <tr><th>row 2</th><td>u₂,₁</td><td class="gov-matrix-win">u₂,₂</td><td class="gov-matrix-win">0.17</td></tr>
+  </tbody>
+</table>
+
+<p class="gov-legend">
+  <span class="lg-red">hypothesis ŷ</span>
+  <span class="lg-green">selected</span>
+</p>
+
+<!--
+Diagram primitives: gov-flow (nodes + arrows), gov-node (--accent-*), gov-matrix
+(--win/--bad cells), gov-contrast + gov-bignum, gov-legend. Anything that can
+be drawn must be drawn: pipelines are gov-flow, pair scores are gov-matrix,
+scale claims are gov-contrast bignums.
+-->
 
 ---
 layout: govuk-image-right

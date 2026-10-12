@@ -47,7 +47,9 @@ npm run build                             # → dist/ static site
 - Helvetica/Arial fallback for GDS Transport; plain, bold, austere
 - Accents: blue `#1d70b8`, green `#00703c`, red `#d4351c`, yellow `#ffdd00`
 - Components: `govuk-panel`, `govuk-inset-text`, `govuk-tag`, `govuk-table`, `govuk-emph`
+- Diagram primitives (show, don't tell): `gov-flow` nodes+arrows, `gov-matrix`, `gov-contrast`/`gov-bignum`
 - Page number bottom-right, grey
+- **Doctrine enforced**: `scripts/lint-deck.py <deck>/slides.md` gates every deck — one lead per slide, budgets, and "no diagram ⇒ redraw"
 
 ## Installing the skill for pi
 
