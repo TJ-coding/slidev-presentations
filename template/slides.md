@@ -1,15 +1,15 @@
 ---
-# The FIRST frontmatter block is BOTH file-level and the cover slide's.
+# Read this deck bottom-to-top as a pattern catalogue: band title -> lead -> steps -> panels -> aside -> end.
 theme: default
 colorSchema: light
 title: 'Presentation Title, Using a Sentence If Possible'
 layout: govuk-cover
 subtitle: 'One-sentence outcome: what the audience will know or be able to do'
-kicker: 'MEETING | REGULAR'
+kicker: 'REGULAR MEETING'
 meta: 'Group name · 17 June 2026'
-author: 'Presenter Name · Laboratory / Department'
+author: 'Presenter Name · Laboratory'
 info: |
-  Short deck description. Appears in SPA meta tags.
+  Canonical template deck. Every slide demonstrates one named pattern.
 highlighter: shiki
 drawings:
   persist: false
@@ -18,113 +18,128 @@ mdc: true
 lineNumbers: false
 ---
 
-<!--
-Speaker notes: this comment block becomes presenter notes.
-Dev shortcuts: `o` overview, `d` dark mode, `f` fullscreen.
--->
-
----
-layout: govuk
-title: 'Agenda'
----
-
-1. Context — why this matters
-2. Method, in three numbered steps
-3. Results and evidence
-4. Takeaways and next steps
-
-<!-- Lecture takes ~15 min: 1–2 min per content slide. -->
+<!-- Cover mirror of the reference decks: band + Title Case + meta + authors. -->
 
 ---
 layout: govuk-section
 kicker: '01'
-title: 'Context'
+title: 'How to use this template'
 ---
 
-Section dividers take 5 seconds — never put content on them.
-Kicker renders as a yellow GOV.UK-style tag; add `image:` for a full-bleed photo.
+Band → reading order → budgets → patterns → ship.
 
 ---
 layout: govuk
-title: 'Context: the problem in one sentence'
+title: 'The visual-hierarchy doctrine'
+lead: 'Every slide gets <strong>one focal point</strong> — the lead — and everything else is arranged in roles around it.'
 ---
 
-- **Titles are assertions**, not topics ("Caching cut latency 40%" beats "Performance")
-- ≤ 5 bullets, ≤ 12 words each — full sentences belong in these notes
+Three components of the reading order:
 
-<div class="govuk-inset-text">
-  Inset text: blue left border for related-but-tangential facts.
-</div>
+<ol class="govuk-steps">
+  <li><strong>Band title</strong> — the assertion (≤ 12 words)</li>
+  <li><strong>Lead</strong> — the takeaway of this slide, one sentence</li>
+  <li><strong>Body</strong> — evidence in an explicit pattern</li>
+</ol>
 
-<v-clicks>
-
-- Wrap lists in `<v-clicks>` to build toward the punchline
-- Don't default to click-reveals on every bullet
-
-</v-clicks>
+<template #aside>
+  Full doctrine: <code>references/design-guidelines.md</code>. Budgets enforced by
+  <code>scripts/lint-deck.py</code>.
+</template>
 
 <!--
-Notes carry the full sentence you would actually say.
-The blue box is decorative; notes are where analysis lives.
+If you cannot write the lead in one sentence, the slide is really two slides.
 -->
 
 ---
 layout: govuk
-title: 'Call-outs, tags and emphasis'
+title: 'Budgets, not vibes'
+lead: 'Colour, boxes and bullets are rationed — the linter enforces the budget.'
 ---
 
-Patterns to copy:
+| Element | Budget |
+| --- | --- |
+| `lead:` / `govuk-takeaway` | **1 per slide** |
+| `govuk-emph` spans | ≤ 2 |
+| `govuk-panel` boxes | ≤ 2 |
+| bullets | ≤ 5 |
+| speaker notes | every slide |
+
+<ul class="govuk-steps">
+  <li>Write the lead first</li>
+  <li>Write the evidence second</li>
+  <li>Only then decorate — green for findings, red for caveats</li>
+</ul>
+
+<!-- Lint before export: npm run lint (per-deck: scripts/lint-deck.py). -->
+
+---
+layout: govuk
+title: 'Pattern: glossary of emphasis'
+lead: 'Green-red panels signal finding-vs-caveat; tags carry status.'
+---
 
 <div class="govuk-grid-2">
 
 <div class="govuk-panel govuk-accent-green">
   <p class="govuk-panel-title">Success / key finding</p>
-  Green left border (GOV.UK green #00703c).
+  <span class="govuk-emph-alt">O(n)</span> scaling holds in all ablations.
 </div>
 
 <div class="govuk-panel govuk-accent-red">
-  <p class="govuk-panel-title">Caveat / risk</p>
-  Red left border for warnings (#d4351c).
+  <p class="govuk-panel-title">Caveat</p>
+  <span class="govuk-emph">O(n²)</span> on the cross-encoder baseline.
 </div>
 
 </div>
 
-- <span class="govuk-emph">Emphasis terms</span> use GOV.UK red, bold
-- <span class="govuk-emph-alt">Secondary terms</span> use GOV.UK green, bold
-- Badges: <span class="govuk-tag govuk-tag--yellow">BETA</span> <span class="govuk-tag govuk-tag--green">NEW</span> <span class="govuk-tag govuk-tag--grey">DRAFT</span>
+Badges: <span class="govuk-tag govuk-tag--yellow">BETA</span>
+<span class="govuk-tag govuk-tag--green">NEW</span>
+<span class="govuk-tag govuk-tag--grey">DRAFT</span>
+
+<!--
+Max two panels. Anything else needs its own slide.
+-->
 
 ---
 layout: govuk-two-cols
-title: 'Comparison: two columns'
+title: 'Pattern: comparison'
+lead: 'Left states the claim, right carries the evidence — never two identical blocks.'
 ---
 
-Left column — e.g. the baseline method with its numbers.
+**Claim** — the bi-encoder keeps entities pre-encoded.
+
+One sentence of argument at most.
 
 ::right::
 
-Right column — e.g. the proposed method: paste method vs result.
+**Evidence** — the numbers.
 
 <div class="govuk-panel govuk-accent-blue">
-  <p class="govuk-panel-title">How to</p>
-  Content before <code>::right::</code> lands left; content after lands right.
+  <p class="govuk-panel-title">Result</p>
+  Latency 410ms → 40ms at n=512.
 </div>
+
+<!--
+Both halves labelled. Equal-weight quadrants are banned by doctrine.
+-->
 
 ---
 layout: govuk
 title: 'Code and syntax'
+lead: 'Left explanation, right code — pipe highlights define click steps.'
 ---
 
-Left: explanation · right: code — or use `govuk-two-cols` for this too.
+Left column text — use `govuk-two-cols` for this pattern.
 
-```ts {2|3-5|all}
-// `|` pipes define step-by-step highlighting
-const msg = 'highlight this first'
-function demo() {
-  return msg.toUpperCase()
-}
+<!-- Explain the snippet in notes; code on slide is signed, not prose. -->
+
+```ts {2-3}
+const msg = 'highlight these lines'
+console.log(msg.toUpperCase())
 ```
 
-Icons come from Iconify: <carbon:checkmark class="govuk-check" /> — stick to one collection.
+Icons are Iconify: <carbon:checkmark class="govuk-check" /> — one collection per deck.
 
 <style>
 .govuk-check { color: #00703c; }
@@ -132,53 +147,42 @@ Icons come from Iconify: <carbon:checkmark class="govuk-check" /> — stick to o
 
 ---
 layout: govuk-image-right
-title: 'Image slides'
+title: 'Pattern: figure slide'
 image: https://cover.sli.dev
+lead: 'A figure with a caption is evidence; the lead says what it shows.'
 ---
 
-- Set `image:` in frontmatter (local files: put under `public/`, use `/img.png`)
-- Image sits in a light-grey frame, like GOV.UK figure boxes
-- Use `<slot name="right" />` for a caption row instead of an image
+- `image:` frontmatter, or a `<template #caption>` slot below
+- Figures follow the GOV.UK framed-box style
 
----
-layout: govuk
-title: 'Data slides'
----
+<!-- Say in notes what the figure proves and its source. -->
 
-| Service | Support |
-| --- | :-: |
-| Speaker notes | ✅ |
-| Presenter view | ✅ |
-| PDF / PPTX export | ✅ |
-
-Use the `govuk-table` class for ruled GOV.UK tables; else this default is fine.
-
----
-layout: govuk-section
-kicker: '02'
-title: 'Results'
----
+<template #caption>
+  Fig. 1 — explain the figure in one sentence, in grey.
+</template>
 
 ---
 layout: govuk
-title: 'Takeaways'
+title: 'Pattern: data slide'
+lead: 'One number leads, the table supports it.'
 ---
 
-<div class="govuk-panel govuk-accent-green">
-  <p class="govuk-panel-title">The one thing to remember</p>
-  Restate the thesis plainly, with the number that backs it up.
-</div>
+<div class="govuk-takeaway govuk-accent-green">Latency drops from 410ms to 40ms at n=512.</div>
 
-- ≤ 3 takeaways, restated plainly
-- Aiming next: <span class="govuk-emph-alt">deadline / venue</span>
+| n | MBR | Bi-encoder |
+| --- | :-: | :-: |
+| 8 | 34ms | 30ms |
+| 512 | 410ms | **40ms** |
+
+<!-- One number per data slide — the green box IS the takeaway. -->
 
 ---
 layout: govuk-end
 title: 'Questions?'
-kicker: 'Slides and code: github.com/your-repo'
-author: '@yourhandle · Laboratory'
+kicker: 'github.com/your-repo'
+author: 'Laboratory · @yourhandle'
 ---
 
 <!--
-Export: npm run export:pdf → slides.pdf (also pptx, png, spa).
+Canonical patterns complete. Deck passes lint-deck.py by construction.
 -->

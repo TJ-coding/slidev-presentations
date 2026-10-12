@@ -34,17 +34,27 @@ All content lives in `slides.md` (+ `layouts/`, `components/`, `snippets/`). Che
 - Palette & fonts are tokens in `style.css` (`:root`) — change once, never inline hex.
 - Icons are Iconify `<carbon:name />` etc. One collection per deck.
 
-## Content rules (read references/design-guidelines.md before writing a full deck)
+## Content rules — the visual-hierarchy doctrine
 
-- ≤ 5 bullets per slide, ≤ ~12 words per bullet; one idea per slide.
-- Titles are assertions, not topics.
-- Always write speaker notes.
-- Spine: cover → agenda → numbered `govuk-section` dividers → content → takeaways → `govuk-end`.
-- GOV.UK voice: plain English, sentence-case titles, no decorative clutter.
+Read `references/design-guidelines.md` for the doctrine (it is the design contract of this framework). In short:
+
+- **One focal point per slide.** Every content slide states its takeaway in the big `lead:` line right under the band. If you cannot write the takeaway as one sentence, the slide is really two slides.
+- **Explicit reading order.** Sequential content → `govuk-steps` numbered list (never symmetric quadrants). Comparison → `govuk-two-cols` only with distinct roles (left = the argument, right = the evidence). Everything else → single-column flow.
+- **Emphasis budget.** ≤2 `govuk-emph`/`govuk-emph-alt` spans per slide; ≤2 `govuk-panel` boxes; at most ONE anchor (`govuk-lead` or `govuk-takeaway`).
+- **Secondary material** goes in the `#aside` slot or a `govuk-caption` — never competition for the lead.
+- Titles are assertions, ≤12 words; ≤5 bullets; every content slide ends with a `govuk-takeaway` box OR already is its own takeaway (green = finding, red = caveat).
+
+## Quality gate (enforced, not advisory)
+
+Before handing any deck back, run the linter and fix every finding:
+```bash
+./scripts/lint-deck.py <deck>/slides.md
+```
+It checks: layouts valid, `lead:` present on govuk slides, no `# heading` fighting the band, speaker notes everywhere, bullet/emph/panel budgets, single focal anchor. **Do not deliver a deck that fails lint.**
 
 ## Quality checklist before handing a deck back
 
-1. `./scripts/export.sh <deck-dir> pdf` succeeds with no missing-image warnings.
-2. Every `image:` path exists (local files under `public/`).
-3. Every content slide has speaker notes.
+1. lint passes: `./scripts/lint-deck.py <deck>/slides.md`
+2. `./scripts/export.sh <deck-dir> pdf` succeeds with no missing-image warnings.
+3. Every `image:` path exists (local files under `public/`).
 4. Slide count sane: ~1–2 min per slide.

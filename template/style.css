@@ -137,6 +137,87 @@ a:hover { text-decoration-thickness: max(3px, 0.1875em, 0.12em); }
 .govuk-emph { color: var(--deck-accent); font-weight: 700; }
 .govuk-emph-alt { color: var(--deck-accent-alt); font-weight: 700; }
 
+/* ============ Visual hierarchy primitives ============
+   Every content slide must have exactly ONE focal point and an
+   explicit reading order. These classes enforce that. */
+
+/* The slide's takeaway, right under the band. Use FOR at most one
+   per slide (frontmatter `lead:` renders this automatically). */
+.govuk-lead {
+  font-size: 1.6rem;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0 0 1.4rem;
+  color: var(--govuk-text);
+  max-width: 60ch;
+}
+.govuk-lead strong { color: var(--deck-accent); }
+
+/* Numbered pipeline — makes "read in this order" explicit when the
+   slide shows a sequence. GOV.UK task-list style. */
+.govuk-steps {
+  counter-reset: step;
+  list-style: none !important;
+  margin: 0.6rem 0;
+  padding: 0;
+}
+.govuk-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 2.6rem;
+  margin: 0.7rem 0;
+  font-size: 1.05rem;
+  list-style: none !important;
+}
+.govuk-steps li::marker { content: none !important; }
+.govuk-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--govuk-text);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* Small grey caption for figures, formulas, sources */
+.govuk-caption {
+  font-size: 0.85rem;
+  color: var(--govuk-secondary);
+  margin: 0.3rem 0 0;
+}
+
+/* Secondary material pulled below the main body, greyed with a divider:
+   qualifications, baselines, references. Never compete with the lead. */
+.govuk-aside {
+  border-top: 1px solid var(--govuk-border);
+  margin-top: 1.4rem;
+  padding-top: 0.9rem;
+  color: var(--govuk-secondary);
+  font-size: 0.95rem;
+}
+.govuk-aside .govuk-lead, .govuk-aside h2 { font-size: 1.05rem; color: var(--govuk-text); }
+
+/* The single "what should I remember" box. Only ONE per slide, always
+   at the end (green = finding / red = caveat / blue = definition). */
+.govuk-takeaway {
+  margin-top: 1.4rem;
+  padding: 1rem 1.4rem;
+  border-left: 10px solid var(--govuk-green);
+  background: var(--govuk-panel-grey);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.govuk-takeaway.govuk-accent-red { border-left-color: var(--govuk-red); }
+.govuk-takeaway.govuk-accent-blue { border-left-color: var(--govuk-link); }
+.govuk-takeaway.govuk-accent-green { border-left-color: var(--govuk-green); }
+
 /* Data table, GOV.UK style */
 .govuk-table {
   border-collapse: collapse;

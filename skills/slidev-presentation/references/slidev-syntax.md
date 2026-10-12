@@ -27,6 +27,35 @@ right...
 
 Never write `# Heading` inside a govuk layout — use `title:` in the frontmatter.
 
+## Hierarchy primitives (mandatory)
+
+Every `govuk` / `govuk-two-cols` / `govuk-image-right` slide must set `lead:` — the
+takeaway sentence rendered as the big focal line under the band (`.govuk-lead`).
+Optional `#aside` slot (on `govuk` only) for greyed secondary material:
+
+```yaml
+---
+layout: govuk
+title: 'MBR decoding scales as O(n²)'
+lead: 'Utility replaces hand-tuned metrics — but you pay for every pair.'
+---
+
+<ol class="govuk-steps">
+  <li>Hypothesis encoding</li>
+  <li>Pseudo-reference encoding</li>
+  <li>Score matrix</li>
+</ol>
+
+<template #aside>
+  Baselines: BEURT (O(n²)), SimCSE (O(n)).
+</template>
+```
+
+Other hierarchy classes: `govuk-takeaway` (green/red/blue accent, ONE per slide),
+`govuk-steps` (numbered pipeline), `govuk-caption` (figure provenance).
+Budgets: ≤1 anchor, ≤2 emph spans, ≤2 panels, ≤5 bullets — checked by
+`scripts/lint-deck.py <deck>/slides.md`.
+
 ## File structure
 
 ```md

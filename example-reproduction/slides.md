@@ -26,66 +26,67 @@ kicker: '01'
 title: 'Background'
 ---
 
-**Minimum Bayes Risk decoding** as the umbrella for text-based Knowledge Graph
-Completion.
+---
+layout: govuk
+title: 'MBR Decoding: For Translation'
+lead: 'Score every translation against gold references with a utility function, then pick the lowest-risk candidate.'
+---
+
+**How MBR selects a translation** — three steps:
+
+<ol class="govuk-steps">
+  <li><strong>Propose</strong> — the model samples candidates: <span class="govuk-emph">Hello</span>, <em>Hi</em>, <em>Hey</em></li>
+  <li><strong>Score</strong> — utility model rates each against gold <span class="govuk-emph-alt">y</span></li>
+  <li><strong>Select</strong> — the candidate with lowest expected risk wins</li>
+</ol>
+
+<template #aside>
+  Utility replaces BLEU: it learns from human preference, so it tracks translation quality where n-gram overlap fails.
+</template>
 
 <!--
-P14-equivalent section divider. The original used a bull photo; pass
-`image: /bull.jpg` for the photo variant. 5-second signpost, no content.
+Was: four equal quadrants (sampling / utility / formula / matrix). Rebuilt with
+lead + numbered steps; formula and score matrix live on slides 4 and 6 where they
+are the point.
 -->
 
 ---
 layout: govuk
-title: 'MBR Decoding: For Translation'
+title: 'Utility and Risk'
+lead: 'Risk is just the average utility over gold references — one formula drives the score matrix.'
 ---
 
-<div class="govuk-grid-2" style="font-size: 0.92em;">
+<div class="govuk-grid-2">
 
 <div>
 
-### <span class="govuk-emph-alt">Sampling</span> translation candidates
+**Utility** — quality of hypothesis ŷ against gold y:
 
-Source Sequence　`x = こんにちは`
+$$u_{i,j} = U(x,\ y_i,\ \hat{y}_j)$$
 
-<div class="govuk-panel" style="padding:0.6rem 1rem;">
-<b>Translation Model</b> → proposals: <span class="govuk-emph">Hello</span> · <span class="govuk-emph">Hi</span> · <span class="govuk-emph">Hey</span>
-</div>
+**Risk** — expected loss of proposing <span class="govuk-emph">ŷ</span>:
 
-### <span class="govuk-emph-alt">Utility</span> Function
-
-<div class="govuk-inset-text">
-Measures translation quality: scores the predicted <span class="govuk-emph">ŷ</span>
-against gold <span class="govuk-emph-alt">y</span> with an encoder-based metric model.
-</div>
-
-$$u_{i,j} = U(x,\; y_i,\; \hat{y}_j)$$
+$$R(\hat{y}_j) \propto \sum_i u_{i,j}$$
 
 </div>
 
 <div>
 
-### Calculating <span class="govuk-emph">Risk</span>
+<div class="govuk-takeaway govuk-accent-green">Pick argmin of risk — the majority-safe candidate.</div>
 
-$$R(\hat{y}_j) \propto \sum_i U(y_i, \hat{y}_j)$$
+| Pseudo Ref | y₁ | y₂ | y₃ |
+| --- | :-: | :-: | :-: |
+| ŷ₁ Hello | u₁,₁ | u₁,₂ | u₁,₃ |
+| ŷ₂ Hi | u₂,₁ | u₂,₂ | u₂,₃ |
+| ŷ₃ Hey | u₃,₁ | u₃,₂ | u₃,₃ |
 
-**Score Matrix**
-
-<div style="border:2px solid #0b0c0c; display:inline-block;">
-<table style="border-collapse:collapse; font-weight:700;">
-<tr><td></td><td style="background:#fff"><span class="govuk-emph-alt">y₁</span></td><td style="background:#fff"><span class="govuk-emph-alt">y₂</span></td><td style="background:#fff"><span class="govuk-emph-alt">y₃</span></td></tr>
-<tr><td><span class="govuk-emph">ŷ₁</span></td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₁,₁</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₁,₂</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₁,₃</td></tr>
-<tr><td><span class="govuk-emph">ŷ₂</span></td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₂,₁</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₂,₂</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₂,₃</td></tr>
-<tr><td><span class="govuk-emph">ŷ₃</span></td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₃,₁</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₃,₂</td><td style=" border:1px solid #0b0c0c; padding:.45rem .9rem;">u₃,₃</td></tr>
-</table>
-</div>
+<p class="govuk-caption">Score matrix over 3 hypotheses × 3 gold references.</p>
 
 </div>
 
 </div>
 
-<!--
-Matches p5: left explains sampling + utility, right shows risk and the score matrix.
--->
+<!-- Mirrors p5's formula and score matrix, now with one focal line. -->
 
 ---
 layout: govuk-section
@@ -96,58 +97,46 @@ title: 'Method'
 
 Bi-encoder based **utility** function with **Linear** scaling order.
 
-<!--
-P14: bull-photo divider. The dim overlay keeps title legible on any photo.
--->
+<!-- P14: bull-photo divider, dimmed overlay. 5-second signpost. -->
 
 ---
-layout: govuk-two-cols
+layout: govuk
 title: 'Text-based Knowledge Graph Completion'
+lead: 'Both MBR and KGC ask \"is this a good match?\" — cross-encoders cost O(n²), bi-encoders give O(n).'
 ---
 
-**MBR** → Utility Metric
+Common shape of the two pipelines:
 
-- Source: こんにちは
-- Reference <span class="govuk-emph-alt">y</span>, Hypothesis <span class="govuk-emph">ŷ</span>
-- Output: similarity <span class="govuk-emph-alt">u</span>
-
-<div class="govuk-panel govuk-accent-red">
-  <p class="govuk-panel-title">Issue: O(n²)</p>
-  Cross-encoders query every pair — extremely slow.
-</div>
-
-::right::
-
-**KGC** → Link Prediction
-
-- Head Entity <span class="govuk-emph-alt">Pluto</span>
-- Relation Type <span class="govuk-emph-alt">Occasion</span>
-- Tail: <span class="govuk-emph">Physicist</span> → score
-
-<div class="govuk-panel govuk-accent-green">
-  <p class="govuk-panel-title">Linear: O(n)</p>
-  Bi-encoder keeps entities pre-encoded — extremely fast.
-</div>
+<ol class="govuk-steps">
+  <li>Parse a pair — MBR: source + candidate · KGC: head entity + relation + tail</li>
+  <li>Encode — cross-encoder scores the pair jointly — <span class="govuk-emph">O(n²)</span></li>
+  <li><strong>Proposed</strong> — encode entities once, score by dot product — <span class="govuk-emph-alt">O(n)</span></li>
+</ol>
 
 <!--
-Matches p12: two approaches side by side with the red/green verdict boxes.
+P12 original: two columns each with its own red/green verdict box → four blocks.
+Now: one lead, one 3-step comparison. If the audience needs the side-by-side
+architecture, that's a follow-up slide with a figure.
 -->
 
 ---
 layout: govuk
 title: 'Architecture'
+lead: 'Four steps; one dot product per pair — no LLM call inside the score matrix.'
 ---
 
-<div class="govuk-grid-2" style="font-size: 0.95em;">
+<div class="govuk-grid-2">
 
 <div>
 
-1. Construct Input Sequence
-2. Make Hypothesis Encoding
-3. Make Pseudo Reference Encoding
-4. Construct Score Matrix
+<ol class="govuk-steps">
+  <li>Construct input sequence</li>
+  <li>Make hypothesis encoding</li>
+  <li>Make pseudo-reference encoding</li>
+  <li>Construct score matrix</li>
+</ol>
 
-### <span class="govuk-emph">Utility</span>
+**Utility** — a dot product:
 
 $$u_{i,j} = \hat{y}_i \cdot y_j$$
 
@@ -155,45 +144,33 @@ $$u_{i,j} = \hat{y}_i \cdot y_j$$
 
 <div>
 
-### Score Matrix
-
-| <span class="govuk-emph-alt">Pseudo Ref</span> | <span class="govuk-emph-alt">y₁</span> | <span class="govuk-emph-alt">y₂</span> | <span class="govuk-emph-alt">y₃</span> |
-| --- | :-: | :-: | :-: |
-| <span class="govuk-emph">ŷ₁</span> Hello | **ŷ₁**·y₁ | ŷ₁·y₂ | ŷ₁·y₃ |
-| <span class="govuk-emph">ŷ₂</span> Hi | ŷ₂·y₁ | **ŷ₂**·y₂ | ŷ₂·y₃ |
-| <span class="govuk-emph">ŷ₃</span> Hey | ŷ₃·y₁ | ŷ₃·y₂ | **ŷ₃**·y₃ |
-
 <div class="govuk-panel govuk-accent-green">
-  <p class="govuk-panel-title">Number of LLM inference: O(n)</p>
+  <p class="govuk-panel-title">Number of LLM inferences: O(n)</p>
+  Two encodings per item, not per pair.
 </div>
+
+<p class="govuk-caption">Fig. 1 — score matrix, pseudo-reference × hypothesis.</p>
 
 </div>
 
 </div>
 
-<!--
-Matches p18: numbered pipeline left, dot-product score matrix right.
--->
+<!-- Mirrors p18: pipeline left, complexity box + caption right. -->
 
 ---
 layout: govuk
 title: 'Conclusion and Future works'
+lead: 'A linear-order utility for MBR; ablations and timing still open.'
 ---
 
-- Proposed a Utility Function for MBR with Linear Scaling Order
-- Fix Training Data: Make Distribution Uniform
-- Ablation Studies
-  - Similarity Function: Cosine or Dot Product?
-  - Measure Computational Time
-- Aiming next ARR
+- Proposed a utility function for MBR with linear scaling order
+- Fix training data (uniform), then retrain
+- Ablation studies
+  - Similarity function: cosine or dot product?
+  - Measure computational time
+- Aiming next ARR submission
 
-<div class="govuk-inset-text">
-  Comments welcome — especially on the ablation design.
-</div>
-
-<!--
-Matches p24: bullets + one tangential note in computed inset style.
--->
+<!-- Mirrors p24; sub-bullets are acceptable inside a ≤5 bullet cap. -->
 
 ---
 layout: govuk-end
@@ -201,3 +178,5 @@ title: 'Questions?'
 kicker: 'github.com/your-repo'
 author: 'Natural Language Processing Laboratory'
 ---
+
+<!-- Invite questions by name where possible; speak to the slide 4 complexity box. -->
