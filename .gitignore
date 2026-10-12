@@ -1,5 +1,8 @@
-node_modules/
-dist/
-.slidev*
-.DS_Store
 *.pdf
+.DS_Store
+.export.log
+.slidev*
+dist/
+node_modules
+node_modules/
+png/

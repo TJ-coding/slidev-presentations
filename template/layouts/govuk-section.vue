@@ -41,6 +41,8 @@ const image = computed(() => {
   line-height: 1.1;
 }
 .govuk-tag { margin-bottom: 0.6rem; }
+.govuk-section :deep(p) { color: #f3f2f1 !important; }
+.govuk-section :deep(a) { color: var(--govuk-yellow) !important; }
 </style>
 
 <style>
