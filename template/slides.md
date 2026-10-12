@@ -194,6 +194,43 @@ scale claims are gov-contrast bignums.
 -->
 
 ---
+layout: govuk
+title: 'Pattern: verdict & connectors'
+lead: 'Bottom lines get a stress box; ▼ means therefore; → means input/output.'
+---
+
+<div class="gov-flow">
+  <span class="gov-node"><span class="gov-node-title">x</span><span class="gov-node-sub">source</span></span>
+  <span class="gov-io">
+    <span class="gov-io-value">0.7</span>
+    <span class="gov-io-arrow">→</span>
+    <span class="gov-io-label">utility score</span>
+  </span>
+  <span class="gov-node"><span class="gov-node-title">ŷ</span><span class="gov-node-sub">hypothesis</span></span>
+</div>
+
+<div class="gov-eq">
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--red">128</span><span class="gov-eq-label"># hypothesis</span></span>
+  <span class="gov-eq-op">+</span>
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--green">128</span><span class="gov-eq-label"># reference</span></span>
+  <span class="gov-eq-op">=</span>
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--dark">256</span><span class="gov-eq-label"># utility calls</span></span>
+</div>
+
+<div class="gov-stress">
+  <div class="gov-stress-head"><span>Issue:</span> <span class="gov-stress-value--red">O(n²)</span></div>
+  <div class="gov-stress-body">Quadratic Time Complexity</div>
+</div>
+<div class="gov-therefore gov-therefore--red">▼</div>
+<div class="gov-consequence gov-consequence--dark">Extremely Slow</div>
+
+<!--
+Connector doctrine: → = data (value top / semantic label under), ▼ = therefore,
++ = × = arithmetic. Stress box: navy band "Label: value", qualifier line,
+▼, consequence. Two of these boxes max per slide.
+-->
+
+---
 layout: govuk-image-right
 title: 'Pattern: figure slide'
 image: https://cover.sli.dev

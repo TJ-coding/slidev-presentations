@@ -41,7 +41,8 @@ Read `references/design-guidelines.md` for the doctrine (it is the design contra
 - **One focal point per slide.** Every content slide states its takeaway in the big `lead:` line right under the band. If you cannot write the takeaway as one sentence, the slide is really two slides.
 - **Show, don't tell.** If the idea has structure, DRAW it before writing about it: pipelines → `gov-flow` (nodes + arrows), pairwise scores → `gov-matrix`, "X beats Y" / complexity → `gov-contrast`+`gov-bignum`, irregular flows → `mermaid`. Text only LABELS the diagram; prose goes to speaker notes. Then delete everything the diagram already says.
 - **Reading order, always explicit.** Sequential content → `govuk-steps` or `gov-flow` (never symmetric quadrants). Comparison → `govuk-two-cols` only with distinct roles (left = the argument, right = the evidence). Everything else → single-column flow.
-- **Emphasis budget.** ≤2 `govuk-emph`/`govuk-emph-alt` spans per slide; ≤2 `govuk-panel` boxes; at most ONE anchor (`govuk-lead` or `govuk-takeaway`).
+- **Connectors carry meaning — never mix them.** `→` is reserved for input/output and always takes the actual value on top and the semantic label under it (`gov-io`); `▼` means "therefore"; `+ = ×` are `gov-eq`. Never use an arrow for logical consequence.
+- **Emphasis budget.** ≤2 `govuk-emph`/`govuk-emph-alt` spans per slide; ≤2 `govuk-panel` boxes; at most ONE anchor (`govuk-lead` or `govuk-takeaway`). Bottom-line verdicts belong in `gov-stress` boxes (label white + value accent on navy, qualifier below, ▼ to the consequence) — that's the "Issue:" / "Aim:" pattern from the reference decks.
 - **Secondary material** goes in the `#aside` slot or a `govuk-caption` — never competition for the lead.
 - Titles are assertions, ≤12 words; ≤5 bullets; every content slide ends with a `govuk-takeaway` box OR already is its own takeaway (green = finding, red = caveat).
 

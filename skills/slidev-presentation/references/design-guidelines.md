@@ -43,9 +43,33 @@ lead.
 | an abstract flow too irregular to box | `mermaid` diagram |
 | an existing figure/results screenshot | `govuk-image-right` + `govuk-caption` |
 | a single headline statistic | the number IS the lead; no box, no table |
+| a bottom line / verdict ("Issue:", "Aim:") | `gov-stress` box + ▼ `gov-therefore` + consequence |
+| arithmetic behind a claim (128 + 128 = 256) | `gov-eq` labelled equation row |
+| an input/output between two nodes | `gov-io` — **value on top, semantic label under the arrow** |
 
 Labels inside nodes are data (entity names, symbols like ŷ, 0.7) — prose moves to
 speaker notes or a single grey `govuk-caption` line.
+
+## Connectors carry meaning — never mix them
+
+The reference decks use three distinct connector types, each with a fixed job:
+
+| Mark | Means | Form |
+| --- | --- | --- |
+| `→` | **input / output** — data flows through the pipeline | `gov-io` with the actual value on top of the arrow and the semantic name of the value under it (e.g. `0.7` / "utility score", `x = こんにちは` / "source sequence") |
+| `▼` | **therefore / leads to** — logical consequence | `gov-therefore` triangle + `gov-consequence` line |
+| `+ = ×` | arithmetic relation | `gov-eq` row: operand values big, semantic labels above? **below**, in grey |
+
+Arrows are reserved for data; using → for "therefore" is banned (that's ▼), and a
+▼ never sits inside a data pipeline.
+
+## The stress box — how bottom lines get said
+
+The reference decks' verdicts are `gov-stress` boxes: a solid band carrying
+`LABEL: value` (label white, value in accent — Issue/red, Aim/green, Method/blue),
+a bold qualifier line below in the bordered body, then a `gov-therefore` ▼ to the
+consequence. Use for the 2–4 claims the talk exists to defend; colour alone
+carries the verdict (dark = problem, red/green = direction of the fix).
 
 ## The removal law
 

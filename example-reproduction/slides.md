@@ -37,13 +37,15 @@ lead: 'Score each sampled translation against gold references — pick the lowes
     <span class="gov-node-title">こんにちは</span>
     <span class="gov-node-sub">source x</span>
   </span>
-  <span class="gov-arrow">→</span>
-  <span class="gov-node gov-node--accent-blue">
-    <span class="gov-node-title">Translation Model</span>
-    <span class="gov-node-sub">samples ŷ₁..ŷ₃</span>
+  <span class="gov-io">
+    <span class="gov-io-value">samples ŷ₁..ŷ₃</span>
+    <span class="gov-io-arrow">→</span>
+    <span class="gov-io-label">translation model</span>
   </span>
-  <span class="gov-arrow">→</span>
-  <span class="gov-node"><span class="gov-node-title">Hello</span><span class="gov-node-sub">ŷ₁</span></span>
+  <span class="gov-node">
+    <span class="gov-node-title">Hello</span>
+    <span class="gov-node-sub">ŷ₁</span>
+  </span>
   <span class="gov-node"><span class="gov-node-title">Hi</span><span class="gov-node-sub">ŷ₂</span></span>
   <span class="gov-node"><span class="gov-node-title">Hey</span><span class="gov-node-sub">ŷ₃</span></span>
 </div>
@@ -92,44 +94,54 @@ Bi-encoder based **utility** function with **Linear** scaling order.
 ---
 layout: govuk
 title: 'Text-based KGC: two pipelines'
-lead: 'Same scoring idea, two encodings — pair encoding costs O(n²), entity encoding gives O(n).'
+lead: 'Same scoring idea, two encodings — pair encoding costs O(n²), entity
+  encoding gives O(n).'
 ---
 
-<div class="gov-flow" style="justify-content:center; gap:1.2rem;">
-
-  <span class="gov-flow-item">
-    <span class="gov-node">
-      <span class="gov-node-title">MBR</span>
-      <span class="gov-node-sub">cross-encoder</span>
-    </span>
-    <span class="gov-arrow">→</span>
-    <span class="gov-node gov-node--accent-red">
-      <span class="gov-node-title">O(n²)</span>
-      <span class="gov-node-sub">score every pair</span>
-    </span>
+<div class="gov-eq">
+  <span class="gov-eq-item">
+    <span class="gov-eq-value gov-eq-value--red">128</span>
+    <span class="gov-eq-label"># of hypothesis</span>
   </span>
-
-  <span class="gov-flow-item">
-    <span class="gov-node">
-      <span class="gov-node-title">KGC</span>
-      <span class="gov-node-sub">bi-encoder</span>
-    </span>
-    <span class="gov-arrow">→</span>
-    <span class="gov-node gov-node--accent-green">
-      <span class="gov-node-title">O(n)</span>
-      <span class="gov-node-sub">encode once</span>
-    </span>
+  <span class="gov-eq-op">+</span>
+  <span class="gov-eq-item">
+    <span class="gov-eq-value gov-eq-value--green">128</span>
+    <span class="gov-eq-label"># of reference</span>
   </span>
+  <span class="gov-eq-op">=</span>
+  <span class="gov-eq-item">
+    <span class="gov-eq-value gov-eq-value--dark">256</span>
+    <span class="gov-eq-label"># of utility calls</span>
+  </span>
+</div>
+
+<div class="gov-contrast">
+
+  <div>
+    <div class="gov-stress">
+      <div class="gov-stress-head"><span>Issue:</span> <span class="gov-stress-value--red">O(n²)</span></div>
+      <div class="gov-stress-body">Quadratic Time Complexity</div>
+    </div>
+    <div class="gov-therefore gov-therefore--red">▼</div>
+    <div class="gov-consequence gov-consequence--dark">Extremely Slow</div>
+  </div>
+
+  <div>
+    <div class="gov-stress">
+      <div class="gov-stress-head"><span>Aim:</span> <span class="gov-stress-value--green">O(n)</span></div>
+      <div class="gov-stress-body">Linear Time Complexity</div>
+    </div>
+    <div class="gov-therefore gov-therefore--green">▼</div>
+    <div class="gov-consequence gov-consequence--red">Extremely Fast</div>
+  </div>
 
 </div>
 
-<p class="govuk-caption" style="text-align:center;">
-  Pairwise scoring (BLEURT-style metric vs KG-BERT link prediction) becomes a dot product once entities are pre-encoded.
-</p>
-
 <!--
 P12 original: two columns with bullet lists each ending in a verdict box.
-Now: two pipeline endpoints with their complexity as the only text.
+Now: two STRESS boxes in their exact form — label + value on the navy band,
+qualifier below, ▼ therefore, consequence line. Colour of the consequence
+carries the verdict (dark = slow problem, red = fast win, matching the ref deck).
 -->
 
 ---

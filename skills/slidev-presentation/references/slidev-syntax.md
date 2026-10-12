@@ -84,6 +84,30 @@ Reach for these BEFORE writing bullets. Full doctrine: design-guidelines.md.
   <div class="gov-bignum gov-bignum--bad"><span class="gov-bignum-n">O(n²)</span><span class="gov-bignum-label">pairs</span></div>
   <div class="gov-bignum gov-bignum--good"><span class="gov-bignum-n">O(n)</span><span class="gov-bignum-label">items</span></div>
 </div>
+
+<!-- bottom line: stress box, ▼ therefore, consequence -->
+<div class="gov-stress">
+  <div class="gov-stress-head"><span>Issue:</span> <span class="gov-stress-value--red">O(n²)</span></div>
+  <div class="gov-stress-body">Quadratic Time Complexity</div>
+</div>
+<div class="gov-therefore gov-therefore--red">▼</div>
+<div class="gov-consequence gov-consequence--dark">Extremely Slow</div>
+
+<!-- I/O arrow: value on top, semantic label under (→ ONLY means input/output) -->
+<span class="gov-io">
+  <span class="gov-io-value">0.7</span>
+  <span class="gov-io-arrow">→</span>
+  <span class="gov-io-label">utility score</span>
+</span>
+
+<!-- labelled arithmetic: values big, semantic labels under each -->
+<div class="gov-eq">
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--red">128</span><span class="gov-eq-label"># hypothesis</span></span>
+  <span class="gov-eq-op">+</span>
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--green">128</span><span class="gov-eq-label"># reference</span></span>
+  <span class="gov-eq-op">=</span>
+  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--dark">256</span><span class="gov-eq-label"># utility calls</span></span>
+</div>
 ```
 
 Lint warns on slides with >35 words or ≥4 bullets and NO diagram — those must be

@@ -302,6 +302,95 @@ a:hover { text-decoration-thickness: max(3px, 0.1875em, 0.12em); }
 .gov-legend .lg-red::before { border-color: var(--govuk-red); background: rgba(212, 53, 28, 0.12); }
 .gov-legend .lg-green::before { border-color: var(--govuk-green); background: rgba(0, 112, 60, 0.12); }
 
+/* ============ Connectors — MEANING-BEARING ============
+   The reference decks assign distinct roles:
+   · → arrow   = INPUT/OUTPUT flow (pipeline). Never "therefore".
+   · ▽ triangle = LOGICAL consequence ("therefore", "leads to").
+   · = / + / × = arithmetic, shown as a labelled equation. */
+
+/* I/O connector: value ON TOP of the arrow, semantic label UNDER it
+   (e.g. arrow labelled 0.7 / "utility score"; x = こんにちは / "source"). */
+.gov-io {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  flex: 0 0 auto;
+}
+.gov-io-value { font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+.gov-io-arrow { font-size: 1.4rem; line-height: 1; color: var(--govuk-text); }
+.gov-io-label {
+  font-size: 0.72rem;
+  color: var(--govuk-secondary);
+  white-space: nowrap;
+}
+
+/* Logical consequence triangle: ▼ = "therefore" */
+.gov-therefore {
+  text-align: center;
+  font-size: 2.2rem;
+  line-height: 1;
+  margin: 0.4rem 0 0.2rem;
+  color: var(--govuk-text);
+}
+.gov-therefore--red { color: var(--govuk-red); }
+.gov-therefore--green { color: var(--govuk-green); }
+
+/* Consequence line under the triangle */
+.gov-consequence {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin: 0 0 0.8rem;
+}
+.gov-consequence--red { color: var(--govuk-red); }
+.gov-consequence--green { color: var(--govuk-green); }
+.gov-consequence--dark { color: var(--govuk-text); }
+
+/* Labelled arithmetic: value on top, semantic label below, joined by + = × */
+.gov-eq {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.7rem;
+  margin: 0.6rem 0;
+}
+.gov-eq-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gov-eq-value { font-size: 1.7rem; font-weight: 700; line-height: 1; }
+.gov-eq-label { font-size: 0.72rem; color: var(--govuk-secondary); margin-top: 0.25rem; }
+.gov-eq-op { font-size: 1.3rem; color: var(--govuk-text); padding-bottom: 0.9rem; }
+.gov-eq-value--red { color: var(--govuk-red); }
+.gov-eq-value--green { color: var(--govuk-green); }
+.gov-eq-value--dark { color: var(--govuk-text); }
+
+/* ============ Stress box ("Issue:", "Aim:") ============
+   Solid band: LABEL (white) + value (accent). Body line below. The bottom
+   line of the argument, used sparingly — the "Issues" and "Aims" of a talk. */
+.gov-stress { margin: 0.8rem 0; }
+.gov-stress-head {
+  background: var(--govuk-text);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--govuk-text);
+  font-size: 1.15rem;
+}
+.gov-stress-value--red { color: #ff8a75; }
+.gov-stress-value--green { color: #8ce0b0; }
+.gov-stress-value--blue { color: #a6cbff; }
+.gov-stress-body {
+  background: #fff;
+  color: var(--govuk-text);
+  border: 2px solid var(--govuk-text);
+  border-top: none;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+}
+
 /* Big-number contrast: the whole argument as two numbers */
 .gov-contrast {
   display: grid;
