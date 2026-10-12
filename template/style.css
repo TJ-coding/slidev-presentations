@@ -1,38 +1,132 @@
-/* Global design tokens + tweaks. Loaded on every slide. */
+/* ============================================================
+   GOV.UK design-style deck tokens
+   Palette follows https://design-system.service.gov.uk/styles/
+   (GDS Transport is not redistributable, so we use its
+   system-font fallback: Helvetica/Arial — visually equivalent)
+   ============================================================ */
 
 :root {
-  /* -- Design tokens: edit once, applies everywhere -- */
-  --slidev-theme-primary: #5d8cd9; /* accent color for links, highlights */
-  --deck-accent: #5d8cd9;
-  --deck-accent-soft: rgba(93, 140, 217, 0.15);
+  /* -- Palette -- */
+  --govuk-text: #0b0c0c;          /* primary text / black band */
+  --govuk-secondary: #505a5f;     /* muted text */
+  --govuk-link: #1d70b8;          /* GOV.UK link blue */
+  --govuk-green: #00703c;         /* success / GOV.UK button green */
+  --govuk-red: #d4351c;           /* error / warning */
+  --govuk-yellow: #ffdd00;        /* focus / highlight */
+  --govuk-border: #b1b4b6;        /* 30% borders */
+  --govuk-panel-grey: #f3f2f1;    /* panel background */
+
+  /* -- Deck accents (map GOV.UK colours to the role your old
+        decks used: crimson emphasis, sage secondary) -- */
+  --deck-accent: #d4351c;         /* emphasis terms */
+  --deck-accent-alt: #00703c;     /* secondary/em-dash terms */
+  --deck-band: #0b0c0c;           /* title band */
 }
 
-/* Global background: subtle gradient instead of flat color */
+:root {
+  --govuk-font: "Helvetica Neue", Helvetica, Arial, "Segoe UI", "Noto Sans", sans-serif;
+}
+
 html, body, #app {
-  background: linear-gradient(160deg, #0f1220 0%, #161a2e 100%) !important;
+  background: #ffffff !important;
+  color: var(--govuk-text);
+  font-family: var(--govuk-font);
 }
 
-/* Consistent heading rhythm */
-h1 {
+/* Typography: GDS-style — bold, plain, generous line height */
+h1, h2, h3, h4 {
+  font-family: var(--govuk-font);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
+  color: var(--govuk-text);
 }
-h2 {
-  opacity: 0.85;
-  font-weight: 500;
+h2 { font-weight: 700; }
+
+.slidev-layout p {
+  font-family: var(--govuk-font);
+  line-height: 1.5;
 }
 
-/* Bullet markers in accent color */
+/* Links */
+a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
+a:hover { text-decoration-thickness: max(3px, 0.1875em, 0.12em); }
+
+/* Bullet markers in GOV.UK blue */
+.slidev-layout ul { margin-left: 0; }
+.slidev-layout li { margin: 0.55rem 0; }
 .slidev-layout li::marker {
-  color: var(--deck-accent);
+  color: var(--govuk-link);
+  font-size: 1.1em;
 }
 
-/* Card utility (usable from slides via plain class) */
-.deck-card {
-  @apply rounded-xl border border-white/10 bg-white/5 p-4;
+/* ============ GOV.UK component patterns (usable in slides) ============ */
+
+/* Equal-width grid helper */
+.govuk-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+/* Inset text: blue left border, indented (like govuk-inset-text) */
+.govuk-inset-text {
+  margin: 1rem 0;
+  padding: 0.5rem 0 0.5rem 1.2rem;
+  border-left: 10px solid var(--govuk-link);
+  color: var(--govuk-secondary);
+}
+/* Inset variants via classes in slides */
+.govuk-inset-text.govuk-accent-red { border-left-color: var(--govuk-red); }
+.govuk-inset-text.govuk-accent-green { border-left-color: var(--govuk-green); }
+
+/* Callout panel: grey box with strong border-left and bold heading */
+.govuk-panel {
+  border-left: 10px solid var(--govuk-text);
+  background: var(--govuk-panel-grey);
+  padding: 0.8rem 1.2rem;
+  margin: 1rem 0;
+}
+.govuk-panel.govuk-accent-green { border-left-color: var(--govuk-green); }
+.govuk-panel.govuk-accent-red { border-left-color: var(--govuk-red); }
+.govuk-panel.govuk-accent-blue { border-left-color: var(--govuk-link); }
+.govuk-panel-title {
+  font-weight: 700;
+  margin: 0 0 0.3rem 0;
 }
 
-/* Small caption utility */
-.deck-caption {
-  @apply text-sm opacity-60 tracking-widest uppercase;
+/* Tag pill (like BETA badges / phase banners) */
+.govuk-tag {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: var(--govuk-text);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+}
+.govuk-tag.govuk-tag-yellow { background: var(--govuk-yellow); color: var(--govuk-text); }
+.govuk-tag.govuk-tag-green { background: var(--govuk-green); }
+.govuk-tag.govuk-tag-red { background: var(--govuk-red); }
+.govuk-tag.govuk-tag-grey { background: var(--govuk-secondary); }
+
+/* Emphasis terms inside body text */
+.govuk-emph { color: var(--deck-accent); font-weight: 700; }
+.govuk-emph-alt { color: var(--deck-accent-alt); font-weight: 700; }
+
+/* Data table, GOV.UK style */
+.govuk-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95em;
+}
+.govuk-table th {
+  border-bottom: 2px solid var(--govuk-text);
+  font-weight: 700;
+}
+.govuk-table th, .govuk-table td {
+  padding: 0.5rem 0.8rem 0.5rem 0;
+  border-bottom: 1px solid var(--govuk-border);
+  text-align: left;
+}
+
+/* Footer/page number */
+.govuk-page-number {
+  font-variant-numeric: tabular-nums;
+  color: var(--govuk-secondary);
 }

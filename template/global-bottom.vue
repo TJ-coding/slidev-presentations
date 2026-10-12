@@ -1,13 +1,25 @@
 <script setup lang="ts">
+// Page number, bottom-right, grey — like the user's reference decks.
+// Hidden on cover/section slides.
 import { useSlideContext } from '@slidev/client'
-// Adds a footer to every slide except cover/section/end layouts.
-import DeckFooter from './components/DeckFooter.vue'
+import { computed } from 'vue'
 
 const { $slidev } = useSlideContext()
-const excluded = ['cover', 'section', 'end', 'intro', 'thank-you']
-const layout = $slidev.nav.currentLayout.value
+const excluded = ['govuk-cover', 'govuk-section', 'govuk-end']
+const layout = computed(() => $slidev.nav.currentLayout.value)
 </script>
 
 <template>
-  <DeckFooter v-if="layout && !excluded.includes(layout)" />
+  <div v-if="layout && !excluded.includes(String(layout))" class="govuk-page-number gov-page-float">
+    <SlideCurrentNo />
+  </div>
 </template>
+
+<style scoped>
+.gov-page-float {
+  position: absolute;
+  right: 1.6rem;
+  bottom: 0.8rem;
+  font-size: 1rem;
+}
+</style>

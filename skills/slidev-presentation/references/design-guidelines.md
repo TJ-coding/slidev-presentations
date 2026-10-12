@@ -1,48 +1,63 @@
-# Presentation design guidelines
+# Deck design — GOV.UK style outward, researcher-deck structure inward
 
-## Structure (the "spine")
+The template adapts the [GOV.UK Design System](https://design-system.service.gov.uk/styles/)
+(colour, typography, component patterns) to the structure of the user's existing
+decks (see `example-reference/`): white body, full-width dark title band, accent
+terms, page number bottom-right.
 
-1. **Cover** — title, one-line subtitle, author/date. No bullets.
-2. **Agenda** — use `<Toc />` (auto from headings) or 3–5 items max.
-3. **Sections** — `layout: section` dividers with number + name (01, 02, …). Signposts keep audiences oriented.
-4. **Content slides** — the meat.
-5. **Takeaways** — 1 slide, ≤ 3 takeaways, restated plainly.
-6. **End** — "Thanks / Questions?" + contact/handle.
+## Palette (tokens in template/style.css :root)
 
-## Per-slide rules
+| Token | Value | GOV.UK role | Use in slides |
+| --- | --- | --- | --- |
+| `--govuk-text` | `#0b0c0c` | black | body text + band |
+| `--govuk-secondary` | `#505a5f` | muted grey | captions, page numbers |
+| `--govuk-link` | `#1d70b8` | link blue | links, bullet markers, inset borders |
+| `--govuk-green` | `#00703c` | success | success panels, secondary terms |
+| `--govuk-red` | `#d4351c` | error | warnings, emphasis terms |
+| `--govuk-yellow` | `#ffdd00` | focus | section number tags |
+| `--govuk-border` | `#b1b4b6` | 30% | table rules, figure frames |
+| `--govuk-panel-grey` | `#f3f2f1` | panels | callout background |
 
-- **One idea per slide.** If you wrote "and" in the title, split it.
-- **≤ 5 bullets, ≤ 12 words each.** Full sentences belong in speaker notes.
-- **No paragraphs on slides.** If it reads like prose → notes or split.
-- **Font floor**: nothing below ~18px at default zoom; captions ~14px.
-- **Titles are assertions** when possible ("Caching cut latency 40%"), not topics ("Performance").
-- Data → table only if ≤ 4 rows/columns; else chart image or diagram.
-- Consistent icon set (stick to one Iconify collection, e.g. `carbon:`).
+Never hex-inline in slides; override the tokens instead.
 
-## Speaker notes
+## Typography
 
-Every content slide gets notes in `<!-- -->`:
-- The one sentence you would actually say.
-- Any number/statistic that supports the bullets.
-- Anticipated audience question, if any.
+- GDS Transport itself is not redistributable; the stack
+  `"Helvetica Neue", Helvetica, Arial` is its sanctioned fallback and looks the same.
+- Headings bold (700), letter-spacing slightly tight; body 1.5 line-height.
+- Web content is left-aligned by GOV.UK convention; the cover keeps centred
+  text to match the user's existing decks.
 
-## Pacing
+## Layout anatomy
 
-- 1–2 minutes per content slide. 20 min talk ≈ 12–18 slides total.
-- Section dividers take 5 seconds — never put content on them.
-- Use `<v-clicks>` when a list builds toward a punchline; not for every bullet by default (it slows down presenters).
+- `govuk-cover` — black band with yellow kicker tag, big title, blue meta line, grey author.
+- `govuk` / `govuk-two-cols` / `govuk-image-right` — black title band (≈15% of height),
+  white body with generous padding. Band title = frontmatter `title:`.
+- `govuk-section` — full-bleed black (or dimmed photo via `image:`), yellow number tag.
+- `govuk-end` — centred thanks + contact.
+- Page number bottom-right in `--govuk-secondary`, automatically via `global-bottom.vue`.
 
-## Visual consistency
+## Voice
 
-- Use the template's layouts before inventing new structures.
-- Design tokens (accent color etc.) live in `style.css` `:root` — change once.
-- Reuse `deck-card` / `deck-caption` utility classes instead of inline styles.
-- Images: local files go in `public/` and are referenced as `/img.png`. Prefer SVG/logos over screenshots of text.
+GOV.UK content rules: plain English, sentence case, active voice, no jargon without
+expansion, numbers as numerals. Map to slides: assertion titles, ≤5 short bullets,
+stats pulled into the band or a green panel.
+
+## Components to copy from slides.md
+
+| Class | When |
+| --- | --- |
+| `govuk-inset-text` (+ `govuk-accent-*`) | tangential fact, attribution |
+| `govuk-panel` (+ `govuk-accent-green/red/blue`) + `govuk-panel-title` | key finding / caveat / method box |
+| `govuk-tag` (+ `--yellow/--green/--red/--grey`) | statuses: BETA, NEW, section numbers |
+| `govuk-emph` / `govuk-emph-alt` | coloured bold terms inline |
+| `govuk-table` | ruled data table |
+| `govuk-grid-2` | simple two-up card row |
 
 ## Common mistakes
 
-- Wall-of-text slide (fix: notes + bullets)
-- Five different accent colors (fix: tokens in style.css)
-- Reading the slide verbatim (fix: notes carry the prose)
-- Emojis as icons (fix: Iconify components)
-- Forgetting the `image:` frontmatter on image layouts (Slidev renders an empty half)
+- Writing `# Heading` inside govuk layouts (duplicates the band title)
+- Emoji as icons / confetti decorations (GOV.UK is deliberately austere)
+- More than one accent colour per slide
+- Dense slides (fix: split + speaker notes)
+- Section dividers with content (they're 5-second signposts)

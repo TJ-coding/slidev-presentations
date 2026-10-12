@@ -1,183 +1,183 @@
 ---
-# 👋 Slidev template deck — every slide demonstrates a pattern you can copy.
-theme: seriph
-# Theme options: https://sli.dev/custom/themes
-title: 'Presentation Title'
+# The FIRST frontmatter block is BOTH file-level and the cover slide's.
+theme: default
+title: 'Presentation title, using a sentence if possible'
+layout: govuk-cover
+subtitle: 'One-sentence outcome: what the audience will know or be able to do'
+kicker: 'MEETING | REGULAR'
+meta: 'Group name · 17 June 2026'
+author: 'Presenter Name · Laboratory / Department'
 info: |
-  Short description of the deck. Appears in SPA meta tags.
-class: text-center
+  Short deck description. Appears in SPA meta tags.
 highlighter: shiki
 drawings:
   persist: false
 transition: slide-left
 mdc: true
-# Show line numbers in code blocks
 lineNumbers: false
-# Open in dev mode with a specific slide (e.g. ?page=5)
-# site-wide footer (needs components/Footer.vue or the global-bottom layer)
-defaults:
-  layout: default
 ---
-
-# Presentation Title ✨
-
-A subtitle that explains the deck in one sentence
-
-<div class="pt-10">
-  <span class="px-2 py-1 rounded" style="background: rgba(255,255,255,0.08)">
-    Author Name · March 2026
-  </span>
-</div>
 
 <!--
-Speaker notes: this HTML comment block becomes presenter notes.
-Press `o` in dev for an overview of all slides.
+Speaker notes: this comment block becomes presenter notes.
+Dev shortcuts: `o` overview, `d` dark mode, `f` fullscreen.
 -->
 
-<div class="abs-br m-6 flex gap-2">
-  <a href="https://github.com/your-repo" target="_blank" class="text-xl slidev-icon-btn" alt="GitHub" title="Open repo">
-    <carbon-logo-github />
-  </a>
-  <a href="https://sli.dev" target="_blank" class="text-xl slidev-icon-btn" alt="Docs" title="Slidev docs">
-    <carbon:document />
-  </a>
+---
+layout: govuk
+title: 'Agenda'
+---
+
+1. Context — why this matters
+2. Method, in three numbered steps
+3. Results and evidence
+4. Takeaways and next steps
+
+<!-- Lecture takes ~15 min: 1–2 min per content slide. -->
+
+---
+layout: govuk-section
+kicker: '01'
+title: 'Context'
+---
+
+Section dividers take 5 seconds — never put content on them.
+Kicker renders as a yellow GOV.UK-style tag; add `image:` for a full-bleed photo.
+
+---
+layout: govuk
+title: 'Context: the problem in one sentence'
+---
+
+- **Titles are assertions**, not topics ("Caching cut latency 40%" beats "Performance")
+- ≤ 5 bullets, ≤ 12 words each — full sentences belong in these notes
+
+<div class="govuk-inset-text">
+  Inset text: blue left border for related-but-tangential facts.
 </div>
-
----
-layout: two-cols
-layoutClass: gap-8
----
-
-# Agenda
-
-<br>
-
-<Toc title="" />
-
-::right::
-
-<div class="h-full flex flex-col justify-center">
-  <p class="text-sm opacity-60 uppercase tracking-widest">Why this matters</p>
-  <p class="text-2xl leading-relaxed">
-    One-sentence thesis statement goes here. What should the audience <b>believe</b> or <b>do</b> after this talk?
-  </p>
-</div>
-
----
-layout: section
----
-
-# 01
-
-## Problem / Context
-
----
-layout: image-right
-image: https://cover.sli.dev
----
-
-# Layout: image-right
-
-Bullet points on the left, image on the right.
-
-- `layout: image-right` needs an `image:` frontmatter key
-- Use `image-left` mirrored instead
-- Swap sizes with `class:` in `<style>` or the `imageClass` in newer versions
 
 <v-clicks>
 
-- Anything wrapped in `<v-clicks>` reveals one item per click
-- Use it for staged storytelling
-- `<v-click>` works on single elements
+- Wrap lists in `<v-clicks>` to build toward the punchline
+- Don't default to click-reveals on every bullet
 
 </v-clicks>
 
----
-layout: default
----
-
-# Content slide: default layout
-
-One heading, 3–5 bullets max. **Never walls of text.**
-
-<br>
-
-| Feature | Support |
-| --- | :-: |
-| Speaker notes | ✅ `<!-- comment -->` |
-| Presenter view | ✅ `alt` + click preview |
-| Record camera | ✅ built-in |
-
-<style>
-/* Scoped styles per slide are allowed and encouraged */
-h1 { color: theme('colors.teal.400'); }
-</style>
+<!--
+Notes carry the full sentence you would actually say.
+The blue box is decorative; notes are where analysis lives.
+-->
 
 ---
-layout: quote
+layout: govuk
+title: 'Call-outs, tags and emphasis'
 ---
 
-# "Short memorable quote."
+Patterns to copy:
 
-Attribution / source
+<div class="govuk-grid-2">
+
+<div class="govuk-panel govuk-accent-green">
+  <p class="govuk-panel-title">Success / key finding</p>
+  Green left border (GOV.UK green #00703c).
+</div>
+
+<div class="govuk-panel govuk-accent-red">
+  <p class="govuk-panel-title">Caveat / risk</p>
+  Red left border for warnings (#d4351c).
+</div>
+
+</div>
+
+- <span class="govuk-emph">Emphasis terms</span> use GOV.UK red, bold
+- <span class="govuk-emph-alt">Secondary terms</span> use GOV.UK green, bold
+- Badges: <span class="govuk-tag govuk-tag--yellow">BETA</span> <span class="govuk-tag govuk-tag--green">NEW</span> <span class="govuk-tag govuk-tag--grey">DRAFT</span>
 
 ---
-layout: center
-class: text-center
+layout: govuk-two-cols
+title: 'Comparison: two columns'
 ---
 
-# Centered layout
-
-Use for punchlines, one-liners, and section pivots.
-
----
-layout: two-cols
----
-
-# Code slide
-
-Left: explanation · Right: code (or swap)
+Left column — e.g. the baseline method with its numbers.
 
 ::right::
 
-```ts {2|3-5|all} twoslash
-// Shiki + Twoslash: `|` pipes define click steps
+Right column — e.g. the proposed method: paste method vs result.
+
+<div class="govuk-panel govuk-accent-blue">
+  <p class="govuk-panel-title">How to</p>
+  Content before <code>::right::</code> lands left; content after lands right.
+</div>
+
+---
+layout: govuk
+title: 'Code and syntax'
+---
+
+Left: explanation · right: code — or use `govuk-two-cols` for this too.
+
+```ts {2|3-5|all}
+// `|` pipes define step-by-step highlighting
 const msg = 'highlight this first'
 function demo() {
   return msg.toUpperCase()
 }
 ```
 
-<arrow v-click="[3,4]" x1="310" y1="290" x2="150" y2="240" width="3" color="#564ab1" />
-<!-- Arrows: coordinates in px, v-click range ties reveal to code steps -->
+Icons come from Iconify: <carbon:checkmark class="govuk-check" /> — stick to one collection.
+
+<style>
+.govuk-check { color: #00703c; }
+</style>
 
 ---
-layout: default
+layout: govuk-image-right
+title: 'Image slides'
+image: https://cover.sli.dev
 ---
 
-# Components & icons
+- Set `image:` in frontmatter (local files: put under `public/`, use `/img.png`)
+- Image sits in a light-grey frame, like GOV.UK figure boxes
+- Use `<slot name="right" />` for a caption row instead of an image
 
-Use [Iconify](https://icones.js.org) via `<carbon:name />`, `<mdi:name />`, `<logos:name />`…
+---
+layout: govuk
+title: 'Data slides'
+---
 
-<carbon:campsite class="text-teal-400 text-4xl inline-block" />
+| Service | Support |
+| --- | :-: |
+| Speaker notes | ✅ |
+| Presenter view | ✅ |
+| PDF / PPTX export | ✅ |
 
-<Transform scale="0.9">
-  <p>Wraps content — useful to shrink dense blocks</p>
-</Transform>
+Use the `govuk-table` class for ruled GOV.UK tables; else this default is fine.
 
-<v-drag>Draggable element</v-drag>
+---
+layout: govuk-section
+kicker: '02'
+title: 'Results'
+---
 
-<div grid="~ cols-2 gap-4" class="mt-8">
-  <div class="rounded-lg bg-white/5 p-4"><b>Card pattern</b><br/>small caption text</div>
-  <div class="rounded-lg bg-white/5 p-4"><b>Card pattern</b><br/>small caption text</div>
+---
+layout: govuk
+title: 'Takeaways'
+---
+
+<div class="govuk-panel govuk-accent-green">
+  <p class="govuk-panel-title">The one thing to remember</p>
+  Restate the thesis plainly, with the number that backs it up.
 </div>
 
+- ≤ 3 takeaways, restated plainly
+- Aiming next: <span class="govuk-emph-alt">deadline / venue</span>
+
 ---
-layout: end
+layout: govuk-end
+title: 'Questions?'
+kicker: 'Slides and code: github.com/your-repo'
+author: '@yourhandle · Laboratory'
 ---
 
-# Thanks
-
-Questions?
-
-<div class="abs-br m-6 text-sm opacity-60">@yourhandle</div>
+<!--
+Export: npm run export:pdf → slides.pdf (also pptx, png, spa).
+-->

@@ -1,5 +1,32 @@
 # Slidev syntax quick reference
 
+## The template's own `govuk-*` layouts
+
+Frontmatter keys honoured by these layouts:
+
+| Key | Layouts | Effect |
+| --- | --- | --- |
+| `title:` | all | text in the black band (or big title on cover/section) |
+| `kicker:` | cover, band, section | small eyebrow line / yellow tag (e.g. `'01'`, `'MEETING') |
+| `bandColor:` | band layouts | `blue`\|`green`\|`red` band variant |
+| `image:` | govuk-image-right, govuk-section | right image / full-bleed dimmed photo |
+| `subtitle:`, `meta:`, `author:` | cover, end | cover & closing lines |
+
+```yaml
+---
+layout: govuk-two-cols
+title: 'Method vs baseline'
+---
+
+left...
+
+::right::
+
+right...
+```
+
+Never write `# Heading` inside a govuk layout — use `title:` in the frontmatter.
+
 ## File structure
 
 ```md
