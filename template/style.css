@@ -33,6 +33,34 @@ html, body, #app {
   font-family: var(--govuk-font);
 }
 
+/* GOV.UK decks are light-only: even if dark mode is triggered
+   (pressing `d` / browser preference), keep white slides and
+   dark text so nothing ever goes black-on-black. */
+html.dark, html.dark body, html.dark #app {
+  background: #ffffff !important;
+}
+html.dark .slidev-layout,
+html.dark .slidev-layout h1,
+html.dark .slidev-layout h2,
+html.dark .slidev-layout h3,
+html.dark .slidev-layout p,
+html.dark .slidev-layout li {
+  color: var(--govuk-text) !important;
+  background-color: transparent;
+}
+html.dark .slidev-layout a {
+  color: var(--govuk-link) !important;
+}
+html.dark .slidev-layout code {
+  background-color: var(--govuk-panel-grey) !important;
+  color: var(--govuk-text) !important;
+}
+html.dark .slidev-kbd, html.dark .kbd {
+  background-color: var(--govuk-panel-grey) !important;
+  color: var(--govuk-text) !important;
+}
+/* Band/title colors already force white text via their own rules */
+
 /* Typography: GDS-style — bold, plain, generous line height */
 h1, h2, h3, h4 {
   font-family: var(--govuk-font);
