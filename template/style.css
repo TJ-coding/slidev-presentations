@@ -1,0 +1,38 @@
+/* Global design tokens + tweaks. Loaded on every slide. */
+
+:root {
+  /* -- Design tokens: edit once, applies everywhere -- */
+  --slidev-theme-primary: #5d8cd9; /* accent color for links, highlights */
+  --deck-accent: #5d8cd9;
+  --deck-accent-soft: rgba(93, 140, 217, 0.15);
+}
+
+/* Global background: subtle gradient instead of flat color */
+html, body, #app {
+  background: linear-gradient(160deg, #0f1220 0%, #161a2e 100%) !important;
+}
+
+/* Consistent heading rhythm */
+h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+h2 {
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+/* Bullet markers in accent color */
+.slidev-layout li::marker {
+  color: var(--deck-accent);
+}
+
+/* Card utility (usable from slides via plain class) */
+.deck-card {
+  @apply rounded-xl border border-white/10 bg-white/5 p-4;
+}
+
+/* Small caption utility */
+.deck-caption {
+  @apply text-sm opacity-60 tracking-widest uppercase;
+}
