@@ -1,16 +1,15 @@
 <script setup lang="ts">
-// Page number, bottom-right, grey — like the user's reference decks.
-// Hidden on cover/section slides.
-import { useSlideContext } from '@slidev/client'
-import { computed } from 'vue'
-
-const { $slidev } = useSlideContext()
-const excluded = ['govuk-cover', 'govuk-section', 'govuk-end']
-const layout = computed(() => $slidev.nav.currentLayout.value)
+// Page number, bottom-right, grey — like the reference decks.
+// Hidden on cover/section/end layouts. $nav is auto-provided to global layers.
+const excluded = new Set(['govuk-cover', 'govuk-section', 'govuk-end'])
+const footerOn = ($slidev.configs as Record<string, unknown>).deckFooter !== false
 </script>
 
 <template>
-  <div v-if="layout && !excluded.includes(String(layout))" class="govuk-page-number gov-page-float">
+  <div
+    v-if="footerOn && $nav.currentLayout && !excluded.has(String($nav.currentLayout))"
+    class="gov-page-float"
+  >
     <SlideCurrentNo />
   </div>
 </template>
@@ -21,5 +20,7 @@ const layout = computed(() => $slidev.nav.currentLayout.value)
   right: 1.6rem;
   bottom: 0.8rem;
   font-size: 1rem;
+  color: var(--govuk-secondary);
+  font-variant-numeric: tabular-nums;
 }
 </style>

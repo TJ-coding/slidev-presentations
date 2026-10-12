@@ -18,7 +18,8 @@ case "$FMT" in
     ;;
   *)
     # First playwright chromium run may need: npx playwright install chromium
-    npx slidev export --format "$FMT" --output "slides.$FMT" "$@"
+    # --per-slide: global layers with nav state (page numbers) render correctly
+    npx slidev export --format "$FMT" --output "slides.$FMT" --per-slide "$@"
     echo "✅ Exported → $DIR/slides.$FMT"
     ;;
 esac

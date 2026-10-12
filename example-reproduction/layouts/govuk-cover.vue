@@ -49,6 +49,10 @@ const accent = computed(() => `govuk-tag ${$frontmatter.tagColor ? 'govuk-tag--'
   font-weight: 700;
   margin: 0 0 1.2rem !important;
   letter-spacing: -0.02em;
+  /* Title Case on the cover, as in the reference decks.
+     (CSS capitalises every word; write proper Title Case in the
+     frontmatter `title:` if you want minor words lowercase) */
+  text-transform: capitalize;
 }
 .gov-cover-subtitle {
   font-size: 1.5rem;

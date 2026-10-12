@@ -102,6 +102,13 @@ graph TD
 - `<div class="abs-br m-6">` fixed corner boxes (badges, links).
 - Draggable in dev mode: `<v-drag>` element — writes coordinates into frontmatter.
 
+## Page numbers (global-bottom.vue)
+
+- `global-bottom.vue` renders the bottom-right grey page number via `<SlideCurrentNo />` (hidden on govuk-cover / govuk-section / govuk-end).
+- Global layers use `$nav` / `$slidev` directly — do NOT use `useSlideContext()` there; it is outside slide context and silently fails.
+- Exports MUST pass `--per-slide` or page numbers all render as "1" (nav state is per page only then). The npm scripts and `export.sh` already include it.
+- Disable per deck via frontmatter `deckFooter: false`.
+
 ## Export notes
 
 - `slidev export` → PDF (default), `--format pptx|png|md`

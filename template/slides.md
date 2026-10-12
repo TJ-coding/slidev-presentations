@@ -2,7 +2,7 @@
 # The FIRST frontmatter block is BOTH file-level and the cover slide's.
 theme: default
 colorSchema: light
-title: 'Presentation title, using a sentence if possible'
+title: 'Presentation Title, Using a Sentence If Possible'
 layout: govuk-cover
 subtitle: 'One-sentence outcome: what the audience will know or be able to do'
 kicker: 'MEETING | REGULAR'
