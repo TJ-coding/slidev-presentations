@@ -1,6 +1,6 @@
 ---
 name: slidev-presentation
-description: Create, edit, and export Slidev (Markdown-based) presentations in GOV.UK design style. Use when the user asks to make, update, or polish slides, a deck, a talk, or a presentation (but NOT PowerPoint/.pptx files — use powerpoint-live-editing for those). Covers scaffolding new decks, the govuk-* layouts, Slidev syntax, PDF/PPTX/PNG export, and delegating data figures to headless diagram sub-sessions (d3-diagrams / tikz-diagrams in ~/Projects/diagram-skills).
+description: Create, edit, and export Slidev (Markdown-based) presentations in GOV.UK design style. Use when the user asks to make, update, or polish slides, a deck, a talk, or a presentation (but NOT PowerPoint/.pptx files — use powerpoint-live-editing for those). Covers planning the story and per-slide message/intention BEFORE writing slides, scaffolding new decks, the govuk-* layouts, Slidev syntax, PDF/PPTX/PNG export, and delegating data figures to headless diagram sub-sessions (d3-diagrams / tikz-diagrams in ~/Projects/diagram-skills).
 ---
 
 # Slidev presentations (GOV.UK style)
@@ -25,6 +25,32 @@ relative to this skill's directory).
 2. **Dev loop**: `./scripts/serve.sh <deck-dir>` — detached dev server at http://localhost:3030 (tmux). Edits to `slides.md` hot-reload; iterate by editing the file.
 
 3. **Export**: `./scripts/export.sh <deck-dir> pdf|pptx|png|spa`. PDF is the default deliverable.
+
+## The story plan — mandatory, BEFORE any slide
+
+**Never write or edit a slide before the plan exists and is approved.** The plan is
+`<deck>/plan.md` (ships with every new deck from `template/plan.md`); the method is
+`references/planning.md`. Read it before planning. In short:
+
+1. **Brief first** — audience, duration (→ slide budget), and the exit sentence:
+   *after this talk the audience should believe / do what?* If you can't write it,
+   interview the user before anything else.
+2. **The story** — one paragraph in claims (where it starts, the turn, where it
+   lands) + a question ladder (the question each section answers in the audience's
+   head).
+3. **Slide contract** — one table row per slide: layout, title, **message** (the one
+   claim they take away; usually becomes the slide's `lead:` verbatim) and
+   **intention** (open · signpost · introduce · mechanism · evidence · contrast ·
+   turn · caveat · verdict · ask). Reading the intention column top-to-bottom must
+   *be* the story. Two adjacent slides with the same intention → one is redundant.
+4. **Figures are planned, not improvised** — any row whose evidence is a real figure
+   gets its make-diagram brief written in the plan's figure table; the slide's
+   message is the figure brief's MESSAGE line, verbatim.
+5. **Show the plan and wait for approval** before writing/editing `slides.md`. Then
+   implement the table one slide at a time, in order.
+6. **Plan stays true** — any slide change updates the plan row first, then the
+   slide. Editing an existing deck without a plan: reconstruct `plan.md` first,
+   confirm with the user, then edit.
 
 ## Editing the deck
 
@@ -51,17 +77,20 @@ Read `references/design-guidelines.md` for the doctrine (it is the design contra
 
 ## Quality gate (enforced, not advisory)
 
-Before handing any deck back, run the linter and fix every finding:
+Before handing any deck back, run BOTH and fix every finding:
 ```bash
 ./scripts/lint-deck.py <deck>/slides.md
+./scripts/check-plan.py <deck>
 ```
-It checks: layouts valid, `lead:` present on govuk slides, no `# heading` fighting the band, speaker notes everywhere, bullet/emph/panel budgets, single focal anchor. **Do not deliver a deck that fails lint.**
+lint checks: layouts valid, `lead:` present on govuk slides, no `# heading` fighting the band, speaker notes everywhere, bullet/emph/panel budgets, single focal anchor. check-plan checks: plan.md exists, every slide has a planned row (title match), count agrees. **Do not deliver a deck that fails either.**
 
 ## Quality checklist before handing a deck back
 
 1. lint passes: `./scripts/lint-deck.py <deck>/slides.md`
-2. `./scripts/export.sh <deck-dir> pdf` succeeds with no missing-image warnings.
-3. Every `image:` path exists (local files under `public/`). Every delegated figure
+2. plan passes: `./scripts/check-plan.py <deck>` — story + per-slide message/intention
+   in `plan.md` were approved before the slides were written, and the two stay in sync.
+3. `./scripts/export.sh <deck-dir> pdf` succeeds with no missing-image warnings.
+4. Every `image:` path exists (local files under `public/`). Every delegated figure
    exists at `/diagrams/<slug>/diagram.png` and was produced by a diagram sub-session
    (`references/diagrams.md`), never hand-edited SVG.
-4. Slide count sane: ~1–2 min per slide.
+5. Slide count sane: ~1–2 min per slide.
