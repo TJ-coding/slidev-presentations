@@ -41,12 +41,12 @@ The reading order, itself shown in reading order:
     <span class="gov-node-title">Band</span>
     <span class="gov-node-sub">assertion ≤ 12 words</span>
   </span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node gov-node--accent-green">
     <span class="gov-node-title">Lead</span>
     <span class="gov-node-sub">takeaway, one sentence</span>
   </span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node gov-node--accent-blue">
     <span class="gov-node-title">Body</span>
     <span class="gov-node-sub">evidence pattern</span>
@@ -203,8 +203,17 @@ lead: 'Bottom lines get a stress box; ▼ means therefore; → means input/outpu
   <span class="gov-node"><span class="gov-node-title">x</span><span class="gov-node-sub">source</span></span>
   <span class="gov-io">
     <span class="gov-io-value">0.7</span>
-    <span class="gov-io-arrow">→</span>
+    <span class="gov-io-line"></span>
     <span class="gov-io-label">utility score</span>
+  </span>
+  <span class="gov-node gov-node--icon gov-node--accent-green">
+    <carbon:model class="gov-node-icon" />
+    <span class="gov-node-sub">Utility Model</span>
+  </span>
+  <span class="gov-io gov-io--red">
+    <span class="gov-io-value">risk</span>
+    <span class="gov-io-line"></span>
+    <span class="gov-io-label">select argmin</span>
   </span>
   <span class="gov-node"><span class="gov-node-title">ŷ</span><span class="gov-node-sub">hypothesis</span></span>
 </div>

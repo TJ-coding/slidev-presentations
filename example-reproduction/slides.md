@@ -38,16 +38,22 @@ lead: 'Score each sampled translation against gold references — pick the lowes
     <span class="gov-node-sub">source x</span>
   </span>
   <span class="gov-io">
-    <span class="gov-io-value">samples ŷ₁..ŷ₃</span>
-    <span class="gov-io-arrow">→</span>
-    <span class="gov-io-label">translation model</span>
+    <span class="gov-io-value">samples 3</span>
+    <span class="gov-io-line"></span>
+    <span class="gov-io-label">input sequence</span>
   </span>
-  <span class="gov-node">
-    <span class="gov-node-title">Hello</span>
-    <span class="gov-node-sub">ŷ₁</span>
+  <span class="gov-node gov-node--icon">
+    <carbon:machine-learning class="gov-node-icon" />
+    <span class="gov-node-sub">Translation Model</span>
   </span>
-  <span class="gov-node"><span class="gov-node-title">Hi</span><span class="gov-node-sub">ŷ₂</span></span>
-  <span class="gov-node"><span class="gov-node-title">Hey</span><span class="gov-node-sub">ŷ₃</span></span>
+  <span class="gov-io">
+    <span class="gov-io-value">Hello · Hi · Hey</span>
+    <span class="gov-io-line"></span>
+    <span class="gov-io-label">candidates ŷ</span>
+  </span>
+  <span class="gov-node"><span class="gov-node-title">ŷ₁</span><span class="gov-node-sub">Hello</span></span>
+  <span class="gov-node"><span class="gov-node-title">ŷ₂</span><span class="gov-node-sub">Hi</span></span>
+  <span class="gov-node"><span class="gov-node-title">ŷ₃</span><span class="gov-node-sub">Hey</span></span>
 </div>
 
 <table class="gov-matrix">
@@ -152,11 +158,11 @@ lead: 'One dot product per pair — no LLM call inside the score matrix.'
 
 <div class="gov-flow">
   <span class="gov-node"><span class="gov-node-title">1</span><span class="gov-node-sub">input sequence</span></span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node"><span class="gov-node-title">2</span><span class="gov-node-sub">hypothesis encoding</span></span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node"><span class="gov-node-title">3</span><span class="gov-node-sub">pseudo-ref encoding</span></span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node"><span class="gov-node-title">4</span><span class="gov-node-sub">score matrix</span></span>
 </div>
 
@@ -191,12 +197,12 @@ lead: 'A linear-order utility for MBR; ablations and timing still open.'
     <span class="gov-node-title">Fix data</span>
     <span class="gov-node-sub">uniform distribution</span>
   </span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node">
     <span class="gov-node-title">Ablate</span>
     <span class="gov-node-sub">similarity fn · timing</span>
   </span>
-  <span class="gov-arrow">→</span>
+  <span class="gov-connector"></span>
   <span class="gov-node gov-node--accent-green">
     <span class="gov-node-title">ARR</span>
     <span class="gov-node-sub">next submission</span>

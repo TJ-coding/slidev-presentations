@@ -60,55 +60,39 @@ Budgets: ≤1 anchor, ≤2 emph spans, ≤2 panels, ≤5 bullets — checked by
 
 Reach for these BEFORE writing bullets. Full doctrine: design-guidelines.md.
 
+Node types: **components** (models, metrics, pipelines) are drawn as ICONS —
+`gov-node--icon` + any carbon/ph icon; **values** (data: `こんにちは`, `ŷ₁`, scores)
+are bordered `gov-node` boxes.
+
 ```html
-<!-- pipeline: nodes + arrows; blue marks the new component -->
+<!-- pipeline: wide connectors, value ON TOP / semantic UNDER, model as icon -->
 <div class="gov-flow">
-  <span class="gov-node"><span class="gov-node-title">input</span><span class="gov-node-sub">x</span></span>
-  <span class="gov-arrow">→</span>
-  <span class="gov-node gov-node--accent-blue"><span class="gov-node-title">model</span><span class="gov-node-sub">samples</span></span>
-  <span class="gov-arrow">→</span>
-  <span class="gov-node"><span class="gov-node-title">out</span><span class="gov-node-sub">ŷ₁</span></span>
+  <span class="gov-node"><span class="gov-node-title">こんにちは</span><span class="gov-node-sub">source x</span></span>
+  <span class="gov-io">
+    <span class="gov-io-value">samples 3</span>
+    <span class="gov-io-line"></span>
+    <span class="gov-io-label">input sequence</span>
+  </span>
+  <span class="gov-node gov-node--icon">
+    <carbon:machine-learning class="gov-node-icon" />
+    <span class="gov-node-sub">Translation Model</span>
+  </span>
+  <span class="gov-io">
+    <span class="gov-io-value">Hello · Hi · Hey</span>
+    <span class="gov-io-line"></span>
+    <span class="gov-io-label">candidates ŷ</span>
+  </span>
 </div>
 
-<!-- pair scores: matrix with winner cells (`.gov-matrix-win`) and legend -->
-<table class="gov-matrix">
-  <tbody>
-  <tr><th class="gov-matrix-corner"></th><th>y₁</th><th>R(ŷ)</th></tr>
-  <tr><th>ŷ₁</th><td>u₁,₁</td><td class="gov-matrix-win">0.17</td></tr>
-  </tbody>
-</table>
-<p class="gov-legend"><span class="lg-red">hypothesis</span><span class="lg-green">selected</span></p>
+<!-- wide connector between numbered steps (no data) -->
+<span class="gov-connector"></span>
 
-<!-- "X beats Y": two big numbers, good green / bad red -->
-<div class="gov-contrast">
-  <div class="gov-bignum gov-bignum--bad"><span class="gov-bignum-n">O(n²)</span><span class="gov-bignum-label">pairs</span></div>
-  <div class="gov-bignum gov-bignum--good"><span class="gov-bignum-n">O(n)</span><span class="gov-bignum-label">items</span></div>
-</div>
-
-<!-- bottom line: stress box, ▼ therefore, consequence -->
-<div class="gov-stress">
-  <div class="gov-stress-head"><span>Issue:</span> <span class="gov-stress-value--red">O(n²)</span></div>
-  <div class="gov-stress-body">Quadratic Time Complexity</div>
-</div>
-<div class="gov-therefore gov-therefore--red">▼</div>
-<div class="gov-consequence gov-consequence--dark">Extremely Slow</div>
-
-<!-- I/O arrow: value on top, semantic label under (→ ONLY means input/output) -->
-<span class="gov-io">
-  <span class="gov-io-value">0.7</span>
-  <span class="gov-io-arrow">→</span>
-  <span class="gov-io-label">utility score</span>
-</span>
-
-<!-- labelled arithmetic: values big, semantic labels under each -->
-<div class="gov-eq">
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--red">128</span><span class="gov-eq-label"># hypothesis</span></span>
-  <span class="gov-eq-op">+</span>
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--green">128</span><span class="gov-eq-label"># reference</span></span>
-  <span class="gov-eq-op">=</span>
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--dark">256</span><span class="gov-eq-label"># utility calls</span></span>
-</div>
+<!-- colour variants: gov-io--red / gov-io--green, gov-node--accent-* -->
 ```
+
+Icon sets bundled offline: `carbon:*` and `ph:*` (browse icones.js.org for names,
+e.g. `carbon:machine-learning`, `carbon:model`, `carbon:chat-bot`,
+`carbon:translate`, `carbon:chart-network`, `ph:graph`).
 
 Lint warns on slides with >35 words or ≥4 bullets and NO diagram — those must be
 redrawn, not reworded.

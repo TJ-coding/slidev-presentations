@@ -37,7 +37,11 @@ lead.
 
 | The idea is… | Draw it as |
 | --- | --- |
-| a pipeline / data flow / algorithm | `gov-flow` — nodes + arrows (blue for the new component) |
+| a **component** (model, metric, module) | an ICON: `gov-node--icon` + `carbon:*`/`ph:*` icon, caption under it — never a titled word-box |
+| a **value** (input, output, candidate) | a bordered `gov-node` chip: value title + grey qualifier |
+| a pipeline / data flow / algorithm | `gov-flow` — nodes + **wide connectors** (line + arrowhead that fills the gap); model-like stages are icon nodes (`gov-node--icon` + carbon/ph icon), values are bordered `gov-node` chips |
+| an input/output between two nodes | `gov-io` — wide line + arrowhead, **value on top, semantic label under** |
+| a step→step transition with no data | `gov-connector` plain wide line |
 | pairwise scores / alternatives × references | `gov-matrix` table, winning cell `.gov-matrix-win`, red for losers |
 | "X beats Y" / complexity / before-after | `gov-contrast` with `gov-bignum` (green = better, red = worse) |
 | an abstract flow too irregular to box | `mermaid` diagram |
@@ -45,10 +49,10 @@ lead.
 | a single headline statistic | the number IS the lead; no box, no table |
 | a bottom line / verdict ("Issue:", "Aim:") | `gov-stress` box + ▼ `gov-therefore` + consequence |
 | arithmetic behind a claim (128 + 128 = 256) | `gov-eq` labelled equation row |
-| an input/output between two nodes | `gov-io` — **value on top, semantic label under the arrow** |
 
 Labels inside nodes are data (entity names, symbols like ŷ, 0.7) — prose moves to
-speaker notes or a single grey `govuk-caption` line.
+speaker notes or a single grey `govuk-caption` line. Components get shapes/icons;
+values get boxes. Nothing on a diagram slide exists without a structural job.
 
 ## Connectors carry meaning — never mix them
 
