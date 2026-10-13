@@ -240,11 +240,27 @@ a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-node--icon.gov-node--accent-blue .gov-node-icon { color: var(--govuk-link); }
 .gov-node--icon .gov-node-sub { margin-top: 0.5rem; }
 
-/* Logical consequence: ▼ = "therefore". NEVER inside a data pipeline. */
-.gov-therefore { text-align: center; font-size: 2.2rem; line-height: 1; margin: 0.4rem 0 0.2rem; color: var(--govuk-text); }
-.gov-therefore--red { color: var(--govuk-red); }
-.gov-therefore--green { color: var(--govuk-green); }
-.gov-consequence { text-align: center; font-weight: 700; font-size: 1.15rem; margin: 0 0 0.8rem; }
+/* Logical consequence: wide ▼ triangle = "therefore". NEVER inside a data
+   pipeline. Width ~2× height, spanning under the box above. */
+.gov-therefore {
+  width: 0;
+  height: 0;
+  border-left: 4.5rem solid transparent;
+  border-right: 4.5rem solid transparent;
+  border-top: 2.1rem solid var(--govuk-text);
+  margin: 0.6rem auto 0.5rem;
+}
+.gov-therefore--red { border-top-color: var(--govuk-red); }
+.gov-therefore--green { border-top-color: var(--govuk-green); }
+
+/* Consequence line under the triangle */
+.gov-consequence {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin: 0 0 0.8rem;
+  color: var(--govuk-text);
+}
 .gov-consequence--red { color: var(--govuk-red); }
 .gov-consequence--green { color: var(--govuk-green); }
 .gov-consequence--dark { color: var(--govuk-text); }
@@ -259,27 +275,31 @@ a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-eq-value--green { color: var(--govuk-green); }
 .gov-eq-value--dark { color: var(--govuk-text); }
 
-/* Bottom line: navy band "Label: value", qualifier line, ▼ to consequence */
-.gov-stress { margin: 0.8rem 0; }
+/* Bottom line: thick navy band "Label: value", thick-bordered qualifier line,
+   wide ▼ triangle to the consequence. Bold and blocky — this is the point
+   of the talk. */
+.gov-stress { margin: 1rem 0; }
 .gov-stress-head {
   background: var(--govuk-text);
   color: #fff;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
-  border: 2px solid var(--govuk-text);
-  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 0.6rem 1.1rem;
+  border: 4px solid var(--govuk-text);
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+.gov-stress-body {
+  background: #fff;
+  color: var(--govuk-text);
+  border: 4px solid var(--govuk-text);
+  border-top: none;
+  padding: 0.6rem 1.1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
 }
 .gov-stress-value--red { color: #ff8a75; }
 .gov-stress-value--green { color: #8ce0b0; }
 .gov-stress-value--blue { color: #a6cbff; }
-.gov-stress-body {
-  background: #fff;
-  color: var(--govuk-text);
-  border: 2px solid var(--govuk-text);
-  border-top: none;
-  padding: 0.5rem 1rem;
-  font-weight: 700;
-}
 
 /* Big-number contrast: the whole argument as two numbers */
 .gov-contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }

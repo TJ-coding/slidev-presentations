@@ -61,7 +61,7 @@ The reference decks use three distinct connector types, each with a fixed job:
 | Mark | Means | Form |
 | --- | --- | --- |
 | `→` | **input / output** — data flows through the pipeline | `gov-io` with the actual value on top of the arrow and the semantic name of the value under it (e.g. `0.7` / "utility score", `x = こんにちは` / "source sequence") |
-| `▼` | **therefore / leads to** — logical consequence | `gov-therefore` triangle + `gov-consequence` line |
+| `▼` | **therefore / leads to** — logical consequence | `gov-therefore` — wide CSS triangle ≈2× height in width (not a glyph), colour-matched `gov-therefore--red/green`, + `gov-consequence` line |
 | `+ = ×` | arithmetic relation | `gov-eq` row: operand values big, semantic labels above? **below**, in grey |
 
 Arrows are reserved for data; using → for "therefore" is banned (that's ▼), and a
@@ -69,11 +69,13 @@ Arrows are reserved for data; using → for "therefore" is banned (that's ▼), 
 
 ## The stress box — how bottom lines get said
 
-The reference decks' verdicts are `gov-stress` boxes: a solid band carrying
-`LABEL: value` (label white, value in accent — Issue/red, Aim/green, Method/blue),
-a bold qualifier line below in the bordered body, then a `gov-therefore` ▼ to the
-consequence. Use for the 2–4 claims the talk exists to defend; colour alone
-carries the verdict (dark = problem, red/green = direction of the fix).
+The reference decks' verdicts are `gov-stress` boxes, drawn blocky: **4px
+borders, weight-800 type**. A solid navy band carries `LABEL: value` (label
+white, value in accent — Issue/red, Aim/green, Method/blue); a bold qualifier
+line sits in the bordered body below; then a **wide CSS triangle** (`gov-therefore`,
+~2× as wide as tall, colour-matched) down to the `gov-consequence` line. Use for
+the 2–4 claims the talk exists to defend; the consequence colour alone carries
+the verdict (dark = problem, red/green = direction of the fix).
 
 ## The removal law
 

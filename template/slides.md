@@ -195,8 +195,8 @@ scale claims are gov-contrast bignums.
 
 ---
 layout: govuk
-title: 'Pattern: verdict & connectors'
-lead: 'Bottom lines get a stress box; ▼ means therefore; → means input/output.'
+title: 'Pattern: verdict & triangle'
+lead: 'Bottom lines get a thick stress box; a wide ▼ means therefore.'
 ---
 
 <div class="gov-flow">
@@ -218,14 +218,6 @@ lead: 'Bottom lines get a stress box; ▼ means therefore; → means input/outpu
   <span class="gov-node"><span class="gov-node-title">ŷ</span><span class="gov-node-sub">hypothesis</span></span>
 </div>
 
-<div class="gov-eq">
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--red">128</span><span class="gov-eq-label"># hypothesis</span></span>
-  <span class="gov-eq-op">+</span>
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--green">128</span><span class="gov-eq-label"># reference</span></span>
-  <span class="gov-eq-op">=</span>
-  <span class="gov-eq-item"><span class="gov-eq-value gov-eq-value--dark">256</span><span class="gov-eq-label"># utility calls</span></span>
-</div>
-
 <div class="gov-stress">
   <div class="gov-stress-head"><span>Issue:</span> <span class="gov-stress-value--red">O(n²)</span></div>
   <div class="gov-stress-body">Quadratic Time Complexity</div>
@@ -235,8 +227,9 @@ lead: 'Bottom lines get a stress box; ▼ means therefore; → means input/outpu
 
 <!--
 Connector doctrine: → = data (value top / semantic label under), ▼ = therefore,
-+ = × = arithmetic. Stress box: navy band "Label: value", qualifier line,
-▼, consequence. Two of these boxes max per slide.
++ = × are gov-eq (see the KGC reproduction). Stress box: 4px borders, 800-weight
+text, navy band "Label: value", qualifier line, wide ▼, consequence.
+The wide triangle spans ~2× its height. Two boxes max per slide.
 -->
 
 ---
