@@ -148,6 +148,25 @@ P12 original: two columns with bullet lists each ending in a verdict box.
 Now: two STRESS boxes in their exact form — label + value on the navy band,
 qualifier below, ▼ therefore, consequence line. Colour of the consequence
 carries the verdict (dark = slow problem, red = fast win, matching the ref deck).
+The next slide is the evidence for this claim: the measured scaling gap.
+-->
+
+---
+layout: govuk
+title: 'The scaling gap'
+lead: 'At 128 hypotheses the cross-encoder makes <span class="govuk-emph">64×</span> more utility calls.'
+---
+
+<img src="/diagrams/scaling/diagram.png" class="mx-auto max-h-[22rem] w-auto" style="object-fit:contain" />
+
+<!--
+Figure produced by a d3-diagrams sub-session (public/diagrams/scaling/).
+Log-log plot: cross-encoder n² (orange, dashed = the thing being replaced)
+vs bi-encoder 2n (blue). The n=128 callout carries the verdict — the slide is
+its own takeaway, so no takeaway box. Speaker notes: the quadratic term is the
+number of hypothesis×reference utility evaluations; the bi-encoder amortises
+the expensive model over 2 encodings per item and scores pairs with dot
+products, which is why the line stays flat on this scale.
 -->
 
 ---
@@ -156,34 +175,16 @@ title: 'Architecture'
 lead: 'One dot product per pair — no LLM call inside the score matrix.'
 ---
 
-<div class="gov-flow">
-  <span class="gov-node"><span class="gov-node-title">1</span><span class="gov-node-sub">input sequence</span></span>
-  <span class="gov-connector"></span>
-  <span class="gov-node"><span class="gov-node-title">2</span><span class="gov-node-sub">hypothesis encoding</span></span>
-  <span class="gov-connector"></span>
-  <span class="gov-node"><span class="gov-node-title">3</span><span class="gov-node-sub">pseudo-ref encoding</span></span>
-  <span class="gov-connector"></span>
-  <span class="gov-node"><span class="gov-node-title">4</span><span class="gov-node-sub">score matrix</span></span>
-</div>
-
-<div class="gov-contrast">
-  <div class="gov-bignum gov-bignum--bad">
-    <span class="gov-bignum-n">O(n²)</span>
-    <span class="gov-bignum-label">cross-encoder pairs</span>
-  </div>
-  <div class="gov-bignum gov-bignum--good">
-    <span class="gov-bignum-n">O(n)</span>
-    <span class="gov-bignum-label">2 encodings per item</span>
-  </div>
-</div>
-
-<p class="govuk-caption" style="text-align:center;">
-  u<sub>i,j</sub> = ŷ<sub>i</sub> · y<sub>j</sub> — one dot product, no per-pair inference.
-</p>
+<img src="/diagrams/biencoder/diagram.png" class="mx-auto max-h-[21rem] w-auto" style="object-fit:contain" />
 
 <!--
 P18 original: numbered list + score matrix + complexity box.
-Now: the pipeline itself is the numbered flow; the payoff is two numbers.
+The figure (d3-diagrams sub-session, public/diagrams/biencoder/) replaces the
+numbered flow AND the O(n²)/O(n) number pair — the scaling slide now carries
+that payoff, so this slide shows only the mechanism: shared encoder, two
+embeddings per item, dot-product grid u_ij = e(ŷᵢ)·e(yⱼ), green = row max.
+Prose in notes: encoding is amortised (one pass per item); scoring is pure
+linear algebra, so the matrix is hostable cheaply and embarrassingly parallel.
 -->
 
 ---

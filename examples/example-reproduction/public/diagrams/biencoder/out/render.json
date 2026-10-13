@@ -1,0 +1,33 @@
+{
+  "entry": "/Users/tomoyuki-j/Projects/slidev-presentations/examples/example-reproduction/public/diagrams/biencoder/diagram.js",
+  "out": "/Users/tomoyuki-j/Projects/slidev-presentations/examples/example-reproduction/public/diagrams/biencoder/out",
+  "scale": 2,
+  "themes": {
+    "light": {
+      "meta": {
+        "width": 1400,
+        "height": 700,
+        "title": "Bi-encoder score matrix",
+        "bbox": {
+          "x": 40,
+          "y": 20,
+          "width": 1320,
+          "height": 652
+        }
+      },
+      "svg": "/Users/tomoyuki-j/Projects/slidev-presentations/examples/example-reproduction/public/diagrams/biencoder/out/diagram.svg",
+      "png": "/Users/tomoyuki-j/Projects/slidev-presentations/examples/example-reproduction/public/diagrams/biencoder/out/diagram.png"
+    }
+  },
+  "started": "2026-10-13T06:48:25.202Z",
+  "files": {
+    "diagram.svg": {
+      "bytes": 16407,
+      "sha256": "16ba9a12dd0e043b"
+    },
+    "diagram.png": {
+      "bytes": 289582,
+      "sha256": "fc1e579cfa27764b"
+    }
+  }
+}
