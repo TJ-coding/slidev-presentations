@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# commit-msg — merge/commit gate for the two-branch review policy.
+#
+# Runs for EVERY commit created in this repo (direct commits and merge
+# commits alike), so it enforces:
+#
+#   main    : every commit needs   "Human-Review: approved <reviewer>"
+#   ai-main : every commit needs   "AI-Review: approved <agent>"
+#   other branches: no gate.
+#
+# Consequence: direct commits to the gated branches are blocked too — the
+# policy wants all work to go through feature branches and `git merge --no-ff`.
+# Fast-forward merges create no commit and bypass any hook, so always merge
+# with --no-ff. `--no-verify` defeats the gate and violates the policy.
+#
+# One-step gated merge:
+#   git switch main
+#   git merge --no-ff feature/x -m "Merge feature/x" \
+#     -m "Human-Review: approved <your-name>"
+set -euo pipefail
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+[ -f "$1" ] || { echo "merge-gate: no commit message file" >&2; exit 1; }
+MSG="$(cat "$1")"
+
+case "$BRANCH" in
+  main)
+    if ! grep -Eiq "^Human-Review:[[:space:]]*approved[[:space:]]+" "$1"; then
+      echo "✋ main is human-gated: every commit (incl. merge commits) needs a" >&2
+      echo "   human approval trailer:" >&2
+      echo "     git merge --no-ff <branch> -m 'Merge <branch>' -m 'Human-Review: approved <your-name>'" >&2
+      echo "   (direct commits to main are not allowed — use a feature branch)" >&2
+      exit 1
+    fi
+    ;;
+  ai-main)
+    if ! grep -Eiq "^AI-Review:[[:space:]]*approved[[:space:]]+" "$1"; then
+      echo "✋ ai-main is AI-gated: every commit (incl. merge commits) needs an" >&2
+      echo "   AI approval trailer:" >&2
+      echo "     git merge --no-ff <branch> -m 'Merge <branch>' -m 'AI-Review: approved <agent + session id>'" >&2
+      echo "   (direct commits to ai-main are not allowed — use a feature branch)" >&2
+      exit 1
+    fi
+    ;;
+esac
+exit 0
