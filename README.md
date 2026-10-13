@@ -37,6 +37,17 @@ session spawns a focused headless pi sub-session driven by the skills in
 `public/diagrams/<slug>/`. See `skills/slidev-presentation/references/diagrams.md`
 and the matching contract in `~/Projects/diagram-skills/docs/session-contract.md`.
 
+## Branch policy
+
+Two gated integration branches (see [MERGE-POLICY.md](MERGE-POLICY.md)):
+
+- **`main`** — merges require a recorded **human** review (`Human-Review: approved …`).
+- **`ai-main`** — merges require a recorded **AI** review (`AI-Review: approved …`).
+
+No direct commits to either; work on feature branches and merge with `--no-ff`.
+The `pre-merge-commit` hook (`.githooks/`, activated via `core.hooksPath`) blocks
+under-gated merges on both branches.
+
 ## Quick start
 
 ```bash
