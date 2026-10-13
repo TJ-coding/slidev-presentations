@@ -1,6 +1,6 @@
 ---
 name: slidev-presentation
-description: Create, edit, and export Slidev (Markdown-based) presentations in GOV.UK design style using the template at ~/Projects/slidev-presentations/template. Use when the user asks to make, update, or polish slides, a deck, a talk, or a presentation (but NOT PowerPoint/.pptx files — use powerpoint-live-editing for those). Covers scaffolding new decks, the govuk-* layouts, Slidev syntax, and PDF/PPTX/PNG export.
+description: Create, edit, and export Slidev (Markdown-based) presentations in GOV.UK design style. Use when the user asks to make, update, or polish slides, a deck, a talk, or a presentation (but NOT PowerPoint/.pptx files — use powerpoint-live-editing for those). Covers scaffolding new decks, the govuk-* layouts, Slidev syntax, PDF/PPTX/PNG export, and delegating data figures to headless diagram sub-sessions (d3-diagrams / tikz-diagrams in ~/Projects/diagram-skills).
 ---
 
 # Slidev presentations (GOV.UK style)
@@ -12,7 +12,10 @@ description: Create, edit, and export Slidev (Markdown-based) presentations in G
 
 ## Setup
 
-Template lives at `~/Projects/slidev-presentations/template`; reference sample decks in `~/Projects/slidev-presentations/example-reference/` (skim relevant pages to match the user's usual style). Helpers in `scripts/` (resolve relative to this skill's directory).
+This skill is self-contained. Template is `template/` inside this skill directory;
+reference sample decks in `~/Projects/slidev-presentations/example-reference/` (skim
+relevant pages to match the user's usual style). Helpers in `scripts/` (resolve
+relative to this skill's directory).
 
 1. **Never edit the template in place for a new talk.** Copy it first:
    ```bash
@@ -39,7 +42,7 @@ All content lives in `slides.md` (+ `layouts/`, `components/`, `snippets/`). Che
 Read `references/design-guidelines.md` for the doctrine (it is the design contract of this framework). In short:
 
 - **One focal point per slide.** Every content slide states its takeaway in the big `lead:` line right under the band. If you cannot write the takeaway as one sentence, the slide is really two slides.
-- **Show, don't tell.** If the idea has structure, DRAW it before writing about it: pipelines → `gov-flow` (wide connectors; components as icon nodes, values as chips), pairwise scores → `gov-matrix`, "X beats Y" / complexity → `gov-contrast`+`gov-bignum`, irregular flows → `mermaid`. Text only LABELS the diagram; prose goes to speaker notes. Then delete everything the diagram already says.
+- **Show, don't tell.** If the idea has structure, DRAW it before writing about it: pipelines → `gov-flow` (wide connectors; components as icon nodes, values as chips), pairwise scores → `gov-matrix`, "X beats Y" / complexity → `gov-contrast`+`gov-bignum`, irregular flows → `mermaid`. For real figures — data plots, precise schematics, anything mermaid can't draw well — spawn a **diagram sub-session** (see `references/diagrams.md`): `./scripts/make-diagram.sh <deck-dir> d3|tikz <slug> "message | notes"` builds it into `<deck>/public/diagrams/<slug>/` and you embed `/diagrams/<slug>/diagram.png`. Text only LABELS the diagram; prose goes to speaker notes. Then delete everything the diagram already says.
 - **Reading order, always explicit.** Sequential content → `govuk-steps` or `gov-flow` (never symmetric quadrants). Comparison → `govuk-two-cols` only with distinct roles (left = the argument, right = the evidence). Everything else → single-column flow.
 - **Connectors carry meaning — never mix them.** `→` is reserved for input/output and always takes the actual value on top and the semantic label under it (`gov-io`); `▼` means "therefore"; `+ = ×` are `gov-eq`. Never use an arrow for logical consequence.
 - **Emphasis budget.** ≤2 `govuk-emph`/`govuk-emph-alt` spans per slide; ≤2 `govuk-panel` boxes; at most ONE anchor (`govuk-lead` or `govuk-takeaway`). Bottom-line verdicts belong in `gov-stress` boxes (label white + value accent on navy, qualifier below, ▼ to the consequence) — that's the "Issue:" / "Aim:" pattern from the reference decks.
@@ -58,5 +61,7 @@ It checks: layouts valid, `lead:` present on govuk slides, no `# heading` fighti
 
 1. lint passes: `./scripts/lint-deck.py <deck>/slides.md`
 2. `./scripts/export.sh <deck-dir> pdf` succeeds with no missing-image warnings.
-3. Every `image:` path exists (local files under `public/`).
+3. Every `image:` path exists (local files under `public/`). Every delegated figure
+   exists at `/diagrams/<slug>/diagram.png` and was produced by a diagram sub-session
+   (`references/diagrams.md`), never hand-edited SVG.
 4. Slide count sane: ~1–2 min per slide.

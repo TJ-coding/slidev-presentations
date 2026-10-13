@@ -3,28 +3,39 @@
 GOV.UK design-style Slidev template + agent skill for making presentations.
 
 ```
-template/                  The Slidev deck template (copy, never edit in place)
-├── slides.md              Showcase deck — every slide demonstrates a pattern
-├── style.css              GOV.UK design tokens (palette, fonts, components)
-├── global-bottom.vue      Grey page number, bottom-right, on every content slide
-├── layouts/               Custom layouts: govuk-cover, govuk, govuk-two-cols,
-│                          govuk-image-right, govuk-section, govuk-end
-├── components/            Drop-in Vue components for decks
-├── snippets/              Code snippets importable from slides.md
-└── public/                Static assets (local images referenced as /img.png)
-
-example-reference/         Sample deck of the user's usual presentations
-
-skills/slidev-presentation/   Agent skill (Agent Skills spec)
+skills/slidev-presentation/   Agent skill (Agent Skills spec) — self-contained
 ├── SKILL.md                 Routing + workflow instructions
+├── template/                The Slidev deck template (copy, never edit in place)
+│   ├── slides.md            Showcase deck — every slide demonstrates a pattern
+│   ├── style.css            GOV.UK design tokens (palette, fonts, components)
+│   ├── global-bottom.vue    Grey page number, bottom-right, on every content slide
+│   ├── layouts/             Custom layouts: govuk-cover, govuk, govuk-two-cols,
+│   │                        govuk-image-right, govuk-section, govuk-end
+│   ├── components/          Drop-in Vue components for decks
+│   ├── snippets/            Code snippets importable from slides.md
+│   └── public/              Static assets (local images referenced as /img.png)
 ├── references/
 │   ├── slidev-syntax.md     Syntax cheat sheet incl. govuk-* layouts
-│   └── design-guidelines.md GOV.UK palette, typography, voice, structure
+│   ├── design-guidelines.md GOV.UK palette, typography, voice, structure
+│   └── diagrams.md          Contract for delegating figures to diagram sub-sessions
 └── scripts/
     ├── new-deck.sh          Scaffold a new deck from template
     ├── serve.sh             Detached dev server (tmux)
-    └── export.sh            PDF / PPTX / PNG / SPA export
+    ├── export.sh            PDF / PPTX / PNG / SPA export
+    ├── lint-deck.py         Enforces the design doctrine (quality gate)
+    └── make-diagram.sh      Spawn a headless d3/tikz sub-session → public/diagrams/
+
+examples/                    Worked decks produced with this skill
+└── example-reproduction/    Reproduction of the reference deck
+
+example-reference/           Sample deck of the user's usual presentations
 ```
+
+Data figures (plots, precise schematics) are **not** drawn inside the skill: the
+session spawns a focused headless pi sub-session driven by the skills in
+`~/Projects/diagram-skills`, which writes the figure into the deck's
+`public/diagrams/<slug>/`. See `skills/slidev-presentation/references/diagrams.md`
+and the matching contract in `~/Projects/diagram-skills/docs/session-contract.md`.
 
 ## Quick start
 

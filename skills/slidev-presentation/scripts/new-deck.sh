@@ -3,7 +3,7 @@
 # Usage: new-deck.sh "Talk Title" [target-dir]
 set -euo pipefail
 
-TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../../../template && pwd)"
+TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../template && pwd)"
 TITLE="${1:?Usage: new-deck.sh \"Talk Title\" [target-dir]}"
 TARGET="${2:-$(pwd)/$(echo "$TITLE" | tr '[:upper:] ' '[:lower:]-')}"
 DECK_NAME="$(basename "$TARGET")"
