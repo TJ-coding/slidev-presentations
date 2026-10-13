@@ -7,6 +7,7 @@ skills/slidev-presentation/   Agent skill (Agent Skills spec) — self-contained
 ├── SKILL.md                 Routing + workflow instructions
 ├── template/                The Slidev deck template (copy, never edit in place)
 │   ├── slides.md            Showcase deck — every slide demonstrates a pattern
+│   ├── plan.md              Deck-plan skeleton (story + per-slide message/intention)
 │   ├── style.css            GOV.UK design tokens (palette, fonts, components)
 │   ├── global-bottom.vue    Grey page number, bottom-right, on every content slide
 │   ├── layouts/             Custom layouts: govuk-cover, govuk, govuk-two-cols,
@@ -15,6 +16,7 @@ skills/slidev-presentation/   Agent skill (Agent Skills spec) — self-contained
 │   ├── snippets/            Code snippets importable from slides.md
 │   └── public/              Static assets (local images referenced as /img.png)
 ├── references/
+│   ├── planning.md          Plan-first method: story spine + slide contract
 │   ├── slidev-syntax.md     Syntax cheat sheet incl. govuk-* layouts
 │   ├── design-guidelines.md GOV.UK palette, typography, voice, structure
 │   └── diagrams.md          Contract for delegating figures to diagram sub-sessions
@@ -23,6 +25,7 @@ skills/slidev-presentation/   Agent skill (Agent Skills spec) — self-contained
     ├── serve.sh             Detached dev server (tmux)
     ├── export.sh            PDF / PPTX / PNG / SPA export
     ├── lint-deck.py         Enforces the design doctrine (quality gate)
+    ├── check-plan.py        Enforces plan/deck sync (plan-first gate)
     └── make-diagram.sh      Spawn a headless d3/tikz sub-session → public/diagrams/
 
 examples/                    Worked decks produced with this skill
