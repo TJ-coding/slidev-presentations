@@ -2,7 +2,7 @@
 
 > The plan is the contract; `slides.md` implements it. Write this BEFORE any slide,
 > get it approved, and keep it true — update the row first, then the slide.
-> Method: `skills/slidev-presentation/references/planning.md`.
+> Method: `references/planning.md` (in the skill).
 
 ## Brief
 
