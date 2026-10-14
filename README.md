@@ -29,7 +29,9 @@ skills/slidev-presentation/   Agent skill (Agent Skills spec) — self-contained
     └── make-diagram.sh      Spawn a headless d3/tikz sub-session → public/diagrams/
 
 examples/                    Worked decks produced with this skill
-└── example-reproduction/    Reproduction of the reference deck
+├── example-reproduction/    Reproduction of the reference deck
+└── styleguide/              Brand & design styleguide (devslide) — the living
+                             brand reference; cite it in deck review
 
 example-reference/           Sample deck of the user's usual presentations
 ```

@@ -27,8 +27,19 @@ section answers:
 
 | # | layout | title (assertion, ≤12 words) | message — the one claim they take away | intention | evidence / visual | notes |
 |---|--------|------------------------------|----------------------------------------|-----------|-------------------|-------|
-| 1 | govuk-cover |  |  | open | — |  |
-| 2 |  |  |  |  |  |  |
+| 1 | govuk-cover | Canonical template deck | Every slide demonstrates one named pattern. | open | cover band | |
+| 2 | govuk-section | How to use this template | Band, lead, budgets, patterns, ship. | signpost | band | |
+| 3 | govuk | The visual-hierarchy doctrine | One focal point, straight into roles. | mechanism | roles flow | |
+| 4 | govuk | Budgets, not vibes | Elements are rationed and lint-enforced. | mechanism | budget table + steps | |
+| 5 | govuk | Pattern: glossary of emphasis | Panels and tags signal status. | introduce | green/red panels + tags | |
+| 6 | govuk | Pattern: comparison | Claim left, evidence right. | introduce | two-role columns | |
+| 7 | govuk | Code and syntax | Explanation left, code right. | introduce | code block | |
+| 8 | govuk | Pattern: diagram | Draw the idea instead of listing it. | mechanism | matrix + bignum contrast | |
+| 9 | govuk | Pattern: verdict & triangle | Stress boxes carry the verdict. | mechanism | gov-io + stress + ▼ | |
+| 10 | govuk | Pattern: figure slide | A figure with caption is evidence. | introduce | image right + caption | |
+| 11 | govuk | Pattern: data slide | One number leads; table supports. | introduce | takeaway + table | |
+| 12 | govuk | Pattern: component kit | Patterns ship as runnable components. | introduce | GovChain + GovPipe demos | |
+| 13 | govuk-end | Questions? | End band. | ask | end band | |
 
 Intention vocabulary: open · signpost · introduce · mechanism · evidence ·
 contrast · turn · caveat · verdict · ask.
