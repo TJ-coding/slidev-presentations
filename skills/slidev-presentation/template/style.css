@@ -1,282 +1,304 @@
 /* ============================================================
-   GOV.UK design-style deck
-   Palette + typography follow https://design-system.service.gov.uk/
-   (GDS Transport isn't redistributable → sanctioned Helvetica/Arial)
-   Structure + diagram idioms follow the user's reference decks.
+   Styleguide theme — matches example-reference conventions:
+   White ground; dark navy ink (#0D2641); Poppins-like geometric
+   sans; navy bands with white titles; crimson (#D71C56) reserved
+   for THE keyword; sage (#5E9E8F) secondaries & links; steel
+   (#7E96AB) meta; hairlines; tiny grey page numbers; whitespace.
    ============================================================ */
 
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap");
+
 :root {
-  /* -- Palette (GOV.UK) -- */
-  --govuk-text: #0b0c0c;
-  --govuk-secondary: #505a5f;
-  --govuk-link: #1d70b8;
-  --govuk-green: #00703c;
-  --govuk-red: #d4351c;
-  --govuk-yellow: #ffdd00;
-  --govuk-border: #b1b4b6;
-  --govuk-panel-grey: #f3f2f1;
+  --navy: #0d2641;
+  --crimson: #d71c56;
+  --sage: #5e9e8f;
+  --steel: #7e96ab;
+  --line: #d9e2ea;
+  --soft: #f4f7fa;
+  --paper: #ffffff;
 
-  /* -- Deck accents -- */
-  --deck-accent: #d4351c;         /* emphasis terms */
-  --deck-accent-alt: #00703c;     /* secondary terms */
-  --deck-band: #0b0c0c;           /* title band */
+  /* Legacy token names — remapped to the reference palette. */
+  --govuk-text: var(--navy);
+  --govuk-secondary: var(--steel);
+  --govuk-link: var(--sage);
+  --govuk-green: var(--sage);
+  --govuk-red: var(--crimson);
+  --govuk-yellow: var(--navy);
+  --govuk-border: var(--line);
+  --govuk-panel-grey: var(--soft);
 
-  --govuk-font: "Helvetica Neue", Helvetica, Arial, "Segoe UI", "Noto Sans", sans-serif;
+  --deck-accent: var(--crimson);
+  --deck-accent-alt: var(--sage);
+  --deck-band: var(--navy);
+
+  --govuk-font: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --radius: 10px;
 }
 
 html, body, #app {
-  background: #ffffff !important;
-  color: var(--govuk-text);
+  background: var(--paper) !important;
+  color: var(--navy);
   font-family: var(--govuk-font);
 }
 
-/* GOV.UK decks are light-only */
-html.dark, html.dark body, html.dark #app { background: #ffffff !important; }
+html.dark, html.dark body, html.dark #app { background: var(--paper) !important; }
 html.dark .slidev-layout,
 html.dark .slidev-layout h1,
 html.dark .slidev-layout h2,
 html.dark .slidev-layout h3,
 html.dark .slidev-layout p,
-html.dark .slidev-layout li { color: var(--govuk-text) !important; background-color: transparent; }
-html.dark .slidev-layout a { color: var(--govuk-link) !important; }
-html.dark .slidev-layout code, html.dark .kbd { background-color: var(--govuk-panel-grey) !important; color: var(--govuk-text) !important; }
+html.dark .slidev-layout li { color: var(--navy) !important; background-color: transparent; }
 
-h1, h2, h3, h4 { font-family: var(--govuk-font); font-weight: 700; letter-spacing: -0.015em; color: var(--govuk-text); }
+h1, h2, h3, h4 { font-family: var(--govuk-font); font-weight: 700; letter-spacing: -0.01em; color: var(--navy); }
 .slidev-layout p { line-height: 1.5; }
-a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
+a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
-.slidev-layout li { margin: 0.55rem 0; }
-.slidev-layout li::marker { color: var(--govuk-link); font-size: 1.1em; }
+.slidev-layout li { margin: 0.55rem 0; color: var(--navy); }
+.slidev-layout li::marker { color: var(--navy); font-size: 1em; }
 
-/* ============ GOV.UK component patterns ============ */
+/* ============ Components (reference restyle) ============ */
 
 .govuk-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
 .govuk-inset-text {
   margin: 1rem 0;
-  padding: 0.5rem 0 0.5rem 1.2rem;
-  border-left: 10px solid var(--govuk-link);
-  color: var(--govuk-secondary);
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-left: 3px solid var(--sage);
+  color: var(--steel);
 }
-.govuk-inset-text.govuk-accent-red { border-left-color: var(--govuk-red); }
-.govuk-inset-text.govuk-accent-green { border-left-color: var(--govuk-green); }
 
 .govuk-panel {
-  border-left: 10px solid var(--govuk-text);
-  background: var(--govuk-panel-grey);
-  padding: 0.8rem 1.2rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--navy);
+  background: var(--soft);
+  padding: 0.7rem 1rem;
   margin: 1rem 0;
 }
-.govuk-panel.govuk-accent-green { border-left-color: var(--govuk-green); }
-.govuk-panel.govuk-accent-red { border-left-color: var(--govuk-red); }
-.govuk-panel.govuk-accent-blue { border-left-color: var(--govuk-link); }
+.govuk-panel.govuk-accent-red { border-left-color: var(--crimson); }
+.govuk-panel.govuk-accent-green { border-left-color: var(--sage); }
+.govuk-panel.govuk-accent-blue { border-left-color: var(--navy); }
 .govuk-panel-title { font-weight: 700; margin: 0 0 0.3rem 0; }
 
 .govuk-tag {
   display: inline-block;
-  padding: 0.2rem 0.6rem;
-  background: var(--govuk-text);
+  padding: 0.25rem 0.75rem;
+  background: var(--navy);
   color: #fff;
   font-weight: 700;
-  font-size: 0.85em;
-  letter-spacing: 0.04em;
+  font-size: 0.75em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
-.govuk-tag--yellow { background: var(--govuk-yellow); color: var(--govuk-text); }
-.govuk-tag--green { background: var(--govuk-green); }
-.govuk-tag--red { background: var(--govuk-red); }
-.govuk-tag--grey { background: var(--govuk-secondary); }
+.govuk-tag--green { background: var(--sage); }
+.govuk-tag--red { background: var(--crimson); }
+.govuk-tag--grey { background: var(--steel); }
 
-.govuk-emph { color: var(--deck-accent); font-weight: 700; }
-.govuk-emph-alt { color: var(--deck-accent-alt); font-weight: 700; }
+.govuk-emph { color: var(--crimson); font-weight: 700; }
+.govuk-emph-alt { color: var(--sage); font-weight: 700; }
 
-.govuk-table { border-collapse: collapse; width: 100%; font-size: 0.95em; }
-.govuk-table th { border-bottom: 2px solid var(--govuk-text); font-weight: 700; }
-.govuk-table th, .govuk-table td { padding: 0.5rem 0.8rem 0.5rem 0; border-bottom: 1px solid var(--govuk-border); text-align: left; }
+.govuk-table { border-collapse: collapse; width: 100%; font-size: 0.95em; color: var(--navy); }
+.govuk-table th { border-bottom: 2px solid var(--navy); font-weight: 700; }
+.govuk-table th, .govuk-table td { padding: 0.4rem 0.7rem 0.4rem 0; border-bottom: 1px solid var(--line); text-align: left; }
 
-.govuk-page-number { font-variant-numeric: tabular-nums; color: var(--govuk-secondary); }
+.govuk-page-number { font-variant-numeric: tabular-nums; color: var(--steel); }
 
 /* ============ Hierarchy primitives ============ */
 
-/* The takeaway — one focal point per slide. Rendered by `lead:` frontmatter. */
 .govuk-lead {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1.3;
   font-weight: 700;
-  margin: 0 0 1.4rem;
-  color: var(--govuk-text);
-  max-width: 60ch;
+  margin: 0 0 1.1rem;
+  color: var(--navy);
+  max-width: 62ch;
 }
-.govuk-lead strong { color: var(--deck-accent); }
+.govuk-lead strong { color: var(--crimson); }
+.govuk-lead code { font-size: 0.85em; background: var(--soft); padding: 0.1em 0.4em; }
 
-/* Numbered pipeline in GOV.UK task-list style */
 .govuk-steps { counter-reset: step; list-style: none !important; margin: 0.6rem 0; padding: 0; }
 .govuk-steps li {
   counter-increment: step;
   position: relative;
-  padding-left: 2.6rem;
-  margin: 0.7rem 0;
-  font-size: 1.05rem;
+  padding-left: 2.5rem;
+  margin: 0.6rem 0;
+  font-size: 1rem;
   list-style: none !important;
 }
 .govuk-steps li::before {
   content: counter(step);
   position: absolute;
-  left: 0; top: 0.1rem;
-  width: 1.8rem; height: 1.8rem;
+  left: 0; top: 0.08rem;
+  width: 1.7rem; height: 1.7rem;
   display: flex; align-items: center; justify-content: center;
-  background: var(--govuk-text);
-  color: #fff;
-  font-size: 0.95rem;
+  background: transparent;
+  color: var(--steel);
+  font-size: 1rem;
   font-weight: 700;
 }
 .govuk-steps li::marker { content: none !important; }
+.govuk-steps li { color: var(--navy); }
 
-.govuk-caption { font-size: 0.85rem; color: var(--govuk-secondary); margin: 0.3rem 0 0; }
+.govuk-caption { font-size: 0.8rem; color: var(--steel); margin: 0.3rem 0 0; }
 
 .govuk-aside {
-  border-top: 1px solid var(--govuk-border);
-  margin-top: 1.4rem;
-  padding-top: 0.9rem;
-  color: var(--govuk-secondary);
-  font-size: 0.95rem;
+  border-top: 1px solid var(--line);
+  margin-top: 1.3rem;
+  padding-top: 0.8rem;
+  color: var(--steel);
+  font-size: 0.9rem;
 }
 
 .govuk-takeaway {
-  margin-top: 1.4rem;
-  padding: 1rem 1.4rem;
-  border-left: 10px solid var(--govuk-green);
-  background: var(--govuk-panel-grey);
+  margin-top: 1.3rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--sage);
+  background: var(--soft);
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
-.govuk-takeaway.govuk-accent-red { border-left-color: var(--govuk-red); }
-.govuk-takeaway.govuk-accent-blue { border-left-color: var(--govuk-link); }
-.govuk-takeaway.govuk-accent-green { border-left-color: var(--govuk-green); }
+.govuk-takeaway.govuk-accent-red { border-left-color: var(--crimson); }
+.govuk-takeaway.govuk-accent-blue { border-left-color: var(--navy); }
+.govuk-takeaway.govuk-accent-green { border-left-color: var(--sage); }
 
-/* ============ Diagram primitives — SHOW, don't tell ============
-   Nodes are VALUES (data) or COMPONENTS (icon). Arrows are reserved for
-   data flow (input/output); triangles are logical consequence; + = × are
-   arithmetic. Never mix the three. */
+/* ============ Diagram primitives ============ */
 
-/* Horizontal pipeline */
-.gov-flow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1.4rem 0;
-  flex-wrap: nowrap;
-}
+.gov-flow { display: flex; align-items: center; justify-content: center; margin: 1.2rem 0; flex-wrap: nowrap; }
 
-/* Wide I/O connector: line + arrowhead that GROWS to span the gap.
-   Value ON TOP, semantic label UNDER. → = data only. */
-.gov-io {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1 1 auto;
-  min-width: 6rem;
-  padding: 0 0.4rem;
-}
-.gov-io-value { font-weight: 700; font-size: 0.95rem; white-space: nowrap; margin-bottom: 0.4rem; }
-.gov-io-line { position: relative; width: 100%; height: 3px; background: var(--govuk-text); }
+.gov-io { display: flex; flex-direction: column; align-items: center; flex: 1 1 auto; min-width: 5.5rem; padding: 0 0.4rem; }
+.gov-io-value { font-weight: 700; font-size: 0.9rem; white-space: nowrap; margin-bottom: 0.4rem; color: var(--navy); }
+.gov-io-line { position: relative; width: 100%; height: 2px; background: var(--navy); }
 .gov-io-line::after {
   content: "";
   position: absolute;
-  right: -1px; top: -7px;
-  border-left: 14px solid var(--govuk-text);
-  border-top: 8.5px solid transparent;
-  border-bottom: 8.5px solid transparent;
+  right: -1px; top: -6px;
+  border-left: 12px solid var(--navy);
+  border-top: 7.5px solid transparent;
+  border-bottom: 7.5px solid transparent;
 }
-.gov-io-label { font-size: 0.72rem; color: var(--govuk-secondary); white-space: nowrap; margin-top: 0.4rem; }
-.gov-io--green .gov-io-line { background: var(--govuk-green); }
-.gov-io--green .gov-io-line::after { border-left-color: var(--govuk-green); }
-.gov-io--red .gov-io-line { background: var(--govuk-red); }
-.gov-io--red .gov-io-line::after { border-left-color: var(--govuk-red); }
+.gov-io-label { font-size: 0.68rem; color: var(--navy); white-space: nowrap; margin-top: 0.35rem; }
 
-/* Plain wide sequential connector between steps (no data labels) */
-.gov-connector {
-  flex: 1 1 auto;
-  min-width: 3.5rem;
-  position: relative;
-  height: 3px;
-  background: var(--govuk-text);
-  margin: 0 0.5rem;
+/* Component animations (v-click): arrows slide in from the left,
+   triangles drop. Distance is extended so the slide reads clearly. */
+.gov-io, .gov-therefore {
+  transition: opacity 0.1s ease-out, translate 0.1s ease-out;
 }
+.gov-io.slidev-vclick-hidden { translate: -2rem 0; }
+.gov-therefore.slidev-vclick-hidden { translate: 0 -2rem; }
+@media print {
+  .gov-io, .gov-therefore { transition: none; translate: none; }
+}
+.gov-io--green .gov-io-line { background: var(--sage); }
+.gov-io--green .gov-io-line::after { border-left-color: var(--sage); }
+.gov-io--red .gov-io-line { background: var(--crimson); }
+.gov-io--red .gov-io-line::after { border-left-color: var(--crimson); }
+
+.gov-connector { flex: 1 1 auto; min-width: 3rem; position: relative; height: 2px; background: var(--navy); margin: 0 0.5rem; }
 .gov-connector::after {
   content: "";
   position: absolute;
-  right: -1px; top: -7px;
-  border-left: 14px solid var(--govuk-text);
-  border-top: 8.5px solid transparent;
-  border-bottom: 8.5px solid transparent;
+  right: -1px; top: -6px;
+  border-left: 12px solid var(--navy);
+  border-top: 7.5px solid transparent;
+  border-bottom: 7.5px solid transparent;
 }
 
-/* Nodes for VALUES: bordered box, data title + grey qualifier */
+/* Concept chips — filled navy pills with white text, as in the reference. */
 .gov-node {
-  border: 2px solid var(--govuk-text);
-  background: #fff;
-  padding: 0.55rem 0.9rem;
-  min-width: 4rem;
+  border: none;
+  background: var(--navy);
+  color: #fff;
+  padding: 0.5rem 0.9rem;
+  min-width: 3.5rem;
   text-align: center;
   flex: 0 0 auto;
 }
-.gov-node--accent-green { border-color: var(--govuk-green); }
-.gov-node--accent-red { border-color: var(--govuk-red); }
-.gov-node--accent-blue { border-color: var(--govuk-link); }
-.gov-node-title { font-weight: 700; font-size: 1.05rem; }
-.gov-node-sub { display: block; font-size: 0.8rem; font-weight: 400; color: var(--govuk-secondary); margin-top: 0.15rem; }
+.gov-node--accent-green { background: var(--sage); }
+.gov-node--accent-red { background: var(--crimson); }
+.gov-node--accent-blue { background: var(--navy); }
+.gov-node-title { font-weight: 700; font-size: 1rem; color: #fff; display: block; }
+.gov-node-sub { display: block; font-size: 0.72rem; font-weight: 400; color: #c8d5e2; margin-top: 0.15rem; }
 
-/* Nodes for COMPONENTS: an ICON does the picturing; the caption names it.
-   Components get shapes/icons, values get boxes — both wired by arrows. */
-.gov-node--icon {
-  border: none;
-  background: none;
-  padding: 0 0.6rem;
-  min-width: 0;
-}
-.gov-node-icon { display: block; font-size: 3.6rem; line-height: 1; color: var(--govuk-text); }
-.gov-node--icon.gov-node--accent-green .gov-node-icon { color: var(--govuk-green); }
-.gov-node--icon.gov-node--accent-red .gov-node-icon { color: var(--govuk-red); }
-.gov-node--icon.gov-node--accent-blue .gov-node-icon { color: var(--govuk-link); }
-.gov-node--icon .gov-node-sub { margin-top: 0.5rem; }
+.gov-node--icon { border: none; background: none; padding: 0 0.6rem; min-width: 0; color: var(--navy); }
+.gov-node-icon { display: block; font-size: 2.9rem; line-height: 1; color: var(--navy); }
+.gov-node--icon.gov-node--accent-green .gov-node-icon { color: var(--sage); }
+.gov-node--icon.gov-node--accent-red .gov-node-icon { color: var(--crimson); }
+.gov-node--icon.gov-node--accent-blue .gov-node-icon { color: var(--navy); }
+.gov-node--icon .gov-node-sub { margin-top: 0.5rem; color: var(--steel); }
+.gov-node--icon .gov-node-title { color: var(--navy); }
 
-/* Logical consequence: wide ▼ triangle = "therefore". NEVER inside a data
-   pipeline. Width ~2× height, spanning under the box above. */
 .gov-therefore {
-  width: 0;
-  height: 0;
-  border-left: 4.5rem solid transparent;
-  border-right: 4.5rem solid transparent;
-  border-top: 2.1rem solid var(--govuk-text);
-  margin: 0.6rem auto 0.5rem;
+  width: 0; height: 0;
+  border-left: 4.2rem solid transparent;
+  border-right: 4.2rem solid transparent;
+  border-top: 2rem solid var(--navy);
+  margin: 0.5rem auto 0.4rem;
 }
-.gov-therefore--red { border-top-color: var(--govuk-red); }
-.gov-therefore--green { border-top-color: var(--govuk-green); }
+.gov-therefore--red { border-top-color: var(--crimson); }
+.gov-therefore--green { border-top-color: var(--sage); }
 .gov-therefore--up { transform: rotate(180deg); }
 .gov-therefore--left { transform: rotate(90deg); }
 .gov-therefore--right { transform: rotate(-90deg); }
 
-/* Component primitives (GovBox / GovChain / GovPipe / GovArrow) */
-.gov-box {
-  background: var(--govuk-text);
-  color: #fff;
-  padding: 0.7rem 1.6rem;
-  font-weight: 700;
+.gov-consequence { text-align: center; font-weight: 700; font-size: 1.15rem; margin: 0 0 0.7rem; color: var(--navy); }
+.gov-consequence--red { color: var(--crimson); }
+.gov-consequence--green { color: var(--sage); }
+.gov-consequence--dark { color: var(--navy); }
+
+.gov-eq { display: flex; align-items: flex-end; justify-content: center; gap: 0.7rem; margin: 0.5rem 0; }
+.gov-eq-item { display: inline-flex; flex-direction: column; align-items: center; }
+.gov-eq-value { font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--navy); }
+.gov-eq-label { font-size: 0.68rem; color: var(--steel); margin-top: 0.25rem; }
+.gov-eq-op { font-size: 1.2rem; color: var(--navy); padding-bottom: 0.85rem; }
+.gov-eq-value--red { color: var(--crimson); }
+.gov-eq-value--green { color: var(--sage); }
+.gov-eq-value--dark { color: var(--navy); }
+
+.gov-stress { margin: 0.9rem 0; }
+.gov-stress-head {
+  background: var(--navy); color: #fff; font-weight: 700;
+  padding: 0.45rem 0.9rem; font-size: 2.2rem;
   text-align: center;
 }
-.gov-box--inverted {
-  background: #fff;
-  color: var(--govuk-text);
-  border: 3px solid var(--govuk-text);
+.gov-stress-body {
+  background: #fff; color: var(--navy);
+  border: 7px solid var(--navy); border-top: none;
+  padding: 0.5rem 0.9rem; font-weight: 700; font-size: 2.2rem;
+  text-align: center;
 }
-.gov-io, .gov-therefore {
-  transition: opacity 0.3s linear, translate 0.3s linear;
+.gov-stress-value--red { color: #f3a9c3; }
+.gov-stress-value--green { color: #a3d8cb; }
+.gov-stress-value--blue { color: #b7c7dd; }
+
+.gov-contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.gov-bignum { border: 2px solid var(--navy); padding: 0.8rem 0.9rem; text-align: center; }
+.gov-bignum-n { display: block; font-size: 2.2rem; font-weight: 700; line-height: 1; color: var(--navy); }
+.gov-bignum-label { display: block; font-size: 0.85rem; margin-top: 0.35rem; color: var(--steel); }
+.gov-bignum--good { border-color: var(--sage); }
+.gov-bignum--good .gov-bignum-n { color: var(--sage); }
+.gov-bignum--bad { border-color: var(--crimson); }
+.gov-bignum--bad .gov-bignum-n { color: var(--crimson); }
+
+.gov-matrix { border-collapse: collapse; font-size: 0.9rem; margin: 0 auto; }
+.gov-matrix th { font-weight: 700; padding: 0.4rem 0.85rem; color: var(--navy); }
+.gov-matrix td { border: 1px solid var(--line); padding: 0.5rem 0.85rem; text-align: center; font-variant-numeric: tabular-nums; }
+.gov-matrix .gov-matrix-corner { border: none; }
+.gov-matrix td.gov-matrix-win { border: 2px solid var(--sage); background: rgba(94, 158, 143, 0.12); font-weight: 700; }
+.gov-matrix td.gov-matrix-bad { color: var(--crimson); }
+.gov-legend { display: flex; gap: 1.2rem; justify-content: center; margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--steel); }
+.gov-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 0.75rem; height: 0.75rem;
+  margin-right: 0.3rem;
+  vertical-align: baseline;
+  border: 1px solid;
 }
-.gov-io.slidev-vclick-hidden { translate: -9rem 0; }
-.gov-therefore.slidev-vclick-hidden { translate: 0 -9rem; }
-@media print {
-  .gov-io, .gov-therefore { transition: none; translate: none; }
-}
+.gov-legend .lg-red::before { border-color: var(--crimson); background: rgba(215, 28, 86, 0.1); }
+.gov-legend .lg-green::before { border-color: var(--sage); background: rgba(94, 158, 143, 0.12); }
+
+/* ============ Chain primitive (GovChain component) ============ */
+
 .gov-chain { display: flex; flex-direction: column; align-items: center; }
 .gov-chain-item { display: flex; flex-direction: column; align-items: center; }
 .gov-chain-bottom { font-weight: 700; margin-top: 0.45rem; }
@@ -286,109 +308,121 @@ a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
   align-items: center;
   transition: opacity 0.3s linear;
 }
-.gov-chain-tail .gov-therefore { translate: 0 -9rem; }
+.gov-chain-tail .gov-therefore { translate: 0 -2.5rem; }
 .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
-@media print {
-  .gov-chain-tail .gov-therefore { translate: 0 0; }
-}
+
+/* ============ Pipe primitive (GovPipe component) ============ */
+
 .gov-pipe-in, .gov-pipe-out { display: flex; flex-direction: column; gap: 0.7rem; flex: 1 1 auto; }
 .gov-pipe-stage { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; }
-.gov-io-label { color: var(--govuk-text); }
 
-/* Consequence line under the triangle */
-.gov-consequence {
-  text-align: center;
-  font-weight: 800;
-  font-size: 1.2rem;
-  margin: 0 0 0.8rem;
-  color: var(--govuk-text);
-}
-.gov-consequence--red { color: var(--govuk-red); }
-.gov-consequence--green { color: var(--govuk-green); }
-.gov-consequence--dark { color: var(--govuk-text); }
+/* ============ Box primitive (GovBox component) ============ */
 
-/* Labelled arithmetic: values big, semantic labels under each */
-.gov-eq { display: flex; align-items: flex-end; justify-content: center; gap: 0.7rem; margin: 0.6rem 0; }
-.gov-eq-item { display: inline-flex; flex-direction: column; align-items: center; }
-.gov-eq-value { font-size: 1.7rem; font-weight: 700; line-height: 1; }
-.gov-eq-label { font-size: 0.72rem; color: var(--govuk-secondary); margin-top: 0.25rem; }
-.gov-eq-op { font-size: 1.3rem; color: var(--govuk-text); padding-bottom: 0.9rem; }
-.gov-eq-value--red { color: var(--govuk-red); }
-.gov-eq-value--green { color: var(--govuk-green); }
-.gov-eq-value--dark { color: var(--govuk-text); }
-
-/* Bottom line: thick navy band "Label: value", thick-bordered qualifier line,
-   wide ▼ triangle to the consequence. Bold and blocky — this is the point
-   of the talk. */
-.gov-stress { margin: 1rem 0; }
-.gov-stress-head {
-  background: var(--govuk-text);
+.gov-box {
+  background: var(--navy);
   color: #fff;
-  font-weight: 800;
-  padding: 0.6rem 1.1rem;
-  border: 4px solid var(--govuk-text);
-  font-size: 1.35rem;
-  letter-spacing: 0.01em;
+  padding: 0.7rem 1.6rem;
+  font-weight: 700;
+  text-align: center;
 }
-.gov-stress-body {
+.gov-box--inverted {
   background: #fff;
-  color: var(--govuk-text);
-  border: 4px solid var(--govuk-text);
-  border-top: none;
-  padding: 0.6rem 1.1rem;
-  font-weight: 800;
-  font-size: 1.35rem;
+  color: var(--navy);
+  border: 3px solid var(--navy);
 }
-.gov-stress-value--red { color: #ff8a75; }
-.gov-stress-value--green { color: #8ce0b0; }
-.gov-stress-value--blue { color: #a6cbff; }
 
-/* Big-number contrast: the whole argument as two numbers */
-.gov-contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-.gov-bignum { border: 2px solid; padding: 0.9rem 1rem; text-align: center; }
-.gov-bignum-n { display: block; font-size: 2.4rem; font-weight: 700; line-height: 1; }
-.gov-bignum-label { display: block; font-size: 0.9rem; margin-top: 0.4rem; }
-.gov-bignum--good { border-color: var(--govuk-green); color: var(--govuk-green); }
-.gov-bignum--bad { border-color: var(--govuk-red); color: var(--govuk-red); }
+/* ============ Don't / Do pairs ============ */
 
-/* Score / comparison matrix with winner cells + legend */
-.gov-matrix { border-collapse: collapse; font-size: 0.95rem; margin: 0 auto; }
-.gov-matrix th { font-weight: 700; padding: 0.45rem 0.9rem; }
-.gov-matrix td { border: 1px solid var(--govuk-border); padding: 0.55rem 0.95rem; text-align: center; font-variant-numeric: tabular-nums; }
-.gov-matrix .gov-matrix-corner { border: none; }
-.gov-matrix td.gov-matrix-win { border: 2px solid var(--govuk-green); background: rgba(0, 112, 60, 0.12); font-weight: 700; }
-.gov-matrix td.gov-matrix-bad { color: var(--govuk-red); }
-.gov-legend { display: flex; gap: 1.4rem; justify-content: center; margin: 0.6rem 0 0; font-size: 0.85rem; color: var(--govuk-secondary); }
-.gov-legend span::before {
-  content: "";
-  display: inline-block;
-  width: 0.8rem; height: 0.8rem;
-  margin-right: 0.35rem;
-  vertical-align: baseline;
-  border: 1px solid;
-}
-.gov-legend .lg-red::before { border-color: var(--govuk-red); background: rgba(212, 53, 28, 0.12); }
-.gov-legend .lg-green::before { border-color: var(--govuk-green); background: rgba(0, 112, 60, 0.12); }
-
-/* ============ Bands (used by layouts/govuk*.vue) ============ */
-
-.gov-band { background: var(--deck-band); padding: 1.1rem 2.4rem; min-height: 4.2rem; }
-.gov-band--black { background: #0b0c0c; }
-.gov-band--blue { background: #1d70b8; }
-.gov-band--green { background: var(--govuk-green); }
-.gov-band--red { background: var(--govuk-red); }
-.gov-band-kicker {
-  color: #f3f2f1;
-  font-size: 0.85rem;
+.dd { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 0; height: 100%; }
+.dd-card { border: 5px solid var(--line); overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+.dd-card.dd-bad { border-color: rgba(215, 28, 86, 0.4); }
+.dd-card.dd-good { border-color: var(--navy); }
+.dd-head {
+  padding: 0.4rem 1rem;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.2rem;
-  opacity: 0.8;
+  color: #fff;
 }
-.gov-band-title { color: #fff !important; font-size: 2.05rem; font-weight: 700; line-height: 1.15; margin: 0 !important; }
-.gov-body { padding: 1.6rem 2.4rem 2.2rem; }
-.gov-body--centered { height: calc(100% - 7rem); display: flex; flex-direction: column; justify-content: center; }
+.dd-bad .dd-head { background: var(--crimson); }
+.dd-good .dd-head { background: var(--navy); }
+.dd-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.9rem 1.1rem;
+  font-size: 1.4rem;
+  line-height: 1.45;
+  color: var(--navy);
+}
+.dd-caption { font-size: 1.4rem; line-height: 1.45; color: var(--steel); margin-top: 0.5rem; }
 
-/* Section divider slot content (dark background) */
-.govuk-section :deep(p) { color: #f3f2f1 !important; }
-.govuk-section :deep(a) { color: var(--govuk-yellow) !important; }
+.mock-title { font-weight: 800; font-size: 1.4rem; line-height: 1.45; margin-bottom: 0.35rem; color: var(--navy); }
+.mock-sub { color: var(--steel); font-size: 1.4rem; line-height: 1.45; }
+.dd-body .gov-flow { margin: 0.7rem 0; }
+.dd-body .gov-node { padding: 0.45rem 0.8rem; }
+.dd-body .gov-node-title { font-size: 1rem; }
+.dd-body .gov-node-sub { font-size: 0.78rem; }
+.dd-body .gov-node-icon { font-size: 2rem; }
+.dd-body .gov-io { min-width: 3.4rem; }
+.dd-body .gov-io-value { font-size: 0.92rem; }
+.dd-body .gov-io-label { font-size: 0.92rem; }
+.dd-body .gov-connector { min-width: 1.3rem; margin: 0 0.3rem; }
+.dd-body .gov-bignum-n { font-size: 2.2rem; }
+.dd-body .gov-bignum-label { font-size: 0.85rem; }
+.dd-body .govuk-steps li { font-size: 1.1rem; padding-left: 2.3rem; }
+.dd-body .govuk-steps li::before { width: 1.5rem; height: 1.5rem; font-size: 0.82rem; }
+.dd-body .quad { gap: 0.7rem; }
+.dd-body .quad-box { font-size: 1rem; padding: 0.9rem 0.5rem; }
+
+/* deliberately-bad example helpers */
+.quad { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+.quad-box { background: var(--navy); color: #fff; text-align: center; padding: 0.55rem 0.3rem; font-weight: 700; font-size: 1rem; }
+.twin { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.twin-col { border: 1.5px solid var(--navy); padding: 0.55rem; font-size: 0.78rem; color: var(--navy); }
+
+.dd-big-quad { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+.dd-big-quad .quad-box { font-size: 1.15rem; padding: 1.4rem 0.6rem; }
+
+/* word-colour abuse (Don't side only) */
+.w-red { color: var(--crimson); font-weight: 700; }
+.w-green { color: var(--sage); font-weight: 700; }
+.w-blue { color: #2563eb; font-weight: 700; }
+.w-amber { color: #d97706; font-weight: 700; }
+
+/* ============ Layout support ============ */
+
+/* Band — defined globally (layouts/dd + cover reuse it even when no
+   govuk-layout slide exists in the deck to pull in layout styles). */
+.gov-band {
+  background: var(--deck-band);
+  padding: 0.8rem 2rem;
+  min-height: 3.4rem;
+}
+.gov-band--black, .gov-band--blue { background: var(--navy); }
+.gov-band--green { background: var(--sage); }
+.gov-band--red { background: var(--crimson); }
+.gov-band-kicker {
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-bottom: 0.2rem;
+}
+.gov-band-title {
+  color: #fff !important;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 !important;
+}
+
+.dd-body-wrap { padding: 0.7rem 1.6rem 0.9rem; height: calc(100% - 6.4rem); box-sizing: border-box; }
+
+.gov-body { padding: 1.5rem 2.4rem 2rem; }
+.gov-body--centered { height: calc(100% - 6.5rem); display: flex; flex-direction: column; justify-content: center; }

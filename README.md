@@ -1,8 +1,9 @@
 # slidev-presentations
 
-GOV.UK design-style Slidev kit for making presentations: agent skill + deck
-template + hooks + components. **Designed to be consumed as a git submodule**
-by the repository where decks are actually built and versioned.
+The **Quiet** deck kit (GOV.UK-inspired: navy ink, crimson keyword, Poppins,
+white ground) — agent skill + deck template + hooks + animatable components.
+**Designed to be consumed as a git submodule** by the repository where decks
+are actually built and versioned.
 
 ```
 SKILL.md                    Routing + workflow instructions (Agent Skills spec)
