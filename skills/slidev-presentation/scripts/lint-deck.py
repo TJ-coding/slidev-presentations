@@ -23,9 +23,11 @@ import sys
 
 KNOWN_LAYOUTS = {
     "govuk", "govuk-cover", "govuk-section", "govuk-two-cols",
-    "govuk-image-right", "govuk-end", "default", "center", "section", "two-cols",
+    "govuk-image-right", "govuk-end", "dd", "default", "center", "section", "two-cols",
 }
 CONTENT_LAYOUTS = {"govuk", "govuk-two-cols", "govuk-image-right", "govuk-end"}
+# title-only layouts: the visual IS the content; no lead: required
+PAIR_LAYOUTS = {"dd"}
 
 SEP = re.compile(r"-{3,}\s*$")
 KEY = re.compile(r"^\s*([\w-]+)\s*:\s*(.*)$")
@@ -103,8 +105,8 @@ def main() -> int:
         elif layout not in KNOWN_LAYOUTS:
             problems.append(f'unknown layout "{layout}" — check for typos')
 
-        if layout == "govuk" and not fm.get("title"):
-            problems.append("govuk slide without frontmatter title:")
+        if layout in (CONTENT_LAYOUTS | PAIR_LAYOUTS) and not fm.get("title"):
+            problems.append("title-only layouts need frontmatter title:")
 
         if layout == "govuk" and not fm.get("lead"):
             problems.append("no lead: takeaway — viewer has no idea what to focus on (add lead:)")

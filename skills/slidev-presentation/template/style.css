@@ -252,6 +252,48 @@ a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
 }
 .gov-therefore--red { border-top-color: var(--govuk-red); }
 .gov-therefore--green { border-top-color: var(--govuk-green); }
+.gov-therefore--up { transform: rotate(180deg); }
+.gov-therefore--left { transform: rotate(90deg); }
+.gov-therefore--right { transform: rotate(-90deg); }
+
+/* Component primitives (GovBox / GovChain / GovPipe / GovArrow) */
+.gov-box {
+  background: var(--govuk-text);
+  color: #fff;
+  padding: 0.7rem 1.6rem;
+  font-weight: 700;
+  text-align: center;
+}
+.gov-box--inverted {
+  background: #fff;
+  color: var(--govuk-text);
+  border: 3px solid var(--govuk-text);
+}
+.gov-io, .gov-therefore {
+  transition: opacity 0.3s linear, translate 0.3s linear;
+}
+.gov-io.slidev-vclick-hidden { translate: -9rem 0; }
+.gov-therefore.slidev-vclick-hidden { translate: 0 -9rem; }
+@media print {
+  .gov-io, .gov-therefore { transition: none; translate: none; }
+}
+.gov-chain { display: flex; flex-direction: column; align-items: center; }
+.gov-chain-item { display: flex; flex-direction: column; align-items: center; }
+.gov-chain-bottom { font-weight: 700; margin-top: 0.45rem; }
+.gov-chain-tail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.3s linear;
+}
+.gov-chain-tail .gov-therefore { translate: 0 -9rem; }
+.gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
+@media print {
+  .gov-chain-tail .gov-therefore { translate: 0 0; }
+}
+.gov-pipe-in, .gov-pipe-out { display: flex; flex-direction: column; gap: 0.7rem; flex: 1 1 auto; }
+.gov-pipe-stage { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; }
+.gov-io-label { color: var(--govuk-text); }
 
 /* Consequence line under the triangle */
 .gov-consequence {
@@ -295,7 +337,7 @@ a { color: var(--govuk-link); text-decoration-thickness: max(1px, 0.0625em); }
   border-top: none;
   padding: 0.6rem 1.1rem;
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.35rem;
 }
 .gov-stress-value--red { color: #ff8a75; }
 .gov-stress-value--green { color: #8ce0b0; }

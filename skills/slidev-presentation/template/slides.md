@@ -2,7 +2,7 @@
 # Read this deck bottom-to-top as a pattern catalogue: band title -> lead -> steps -> panels -> aside -> end.
 theme: default
 colorSchema: light
-title: 'Presentation Title, Using a Sentence If Possible'
+title: 'Canonical Template Deck'
 layout: govuk-cover
 subtitle: 'One-sentence outcome: what the audience will know or be able to do'
 kicker: 'REGULAR MEETING'
@@ -262,6 +262,46 @@ lead: 'One number leads, the table supports it.'
 | 512 | 410ms | **40ms** |
 
 <!-- One number per data slide — the green box IS the takeaway. -->
+
+---
+layout: govuk
+kicker: 'ARCHITECTURE'
+title: 'Pattern: component kit'
+lead: 'Ship patterns as <strong>components</strong> — one tag, animation included.'
+---
+
+<div class="govuk-grid-2">
+
+<div>
+  <GovChain top-box="Installed Cache" bottom="Drops Latency" />
+</div>
+
+<div>
+  <GovPipe
+    :inputs="[
+      { value: 'こんにちは', label: 'x₁ · hypothesis' },
+      { value: 'Hello', label: 'x₂ · reference' },
+    ]"
+    :outputs="[
+      { value: 'Hello', label: 'ŷ · output' },
+    ]">
+    <template #stage>
+      <span class="gov-node gov-node--icon"><carbon:filter class="gov-node-icon" /><span class="gov-node-sub">select min</span></span>
+    </template>
+  </GovPipe>
+</div>
+
+</div>
+
+<p class="govuk-caption" style="text-align:center;">
+  GovArrow · GovBox · GovTriangle · GovChain · GovPipe · GovStress — in <code>components/</code>, styled in <code>style.css</code>
+</p>
+
+<!--
+GovChain: block → triangle → consequence, one click each.
+GovPipe: N inputs through an icon/name stage into M outputs.
+All animated at the component level; static exports show the end state.
+-->
 
 ---
 layout: govuk-end
