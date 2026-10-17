@@ -32,6 +32,7 @@ example-reference/          Sample reference deck (PDFs) used for the brand
 | `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text) |
 | `GovTriangle` | The wide "therefore" ▼ — `color="green\|red"`, `dir="up\|left\|right"`, drops in on click |
 | `GovChain` | Block → ▼ → consequence, single click; `:steps="[…]"` chains any number |
+| `GovDerivation` | 3Blue1Brown-style equation morphs — `:steps="[…]"` LaTeX, tokens fly/fade per click |
 | `GovPipe` | N inputs through an icon-name or box stage into M outputs |
 | `GovStress` | The verdict box: infilled navy header + value frame |
 

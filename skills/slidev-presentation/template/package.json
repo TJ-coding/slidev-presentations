@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@slidev/cli": "^53.0.0",
+    "@slidev/client": "^53.0.0",
     "@slidev/theme-default": "^0.25.0",
-    "@slidev/theme-seriph": "^0.25.0"
+    "@slidev/theme-seriph": "^0.25.0",
+    "katex": "^0.18.10"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

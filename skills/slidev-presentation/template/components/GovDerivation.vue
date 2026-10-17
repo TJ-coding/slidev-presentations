@@ -1,0 +1,233 @@
+<script setup lang="ts">
+// GovDerivation — animated equation transformations, 3Blue1Brown-style.
+//
+// Each step is LaTeX. On every click (or arrow-key advance) the equation
+// morphs to the next step: tokens that survive fly to their new position,
+// new tokens fade in (briefly crimson), removed tokens drift away. Like
+// Manim's TransformMatchingTex, but in the browser.
+//
+// The derivation rides the slide's click counter — one morph per click, and
+// it rests on the last step. It registers its own click slots on the slide's
+// clicks context at mount (one per morph), so an arrow-key advance morphs
+// the derivation instead of navigating away; slides without it work unchanged.
+// Static exports (print) show the final step.
+//
+// Usage:
+//   <GovDerivation :steps="['ax^2 + bx + c = 0', 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}']" />
+//   <GovDerivation :steps="[{ tex: 'E = mc^2', note: 'mass–energy equivalence' }]" />
+
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useSlideContext } from '@slidev/client'
+import type { ClicksContext } from '@slidev/types'
+import { renderStep, type RenderedTok, type TokClass } from './latex'
+
+interface DerivationStep {
+  tex: string
+  note?: string
+}
+
+const props = withDefaults(defineProps<{
+  /** derivation steps — LaTeX source, or { tex, note } (note renders under the equation) */
+  steps: (string | DerivationStep)[]
+  /** morph duration in ms */
+  duration?: number
+  size?: 'md' | 'lg' | 'xl'
+  /** progress dots under the equation */
+  showProgress?: boolean
+}>(), {
+  duration: 700,
+  size: 'lg',
+  showProgress: true,
+})
+
+const steps = computed<DerivationStep[]>(() =>
+  props.steps.map(s => (typeof s === 'string' ? { tex: s } : s)),
+)
+
+/* --- click source: the slide's click counter, or a local fallback ------ */
+let navClicks: { value: number } | null = null
+let clicksCtx: ClicksContext | null = null
+try {
+  const ctx = useSlideContext()
+  navClicks = ctx.$clicks
+  clicksCtx = ctx.$clicksContext
+} catch {
+  navClicks = null // rendered outside a slide — fall back to clicks on the component
+}
+const localClicks = ref(0)
+function onRootClick() {
+  if (!navClicks) localClicks.value++
+}
+
+/* --- click budget: register one slot per morph ------------------------ */
+/* The slide's click counter only advances through slots registered on the
+   slide's clicks context — v-click elements do this from their directive.
+   Without slots the first arrow press would navigate straight to the next
+   slide and the derivation would never morph. Slots are registered at mount
+   so DOM order is respected: v-click elements placed before the component
+   keep the earlier clicks, ones placed after the component come later. */
+const morphSlots = Array.from({ length: Math.max(0, steps.value.length - 1) }, () => ({}))
+function registerMorphSlots() {
+  if (!clicksCtx) return
+  for (const el of morphSlots) {
+    const info = clicksCtx.calculate('+1')
+    if (info) clicksCtx.register(el, info)
+  }
+}
+function unregisterMorphSlots() {
+  if (!clicksCtx) return
+  for (const el of morphSlots) clicksCtx.unregister(el)
+}
+onMounted(registerMorphSlots)
+
+onUnmounted(unregisterMorphSlots)
+
+const stepIndex = computed(() => {
+  const max = Math.max(0, steps.value.length - 1)
+  const c = navClicks ? navClicks.value : localClicks.value
+  return Math.min(Math.max(c, 0), max)
+})
+const currentStep = computed(() => steps.value[stepIndex.value] ?? { tex: '' })
+const tokens = computed(() => renderStep(currentStep.value.tex))
+const currentNote = computed(() => currentStep.value.note ?? '')
+
+/* --- morphing ---------------------------------------------------------- */
+const stageRef = ref<HTMLElement | null>(null)
+
+interface GhostTok {
+  key: number
+  html: string
+  cls: TokClass
+  left: number
+  top: number
+  width: number
+}
+const ghostToks = ref<GhostTok[]>([])
+let ghostSeq = 0
+let morphGen = 0
+
+watch(stepIndex, async (n, o) => {
+  if (n === o || !steps.value.length) return
+  const gen = ++morphGen
+  const stage = stageRef.value
+  if (!stage) return
+
+  // settle any in-flight morph so measurements start from a clean layout
+  stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
+    el.classList.remove('gd-tok--anim')
+    el.style.cssText = ''
+  })
+  ghostToks.value = []
+
+  // measure the outgoing tokens — the DOM still shows step o
+  const oldRects = new Map<string, { left: number; top: number; width: number }>()
+  stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
+    const r = el.getBoundingClientRect()
+    oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width })
+  })
+  const oldIds = new Set(oldRects.keys())
+  const newToks = renderStep(steps.value[n].tex)
+  const newIds = new Set(newToks.map(t => t.id))
+  const leaving = [...oldRects.keys()].filter(id => !newIds.has(id))
+
+  await nextTick() // the DOM now shows step n
+  if (gen !== morphGen) return
+
+  // the slide may be CSS-scaled (Slidev fits it to the viewport) — measure
+  // in viewport px, then convert back to the element's local px
+  const stageRect = stage.getBoundingClientRect()
+  const scale = stageRect.width / stage.offsetWidth || 1
+
+  // place every token at its "from" state …
+  stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
+    const old = oldRects.get(el.dataset.gdId!)
+    if (old) {
+      const r = el.getBoundingClientRect()
+      const dx = (old.left - r.left) / scale
+      const dy = (old.top - r.top) / scale
+      if (dx !== 0 || dy !== 0) el.style.transform = `translate(${dx}px, ${dy}px)`
+    } else {
+      // entering token: fade + rise, flashed crimson — this is what changed
+      el.style.opacity = '0'
+      el.style.transform = 'translateY(0.3em)'
+      el.style.color = 'var(--crimson)'
+    }
+  })
+  void stage.offsetWidth // reflow so the "from" states are the start point …
+  stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
+    el.classList.add('gd-tok--anim')
+    el.style.transform = ''
+    el.style.opacity = ''
+    el.style.color = ''
+  })
+
+  // … and let the removed tokens drift out of a ghost overlay
+  if (leaving.length) {
+    const oldToks = renderStep(steps.value[o].tex)
+    ghostToks.value = leaving.map((id) => {
+      const r = oldRects.get(id)!
+      const tk = oldToks.find(t => t.id === id)!
+      return {
+        key: ++ghostSeq,
+        html: tk.html,
+        cls: tk.cls,
+        left: (r.left - stageRect.left) / scale,
+        top: (r.top - stageRect.top) / scale,
+        width: r.width / scale,
+      }
+    })
+    await nextTick()
+    if (gen !== morphGen) return
+    void stage.offsetWidth // reflow so the fade starts from a visible state …
+    stage.querySelectorAll('.gd-ghost-tok').forEach(el => el.classList.add('gd-ghost-tok--out'))
+    setTimeout(() => {
+      if (gen === morphGen) ghostToks.value = []
+    }, props.duration + 120)
+  }
+})
+
+onUnmounted(() => { morphGen++ })
+</script>
+
+<template>
+  <div
+    class="gov-derivation"
+    :class="`gov-derivation--${size}`"
+    :style="{ '--gd-dur': `${duration}ms` }"
+    @click="onRootClick"
+  >
+    <div ref="stageRef" class="gd-stage">
+      <div class="gd-equation" :aria-label="currentStep.tex">
+        <span
+          v-for="t in tokens"
+          :key="t.id"
+          class="gd-tok"
+          :class="`gd-tok--${t.cls}`"
+          :data-gd-id="t.id"
+          v-html="t.html"
+        ></span>
+      </div>
+      <div v-if="ghostToks.length" class="gd-ghost" aria-hidden="true">
+        <span
+          v-for="g in ghostToks"
+          :key="g.key"
+          class="gd-ghost-tok"
+          :class="`gd-tok--${g.cls}`"
+          :style="{ left: `${g.left}px`, top: `${g.top}px`, width: `${g.width}px` }"
+          v-html="g.html"
+        ></span>
+      </div>
+    </div>
+    <Transition name="gd-note" mode="out-in">
+      <p v-if="currentNote" :key="stepIndex" class="gd-note">{{ currentNote }}</p>
+    </Transition>
+    <div v-if="showProgress && steps.length > 1" class="gd-progress" aria-hidden="true">
+      <span
+        v-for="(s, i) in steps"
+        :key="i"
+        class="gd-dot"
+        :class="{ 'gd-dot--on': i === stepIndex, 'gd-dot--done': i < stepIndex }"
+      ></span>
+    </div>
+  </div>
+</template>

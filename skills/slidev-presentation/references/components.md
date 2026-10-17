@@ -142,6 +142,30 @@ below. Use for the 2–4 claims a deck exists to defend.
 
 ---
 
+## GovDerivation — animated equation morphs
+
+3Blue1Brown-style equation transformations. Each click morphs the equation one
+step: tokens that survive fly to their new position (FLIP), new tokens fade in
+flashed crimson, removed tokens drift away — Manim's `TransformMatchingTex`,
+in the browser.
+
+```html
+<GovDerivation
+  :steps="[
+    'ax^2 + bx + c = 0',
+    { tex: 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}', note: 'divide by a, move the constant' },
+  ]"
+/>
+```
+
+| | |
+|---|---|
+| props | `steps` — array of LaTeX strings or `{ tex, note }` (`note` renders under the equation, changes per step); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`) |
+| animation | one morph per click / arrow-key advance — the component registers one click slot per morph on the slide's click context at mount (in DOM order, so v-click elements placed before it keep the earlier clicks); print & exports show the final step |
+| use when | derivations, reformulations, substitutions — any “watch the algebra work” moment |
+
+---
+
 ## The `dd` layout — Don't/Do pairs
 
 For teaching a rule: wrong on the left, right on the right; the pair **is** the

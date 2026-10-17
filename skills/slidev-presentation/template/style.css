@@ -424,5 +424,94 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
 .dd-body-wrap { padding: 0.7rem 1.6rem 0.9rem; height: calc(100% - 6.4rem); box-sizing: border-box; }
 
+/* ============ Derivation primitive (GovDerivation component) ============ */
+
+.gov-derivation {
+  --gd-dur: 700ms;
+  --gd-size: 1.8rem;
+  margin: 0.9rem 0 0.4rem;
+}
+.gov-derivation--md { --gd-size: 1.35rem; }
+.gov-derivation--lg { --gd-size: 1.8rem; }
+.gov-derivation--xl { --gd-size: 2.4rem; }
+
+.gd-stage { position: relative; width: 100%; }
+
+.gd-equation {
+  text-align: center;
+  font-size: var(--gd-size);
+  line-height: 1.25;
+  color: var(--navy);
+  width: 100%;
+  max-width: 100%;
+}
+
+.gd-tok { display: inline-block; color: inherit; }
+
+/* KaTeX display wrapper would add block margins inside the equation */
+.gd-tok .katex-display,
+.gd-ghost-tok .katex-display { display: contents; margin: 0; }
+.gd-tok .katex,
+.gd-ghost-tok .katex { text-align: left; }
+
+/* inter-token spacing — KaTeX's mspace spans only exist inside a full
+   expression, so per-token rendering needs explicit margins */
+.gd-tok--bin { margin: 0 0.22em; }
+.gd-tok--rel { margin: 0 0.22em; }
+.gd-tok--punct { margin-right: 0.17em; }
+.gd-tok--op { margin-right: 0.11em; }
+
+.gd-tok--anim {
+  transition:
+    transform var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    opacity var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    color calc(var(--gd-dur) * 0.6) ease-out;
+}
+
+/* removed tokens drift out of an overlay — same ink and size as the equation */
+.gd-ghost { position: absolute; inset: 0; pointer-events: none; color: var(--navy); font-size: var(--gd-size); }
+.gd-ghost-tok { display: inline-block; position: absolute; color: inherit; }
+.gd-ghost .gd-ghost-tok { margin: 0; }
+.gd-ghost-tok--out {
+  opacity: 0;
+  translate: 0 0.35em;
+  transition: opacity var(--gd-dur) ease-in, translate var(--gd-dur) ease-in;
+}
+
+.gd-note {
+  text-align: center;
+  color: var(--steel);
+  font-size: 0.85em;
+  margin: 0.35rem 0 0;
+}
+.gd-note-enter-active, .gd-note-leave-active {
+  transition: opacity 0.3s ease, translate 0.3s ease;
+}
+.gd-note-enter-from, .gd-note-leave-to { opacity: 0; translate: 0 0.3em; }
+
+.gd-progress {
+  display: flex;
+  justify-content: center;
+  gap: 0.45em;
+  margin-top: 0.5em;
+}
+.gd-dot {
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background 0.3s ease;
+}
+.gd-dot--done { background: var(--navy); }
+.gd-dot--on { background: var(--crimson); }
+
+@media print {
+  .gd-ghost { display: none; }
+  .gd-tok, .gd-ghost-tok, .gd-note-enter-active, .gd-note-leave-active { transition: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gd-tok--anim, .gd-ghost-tok--out, .gd-note-enter-active, .gd-note-leave-active { transition: none !important; }
+}
+
 .gov-body { padding: 1.5rem 2.4rem 2rem; }
 .gov-body--centered { height: calc(100% - 6.5rem); display: flex; flex-direction: column; justify-content: center; }

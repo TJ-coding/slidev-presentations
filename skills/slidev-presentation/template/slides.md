@@ -304,6 +304,31 @@ All animated at the component level; static exports show the end state.
 -->
 
 ---
+layout: govuk
+title: 'Pattern: animated derivation'
+lead: 'Equations <strong>morph</strong> — tokens fly, substitutions land, nothing teleports.'
+---
+
+<GovDerivation
+  :steps="[
+    { tex: 'ax^2 + bx + c = 0', note: 'a quadratic equation' },
+    { tex: 'x^2 + \\frac{b}{a}x + \\frac{c}{a} = 0', note: 'divide through by a' },
+    { tex: 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}', note: 'move the constant across' },
+    { tex: 'x^2 + \\frac{b}{a}x + \\frac{b^2}{4a^2} = \\frac{b^2}{4a^2} - \\frac{c}{a}', note: 'complete the square' },
+    { tex: '(x + \\frac{b}{2a})^2 = \\frac{b^2 - 4ac}{4a^2}', note: 'factor the left, combine the right' },
+    { tex: 'x + \\frac{b}{2a} = \\pm \\frac{\\sqrt{b^2 - 4ac}}{2a}', note: 'square root both sides' },
+    { tex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}', note: 'the quadratic formula' },
+  ]"
+  size="md"
+/>
+
+<!--
+GovDerivation: one click per step — surviving tokens fly to their new position,
+new tokens flash crimson, removed tokens drift away. Notes narrate each move.
+Static exports show the final step.
+-->
+
+---
 layout: govuk-end
 title: 'Questions?'
 kicker: 'github.com/your-repo'

@@ -49,7 +49,8 @@ The full contract is `references/design-guidelines.md`. The laws:
 
 Props, usage, and rendered look of every component:
 **`references/components.md`** — GovArrow, GovBox, GovTriangle, GovChain,
-GovPipe, GovStress, and the `dd` pair layout. Use the components instead of raw
+GovPipe, GovStress, GovDerivation (animated equation morphs), and the `dd`
+pair layout. Use the components instead of raw
 CSS classes; they embed the animations and hierarchy rules.
 
 ## Quality gate
