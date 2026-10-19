@@ -271,15 +271,16 @@ watch(stepIndex, async (n, o) => {
   const scale = stageRect.width / stage.offsetWidth || 1
 
   /* --- which old token does each new token continue? --------------------- */
-  /* Element-wise pairing by canonical id, resolved as a whole-stream sequence
-     alignment (longest common subsequence, total token travel as tie-break)
-     rather than per-token occurrence matching. Order preservation is what
-     makes duplicated tokens behave: in
-         X = [m]  →  X' = [m'], X = [m]
-     the old run "X = [m]" can only stay order-consistent by aligning
-     wholesale with the second "X = [m]" — so '=' travels with its X and the
-     X' copy fades in fresh, instead of '=' pairing with X' while X runs off
-     to the second copy. Ties in match count go to the least token travel. */
+  /* Two tiers. morphMap-declared tokens are the same object by authorial
+     fiat: the k-th old occurrence of a declared base continues as the k-th
+     new occurrence — crossing other tokens when the equation rearranges
+     (X ≈ A X → X X† ≈ A: X jumps left into X† while ≈ and A shift right).
+     Everything else aligns order-preservingly (longest common subsequence,
+     total token travel as tie-break), which is what keeps duplicated runs
+     whole: in X = [m] → X' = [m'], X = [m] the surviving run "X = [m]" can
+     only stay order-consistent by aligning with the second "X = [m]" — so
+     '=' travels with its X and the X' copy fades in fresh, instead of '='
+     pairing with X' while X runs off to the second copy. */
   const baseOf = (id: string) => id.replace(/#\d+$/, '')
   const newRects = new Map<string, { left: number; top: number; width: number }>()
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
@@ -291,13 +292,26 @@ watch(stepIndex, async (n, o) => {
   const travel = (a: { left: number; top: number; width: number }, b: { left: number; top: number; width: number }) =>
     Math.abs(a.left + a.width / 2 - b.left - b.width / 2) + Math.abs(a.top - b.top)
   type Rect = { left: number; top: number; width: number }
-  // dp[i][j] = best { reward, -travel } aligning oldSeq[i..] with newSeq[j..].
-  // A matched pair whose base is a morphMap-declared identity earns double
-  // reward — the author said those tokens are the same object, so X → X†
-  // outranks keeping some other token stationary when the counts would tie.
-  const rewardOf = (id: string) => mappedBases.value.has(baseOf(id)) ? 2 : 1
-  const N = oldSeq.length
-  const M = newSeq.length
+  const matchNew = new Map<string, Rect>()
+  const matchedOld = new Set<number>()
+  const oldIdx = new Map(oldSeq.map((t, i) => [t.id, i]))
+
+  // tier 1 — declared identities: occurrence-wise, crossings allowed
+  for (const base of mappedBases.value) {
+    const olds = oldSeq.filter(t => baseOf(t.id) === base)
+    const news = newSeq.filter(t => baseOf(t.id) === base)
+    for (let k = 0; k < Math.min(olds.length, news.length); k++) {
+      matchNew.set(news[k]!.id, oldRects.get(olds[k]!.id)!)
+      matchedOld.add(oldIdx.get(olds[k]!.id)!)
+    }
+  }
+
+  // tier 2 — everything else: order-preserving alignment (LCS, travel tie-break)
+  const freeOld = oldSeq.filter(t => !mappedBases.value.has(baseOf(t.id)))
+  const freeNew = newSeq.filter(t => !mappedBases.value.has(baseOf(t.id)) && !matchNew.has(t.id))
+  const N = freeOld.length
+  const M = freeNew.length
+  // dp[i][j] = best { matches, -travel } aligning freeOld[i..] with freeNew[j..]
   const dp: { m: number; d: number }[][] = Array.from(
     { length: N + 1 },
     () => Array.from({ length: M + 1 }, () => ({ m: 0, d: 0 })),
@@ -309,32 +323,29 @@ watch(stepIndex, async (n, o) => {
       let d = dp[i + 1]![j]!.d
       const up = dp[i]![j + 1]!
       if (up.m > m || (up.m === m && up.d > d)) { m = up.m; d = up.d }
-      if (baseOf(oldSeq[i]!.id) === baseOf(newSeq[j]!.id)) {
+      if (baseOf(freeOld[i]!.id) === baseOf(freeNew[j]!.id)) {
         const c = dp[i + 1]![j + 1]!
-        const cm = c.m + rewardOf(oldSeq[i]!.id)
-        const cd = c.d - travel(oldRects.get(oldSeq[i]!.id)!, newRects.get(newSeq[j]!.id)!)
+        const cm = c.m + 1
+        const cd = c.d - travel(oldRects.get(freeOld[i]!.id)!, newRects.get(freeNew[j]!.id)!)
         if (cm > m || (cm === m && cd > d)) { m = cm; d = cd }
       }
       dp[i]![j] = { m, d }
     }
   }
   // walk the alignment: paired tokens morph, the rest ghost out / fade in
-  const matchNew = new Map<string, Rect>()
-  const matchedOld = new Set<number>()
   {
     let i = 0
     let j = 0
     while (i < N && j < M) {
       const cur = dp[i]![j]!
-      const o = oldSeq[i]!
-      const n = newSeq[j]!
+      const o = freeOld[i]!
+      const n = freeNew[j]!
       if (baseOf(o.id) === baseOf(n.id)) {
         const c = dp[i + 1]![j + 1]!
-        const rw = rewardOf(o.id)
         const cd = c.d - travel(oldRects.get(o.id)!, newRects.get(n.id)!)
-        if (cur.m === c.m + rw && cur.d === cd) {
+        if (cur.m === c.m + 1 && cur.d === cd) {
           matchNew.set(n.id, oldRects.get(o.id)!)
-          matchedOld.add(i)
+          matchedOld.add(oldIdx.get(o.id)!)
           i++
           j++
           continue
