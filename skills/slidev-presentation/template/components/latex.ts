@@ -282,12 +282,15 @@ export function renderTex(tex: string): string {
   }
 }
 
-/** Tokenize + render a whole step, assigning matchable ids. */
-export function renderStep(tex: string): RenderedTok[] {
+/** Tokenize + render a whole step, assigning matchable ids.
+ *  `canon` optionally maps a token's tex to a canonical identity — tokens
+ *  sharing one morph into each other across steps instead of fading apart. */
+export function renderStep(tex: string, canon?: (tex: string) => string): RenderedTok[] {
   const seen = new Map<string, number>()
   return tokenize(tex).map((t) => {
-    const k = seen.get(t.tex) ?? 0
-    seen.set(t.tex, k + 1)
-    return { ...t, id: k === 0 ? t.tex : `${t.tex}#${k}`, html: renderTex(t.tex) }
+    const base = canon ? canon(t.tex) : t.tex
+    const k = seen.get(base) ?? 0
+    seen.set(base, k + 1)
+    return { ...t, id: k === 0 ? base : `${base}#${k}`, html: renderTex(t.tex) }
   })
 }

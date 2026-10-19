@@ -319,13 +319,20 @@ lead: 'Equations <strong>morph</strong> — tokens fly, substitutions land, noth
     { tex: 'x + \\frac{b}{2a} = \\pm \\frac{\\sqrt{b^2 - 4ac}}{2a}', note: 'square root both sides' },
     { tex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}', note: 'the quadratic formula' },
   ]"
+  :morph-map="{
+    '\\frac{b^2 - 4ac}{4a^2}': 'rhs',
+    '\\frac{\\sqrt{b^2 - 4ac}}{2a}': 'rhs',
+    '\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}': 'rhs',
+  }"
   size="md"
 />
 
 <!--
 GovDerivation: one click per step — surviving tokens fly to their new position,
-new tokens flash crimson, removed tokens drift away. Notes narrate each move.
-Static exports show the final step.
+new tokens flash crimson, removed tokens drift away. The morph-map gives the
+RHS fractions one identity, so 'complete the square' → 'square root' → 'formula'
+morphs the fraction instead of swapping it (Manim's TransformMatchingTex).
+Notes narrate each move. Static exports show the final step.
 -->
 
 ---

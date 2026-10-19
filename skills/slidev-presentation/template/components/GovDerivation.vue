@@ -38,6 +38,9 @@ const props = withDefaults(defineProps<{
   showProgress?: boolean
   /** write completed steps below the equation as a ledger, so the audience can catch up */
   showHistory?: boolean
+  /** token tex → canonical identity: tokens sharing an id morph into each
+   *  other (in order of appearance) instead of fading out and flashing in */
+  morphMap?: Record<string, string>
 }>(), {
   duration: 700,
   size: 'lg',
@@ -93,8 +96,13 @@ const stepIndex = computed(() => {
   return Math.min(Math.max(c, 0), max)
 })
 const currentStep = computed(() => steps.value[stepIndex.value] ?? { tex: '' })
-const tokens = computed(() => renderStep(currentStep.value.tex))
+const tokens = computed(() => renderStep(currentStep.value.tex, canonTok))
 const currentNote = computed(() => currentStep.value.note ?? '')
+
+/** canonical identity of a token tex: morphMap override, else the tex itself */
+function canonTok(tex: string): string {
+  return props.morphMap?.[tex] ?? tex
+}
 
 /* --- history ledger ---------------------------------------------------- */
 /* Every step the derivation has passed is written below the equation —
@@ -152,7 +160,7 @@ watch(stepIndex, async (n, o) => {
     oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width })
   })
   const oldIds = new Set(oldRects.keys())
-  const newToks = renderStep(steps.value[n].tex)
+  const newToks = renderStep(steps.value[n].tex, canonTok)
   const newIds = new Set(newToks.map(t => t.id))
   const leaving = [...oldRects.keys()].filter(id => !newIds.has(id))
 
@@ -189,7 +197,7 @@ watch(stepIndex, async (n, o) => {
 
   // … and let the removed tokens drift out of a ghost overlay
   if (leaving.length) {
-    const oldToks = renderStep(steps.value[o].tex)
+    const oldToks = renderStep(steps.value[o].tex, canonTok)
     ghostToks.value = leaving.map((id) => {
       const r = oldRects.get(id)!
       const tk = oldToks.find(t => t.id === id)!
