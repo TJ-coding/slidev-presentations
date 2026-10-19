@@ -42,7 +42,10 @@ const REL_CMDS = new Set([
   '\\leq', '\\geq', '\\leqq', '\\geqq', '\\neq', '\\ne', '\\approx',
   '\\equiv', '\\sim', '\\simeq', '\\cong', '\\propto', '\\to',
   '\\rightarrow', '\\leftarrow', '\\Rightarrow', '\\Leftarrow',
-  '\\leftrightarrow', '\\mapsto', '\\ll', '\\gg', '\\subset',
+  '\\longrightarrow', '\\longleftarrow', '\\Longrightarrow', '\\Longleftarrow',
+  '\\leftrightarrow', '\\Leftrightarrow', '\\mapsto', '\\rightleftharpoons',
+  '\\implies', '\\impliedby',
+  '\\ll', '\\gg', '\\subset',
   '\\supset', '\\subseteq', '\\supseteq', '\\in', '\\ni', '\\notin',
   '\\perp', '\\parallel', '\\mid', '\\vdash', '\\dashv',
 ])
@@ -61,6 +64,22 @@ const OPEN_CMDS = new Set([
 
 const CLOSE_CMDS = new Set([
   '\\}', '\\rangle', '\\rfloor', '\\rceil', '\\rvert', '\\rVert',
+])
+
+// commands that take one argument ({group}, \cmd, or single char) which must
+// stay inside the token — \mathbf alone is a KaTeX parse error.
+// NOTE: bare names, not \-prefixed — the tokenizer matches against `name`
+const ONE_ARG_CMDS = new Set([
+  'mathbf', 'mathrm', 'mathcal', 'mathbb', 'mathsf', 'mathtt', 'mathit',
+  'bm', 'boldsymbol', 'pmb', 'bold',
+  'hat', 'widehat', 'bar', 'overline', 'underline',
+  'vec', 'overrightarrow', 'overleftarrow',
+  'dot', 'ddot', 'tilde', 'widetilde',
+  'check', 'acute', 'breve', 'grave',
+  'overbrace', 'underbrace',
+  'text', 'textrm', 'textbf', 'textit', 'textsf', 'texttt',
+  'operatorname', 'substack',
+  'mathbin', 'mathrel', 'mathord', 'mathop', 'mathopen', 'mathclose',
 ])
 
 function classifyCmd(tex: string): TokClass {
@@ -197,6 +216,26 @@ export function tokenize(src: string): Tok[] {
           tex += src[i]!
           i++
         }
+      } else if (name === 'begin') {
+        // whole environment is one token: \begin{env}…\end{env} — matrices
+        // and aligned blocks must render as a unit, & and \\ included
+        const env = readBraceGroup()
+        const BEG = `\\begin{${env}}`
+        const END = `\\end{${env}}`
+        let depth = 1
+        let j = i
+        while (j < n && depth > 0) {
+          const b = src.indexOf(BEG, j)
+          const e = src.indexOf(END, j)
+          if (e === -1) { j = n; break }
+          if (b !== -1 && b < e) { depth++; j = b + BEG.length }
+          else { depth--; j = e + END.length }
+        }
+        tex += `{${env}}${src.slice(i, j)}`
+        i = j
+      } else if (ONE_ARG_CMDS.has(name)) {
+        const arg = readScriptArg()
+        tex += arg.startsWith('{') ? arg : `{${arg}}`
       }
       pushTok(tex, classifyCmd(tex))
       continue
