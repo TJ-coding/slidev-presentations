@@ -18,7 +18,12 @@
 //   <GovDerivation :steps="['ax^2 + bx + c = 0', 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}']" />
 //   <GovDerivation :steps="[{ tex: 'E = mc^2', note: 'mass–energy equivalence' }]" />
 //   // notes take plain text with inline math: `$…$` spans render via KaTeX
+//   // (a note identical to the previous step's stays put — no fade/replay)
 //   <GovDerivation :steps="[{ tex: '\\mathbf{A}x = b', note: 'Apply $\\mathbf{A}^{-1}$ on both sides' }]" />
+//   // a step can opt out of the ledger — e.g. a tall matrix line:
+//   <GovDerivation :steps="[{ tex: '\\mathbf{X} = …', history: false }]" />
+//   // …or keep the equation but give its ledger line its own tex/note:
+//   <GovDerivation :steps="[{ tex: '\\mathbf{X} = \\begin{bmatrix} …', note: 'full matrix', historyTex: '\\mathbf{X}', historyNote: 'snapshots' }]" />
 //   <GovDerivation :steps="…" :history-size="0.7" :history-opacity="0.55" />
 
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -30,6 +35,13 @@ interface DerivationStep {
   tex: string
   /** note shown under the equation; `$…$` spans inside render as inline math */
   note?: string
+  /** set false to keep this step out of the history ledger (default true) */
+  history?: boolean
+  /** LaTeX shown for this step in the history ledger instead of `tex` —
+   *  e.g. a compact form when the full equation is too tall */
+  historyTex?: string
+  /** note shown for this step in the history ledger instead of `note` */
+  historyNote?: string
 }
 
 const props = withDefaults(defineProps<{
@@ -178,21 +190,26 @@ function canonTok(tex: string): string {
 /* --- history ledger ---------------------------------------------------- */
 /* Every step the derivation has passed is written below the equation —
    small, with its note — so anyone who missed a morph can still follow.
-   Rendered once per tex and cached. In print the ledger lists every step
-   except the last (the big equation shows the final step). */
+   Steps with `history: false` are omitted (useful for a tall matrix line
+   that would bloat the ledger). Rendered once per tex and cached. In print
+   the ledger lists every step except the last (the big equation shows the
+   final step). */
 const histCache = new Map<string, string>()
 const historyHtml = computed<Record<number, string>>(() => {
   const m: Record<number, string> = {}
   for (let i = 0; i < steps.value.length; i++) {
-    const tex = steps.value[i]!.tex
+    const tex = steps.value[i]!.historyTex ?? steps.value[i]!.tex
     if (!histCache.has(tex)) histCache.set(tex, renderTex(tex))
     m[i] = histCache.get(tex)!
   }
   return m
 })
+const historyNote = (step: DerivationStep | undefined) => step?.historyNote ?? step?.note
 const visited = computed(() => {
   const out: number[] = []
-  for (let i = 0; i < stepIndex.value; i++) out.push(i)
+  for (let i = 0; i < stepIndex.value; i++) {
+    if (steps.value[i]?.history !== false) out.push(i)
+  }
   return out
 })
 
@@ -333,11 +350,11 @@ onUnmounted(() => { morphGen++ })
         class="gd-hist-line"
       >
         <span class="gd-hist-eq" v-html="historyHtml[i]"></span>
-        <span v-if="steps[i]?.note" class="gd-hist-note" v-html="noteHtml(steps[i]!.note!)"></span>
+        <span v-if="historyNote(steps[i])" class="gd-hist-note" v-html="noteHtml(historyNote(steps[i])!)"></span>
       </div>
     </TransitionGroup>
     <Transition name="gd-note" mode="out-in">
-      <p v-if="currentNote" :key="stepIndex" class="gd-note" v-html="currentNoteHtml"></p>
+      <p v-if="currentNote" :key="currentNote" class="gd-note" v-html="currentNoteHtml"></p>
     </Transition>
     <div v-if="showProgress && steps.length > 1" class="gd-progress" aria-hidden="true">
       <span
