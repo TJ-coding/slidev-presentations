@@ -37,11 +37,12 @@ arrow**, the name/explanation sits **below in ink**. Values are never boxed.
 ```html
 <GovBox label="Installed Cache" />
 <GovBox inverted label="Installed Cache" />
+<GovBox label="$$\mathbf{A} \in \mathbb{C}^{n \times n}$$" />
 ```
 
 | | |
 |---|---|
-| props | `label`; `inverted` (default fill navy → white fill + navy outline/ink) |
+| props | `label` (HTML / `$…$`, `$$…$$` LaTeX — typeset via KaTeX); `inverted` (default fill navy → white fill + navy outline/ink) |
 | slots | default — replaces the label text |
 
 ![GovBox](components/img/gov-box.png)
@@ -58,11 +59,12 @@ arrow = data, triangle = therefore.
 <GovTriangle color="green" dir="down" />     <!-- positive verdict -->
 <GovTriangle color="red" />                  <!-- negative verdict -->
 <GovTriangle dir="up" /> · <GovTriangle dir="left" /> · <GovTriangle dir="right" />
+<GovTriangle label="When $n$ is large" />    <!-- annotation above the ▼ -->
 ```
 
 | | |
 |---|---|
-| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`) |
+| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`); `label` — HTML / `$…$`, `$$…$$` LaTeX annotation rendered just above the ▼ |
 | animation | drops in top→bottom on click (`animated="false"` renders it plain for chains) |
 
 ![GovTriangle](components/img/gov-triangle.png)
@@ -77,6 +79,8 @@ triangle slides down to meet the bottom text.
 ```html
 <GovChain top-box="Installed Cache" bottom="Drops Latency" />
 <GovChain top="<b>Installed Cache</b>" bottom="Drops <u>Latency</u>" color="green" />
+<GovChain top-box="$$\mathbf{A} \in \mathbb{C}^{n \times n}$$" bottom="Drops Latency" />
+<GovChain top-box="Cache hit" bottom="Drops Latency" label="When $n$ is large" />
 <GovChain
   :steps="[
     { topBox: 'Installed Cache',      bottom: 'Drops Latency' },
@@ -86,7 +90,7 @@ triangle slides down to meet the bottom text.
 
 | | |
 |---|---|
-| props | `top` (HTML), `topBox` (renders `GovBox` instead), `bottom` (HTML), `color`, `steps` (array of the above — chains any number) |
+| props | `top` (HTML / LaTeX), `topBox` (renders `GovBox` instead), `bottom` (HTML / LaTeX), `label` (annotation on the triangle, HTML / LaTeX), `color`, `steps` (array of the above — chains any number). Top and bottom text also accept `$…$` / `$$…$$` LaTeX, typeset via KaTeX |
 | slots | `#top`, `#bottom` — full custom markup for either end |
 | animation | one click per step: tail fades, triangle slides, bottom arrives with it |
 

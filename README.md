@@ -29,9 +29,9 @@ example-reference/          Sample reference deck (PDFs) used for the brand
 | Component | Purpose |
 |---|---|
 | `GovArrow` | Data arrow: example value on top, name below, slides in on click |
-| `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text) |
-| `GovTriangle` | The wide "therefore" ▼ — `color="green\|red"`, `dir="up\|left\|right"`, drops in on click |
-| `GovChain` | Block → ▼ → consequence, single click; `:steps="[…]"` chains any number |
+| `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text; `label` takes HTML or `$…$`/`$$…$$` LaTeX) |
+| `GovTriangle` | The wide "therefore" ▼ — `color="green\|red"`, `dir="up\|left\|right"`, drops in on click; `label` annotates it (HTML/LaTeX) |
+| `GovChain` | Block → ▼ → consequence, single click; `:steps="[…]"` chains any number; text accepts HTML or LaTeX; `label` annotates the triangle |
 | `GovDerivation` | 3Blue1Brown-style equation morphs — `:steps="[…]"` LaTeX, tokens fly/fade per click |
 | `GovPipe` | N inputs through an icon-name or box stage into M outputs |
 | `GovStress` | The verdict box: infilled navy header + value frame |

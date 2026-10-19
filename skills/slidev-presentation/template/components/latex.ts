@@ -278,8 +278,52 @@ export function renderTex(tex: string): string {
       output: 'html',
     })
   } catch {
-    return tex.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    return escapeHtml(tex)
   }
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+/** Render a note with inline math: `$…$` spans become KaTeX (inline mode),
+ *  the surrounding text is HTML-escaped. `\$` is a literal dollar sign, and
+ *  an unbalanced `$` stays literal. Feeds GovDerivation's notes. */
+export function renderNote(note: string): string {
+  if (!note.includes('$')) return escapeHtml(note)
+  let out = ''
+  let text = ''
+  let i = 0
+  const n = note.length
+  while (i < n) {
+    const c = note[i]!
+    if (c === '\\' && note[i + 1] === '$') { text += '$'; i += 2; continue }
+    if (c !== '$') { text += c; i++; continue }
+    // opening $ — scan ahead for the closing one, `\$` digraphs stay literal
+    let j = i + 1
+    let src = ''
+    while (j < n) {
+      if (note[j] === '\\' && note[j + 1] === '$') { src += '$'; j += 2; continue }
+      if (note[j] === '$') break
+      src += note[j]
+      j++
+    }
+    if (j >= n) { text += '$'; i++; continue } // unbalanced — literal dollar
+    out += escapeHtml(text)
+    text = ''
+    try {
+      out += katex.renderToString(src, {
+        displayMode: false,
+        throwOnError: false,
+        strict: false,
+        output: 'html',
+      })
+    } catch {
+      out += escapeHtml(`$${src}$`)
+    }
+    i = j + 1
+  }
+  return out + escapeHtml(text)
 }
 
 /** Tokenize + render a whole step, assigning matchable ids.

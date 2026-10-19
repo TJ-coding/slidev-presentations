@@ -312,7 +312,7 @@ lead: 'Equations <strong>morph</strong> — tokens fly, substitutions land, noth
 <GovDerivation
   :steps="[
     { tex: 'ax^2 + bx + c = 0', note: 'a quadratic equation' },
-    { tex: 'x^2 + \\frac{b}{a}x + \\frac{c}{a} = 0', note: 'divide through by a' },
+    { tex: 'x^2 + \\frac{b}{a}x + \\frac{c}{a} = 0', note: 'divide through by $a$' },
     { tex: 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}', note: 'move the constant across' },
     { tex: 'x^2 + \\frac{b}{a}x + \\frac{b^2}{4a^2} = \\frac{b^2}{4a^2} - \\frac{c}{a}', note: 'complete the square' },
     { tex: '(x + \\frac{b}{2a})^2 = \\frac{b^2 - 4ac}{4a^2}', note: 'factor the left, combine the right' },
