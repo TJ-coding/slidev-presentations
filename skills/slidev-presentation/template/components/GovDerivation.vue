@@ -44,7 +44,10 @@ const props = withDefaults(defineProps<{
   /** write completed steps below the equation as a ledger, so the audience can catch up */
   showHistory?: boolean
   /** token tex → canonical identity: tokens sharing an id morph into each
-   *  other (in order of appearance) instead of fading out and flashing in */
+   *  other (in order of appearance) instead of fading out and flashing in.
+   *  Identity follows decoration: `\underbrace{\mathbf{x}_t}_\text{…}` is
+   *  still `\mathbf{x}_t` (so it matches automatically), and the map only
+   *  needs to declare renames like `\mathbf{x}_t` → `\mathbf{x}_1` */
   morphMap?: Record<string, string>
   /** font size of the stacked history lines — number = em multiplier of the
    *  equation size (default 0.58), string = raw CSS length (e.g. '1.1rem') */
@@ -140,11 +143,36 @@ const normScript = (s: string) =>
   s
     .replace(/([_^])\{([a-zA-Z0-9])\}/g, '$1$2')
     .replace(/([_^])\{(\\[a-zA-Z]+(?:\{[^{}]*\})?)\}/g, '$1$2')
+/** the element inside a decoration — `\underbrace{\mathbf{x}_t}_\text{Current
+ *  state}` is still `\mathbf{x}_t`: the brace is an annotation, not a new
+ *  element, so the decorated token keeps the core's identity and morphs. */
+function decorationCore(tex: string): string | null {
+  const m = /^\\(?:under|over)brace\{/.exec(tex)
+  if (!m) return null
+  let depth = 0
+  for (let i = m[0].length - 1; i < tex.length; i++) {
+    const c = tex[i]
+    if (c === '\\') {
+      i++ // skip the escaped char — harmless for brace depth
+      continue
+    }
+    if (c === '{') depth++
+    else if (c === '}') {
+      depth--
+      if (depth === 0) return tex.slice(m[0].length, i)
+    }
+  }
+  return null // unbalanced — leave the tex as-is
+}
 function canonTok(tex: string): string {
   const map = props.morphMap
-  if (!map) return normScript(tex)
-  const v = map[tex] ?? map[normScript(tex)]
-  return v !== undefined ? normScript(v) : normScript(tex)
+  if (map) {
+    const v = map[tex] ?? map[normScript(tex)]
+    if (v !== undefined) return normScript(v)
+  }
+  const core = decorationCore(tex)
+  if (core !== null) return canonTok(core)
+  return normScript(tex)
 }
 
 /* --- history ledger ---------------------------------------------------- */
