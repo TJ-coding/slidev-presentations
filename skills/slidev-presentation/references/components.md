@@ -150,8 +150,8 @@ below. Use for the 2–4 claims a deck exists to defend.
 
 3Blue1Brown-style equation transformations. Each click morphs the equation one
 step: tokens that survive fly to their new position (FLIP), new tokens fade in
-flashed crimson, removed tokens drift away quickly (~45% of the morph duration, so they don't
-linger distractingly) — Manim's `TransformMatchingTex`, in the browser.
+flashed crimson, removed tokens vanish almost immediately (~20% of the morph duration, ease-out) —
+Manim's `TransformMatchingTex`, in the browser.
 
 ```html
 <GovDerivation

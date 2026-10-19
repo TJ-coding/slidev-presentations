@@ -81,7 +81,7 @@ const steps = computed<DerivationStep[]>(() =>
    CSS defaults (0.58 of the equation size, full opacity) stay in charge.
    Removed tokens fade out on a faster clock than the morph itself (--gd-exit-dur):
    they only need to get out of the way, not keep pace with the survivors. */
-const EXIT_SCALE = 0.45
+const EXIT_SCALE = 0.2
 const exitDur = computed(() => Math.round(props.duration * EXIT_SCALE))
 const rootStyle = computed(() => {
   const style: Record<string, string> = {
