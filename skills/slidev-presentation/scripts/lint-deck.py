@@ -23,11 +23,12 @@ import sys
 
 KNOWN_LAYOUTS = {
     "govuk", "govuk-cover", "govuk-section", "govuk-two-cols",
-    "govuk-image-right", "govuk-end", "dd", "default", "center", "section", "two-cols",
+    "govuk-image-right", "govuk-end", "govuk-about",
+    "dd", "default", "center", "section", "two-cols",
 }
 CONTENT_LAYOUTS = {"govuk", "govuk-two-cols", "govuk-image-right", "govuk-end"}
 # title-only layouts: the visual IS the content; no lead: required
-PAIR_LAYOUTS = {"dd"}
+PAIR_LAYOUTS = {"dd", "govuk-about"}
 
 SEP = re.compile(r"-{3,}\s*$")
 KEY = re.compile(r"^\s*([\w-]+)\s*:\s*(.*)$")
