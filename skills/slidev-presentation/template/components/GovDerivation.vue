@@ -194,6 +194,11 @@ function canonTok(tex: string): string {
   return normScript(tex)
 }
 
+/** canonical ids a morphMap entry declares — authorial identity, which the
+ *  alignment must honour over mere travel-distance tie-breaks (X → X† must
+ *  morph even when letting some other token stay put would travel less) */
+const mappedBases = computed(() => new Set(Object.values(props.morphMap ?? {}).map(v => normScript(v))))
+
 /* --- history ledger ---------------------------------------------------- */
 /* Every step the derivation has passed is written below the equation —
    small, with its note — so anyone who missed a morph can still follow.
@@ -286,7 +291,11 @@ watch(stepIndex, async (n, o) => {
   const travel = (a: { left: number; top: number; width: number }, b: { left: number; top: number; width: number }) =>
     Math.abs(a.left + a.width / 2 - b.left - b.width / 2) + Math.abs(a.top - b.top)
   type Rect = { left: number; top: number; width: number }
-  // dp[i][j] = best { matches, -travel } aligning oldSeq[i..] with newSeq[j..]
+  // dp[i][j] = best { reward, -travel } aligning oldSeq[i..] with newSeq[j..].
+  // A matched pair whose base is a morphMap-declared identity earns double
+  // reward — the author said those tokens are the same object, so X → X†
+  // outranks keeping some other token stationary when the counts would tie.
+  const rewardOf = (id: string) => mappedBases.value.has(baseOf(id)) ? 2 : 1
   const N = oldSeq.length
   const M = newSeq.length
   const dp: { m: number; d: number }[][] = Array.from(
@@ -302,7 +311,7 @@ watch(stepIndex, async (n, o) => {
       if (up.m > m || (up.m === m && up.d > d)) { m = up.m; d = up.d }
       if (baseOf(oldSeq[i]!.id) === baseOf(newSeq[j]!.id)) {
         const c = dp[i + 1]![j + 1]!
-        const cm = c.m + 1
+        const cm = c.m + rewardOf(oldSeq[i]!.id)
         const cd = c.d - travel(oldRects.get(oldSeq[i]!.id)!, newRects.get(newSeq[j]!.id)!)
         if (cm > m || (cm === m && cd > d)) { m = cm; d = cd }
       }
@@ -321,8 +330,9 @@ watch(stepIndex, async (n, o) => {
       const n = newSeq[j]!
       if (baseOf(o.id) === baseOf(n.id)) {
         const c = dp[i + 1]![j + 1]!
+        const rw = rewardOf(o.id)
         const cd = c.d - travel(oldRects.get(o.id)!, newRects.get(n.id)!)
-        if (cur.m === c.m + 1 && cur.d === cd) {
+        if (cur.m === c.m + rw && cur.d === cd) {
           matchNew.set(n.id, oldRects.get(o.id)!)
           matchedOld.add(i)
           i++
