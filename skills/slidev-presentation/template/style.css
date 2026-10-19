@@ -517,9 +517,12 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gd-note-enter-from, .gd-note-leave-to { opacity: 0; translate: 0 0.3em; }
 
 /* history ledger — completed steps written below the equation so the
-   audience can catch up; the newest line settles in as the morph lands */
+   audience can catch up; the newest line settles in as the morph lands.
+   The component sets --gd-hist-size (raw CSS length) or --gd-hist-scale
+   (em multiplier) from its historySize prop, and --gd-hist-opacity from
+   historyOpacity; the fallbacks are the defaults. */
 .gd-history {
-  font-size: calc(var(--gd-size) * 0.58);
+  font-size: var(--gd-hist-size, calc(var(--gd-size) * var(--gd-hist-scale, 0.58)));
   line-height: 1.6;
   margin: 0.15em 0 0;
 }
@@ -529,6 +532,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
   align-items: baseline;
   gap: 0.7em;
   color: var(--steel);
+  opacity: var(--gd-hist-opacity, 1);
 }
 .gd-hist-eq .katex-display { display: contents; margin: 0; }
 .gd-hist-eq .katex { text-align: left; }

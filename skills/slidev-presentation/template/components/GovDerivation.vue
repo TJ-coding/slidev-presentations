@@ -17,19 +17,24 @@
 // Usage:
 //   <GovDerivation :steps="['ax^2 + bx + c = 0', 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}']" />
 //   <GovDerivation :steps="[{ tex: 'E = mc^2', note: 'mass–energy equivalence' }]" />
+//   // notes take plain text with inline math: `$…$` spans render via KaTeX
+//   <GovDerivation :steps="[{ tex: '\\mathbf{A}x = b', note: 'Apply $\\mathbf{A}^{-1}$ on both sides' }]" />
+//   <GovDerivation :steps="…" :history-size="0.7" :history-opacity="0.55" />
 
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'
 import type { ClicksContext } from '@slidev/types'
-import { renderStep, renderTex, type RenderedTok, type TokClass } from './latex'
+import { renderNote, renderStep, renderTex, type RenderedTok, type TokClass } from './latex'
 
 interface DerivationStep {
   tex: string
+  /** note shown under the equation; `$…$` spans inside render as inline math */
   note?: string
 }
 
 const props = withDefaults(defineProps<{
-  /** derivation steps — LaTeX source, or { tex, note } (note renders under the equation) */
+  /** derivation steps — LaTeX source, or { tex, note } (note renders under
+   *  the equation; `$…$` spans inside the note render as inline math) */
   steps: (string | DerivationStep)[]
   /** morph duration in ms */
   duration?: number
@@ -41,6 +46,11 @@ const props = withDefaults(defineProps<{
   /** token tex → canonical identity: tokens sharing an id morph into each
    *  other (in order of appearance) instead of fading out and flashing in */
   morphMap?: Record<string, string>
+  /** font size of the stacked history lines — number = em multiplier of the
+   *  equation size (default 0.58), string = raw CSS length (e.g. '1.1rem') */
+  historySize?: string | number
+  /** opacity of the stacked history lines (default 1; the ink is already muted) */
+  historyOpacity?: number
 }>(), {
   duration: 700,
   size: 'lg',
@@ -51,6 +61,16 @@ const props = withDefaults(defineProps<{
 const steps = computed<DerivationStep[]>(() =>
   props.steps.map(s => (typeof s === 'string' ? { tex: s } : s)),
 )
+
+/* root styling vars — historySize/historyOpacity only bind when set, so the
+   CSS defaults (0.58 of the equation size, full opacity) stay in charge */
+const rootStyle = computed(() => {
+  const style: Record<string, string> = { '--gd-dur': `${props.duration}ms` }
+  if (typeof props.historySize === 'number') style['--gd-hist-scale'] = String(props.historySize)
+  else if (typeof props.historySize === 'string') style['--gd-hist-size'] = props.historySize
+  if (props.historyOpacity !== undefined) style['--gd-hist-opacity'] = String(props.historyOpacity)
+  return style
+})
 
 /* --- click source: the slide's click counter, or a local fallback ------ */
 let navClicks: { value: number } | null = null
@@ -98,6 +118,19 @@ const stepIndex = computed(() => {
 const currentStep = computed(() => steps.value[stepIndex.value] ?? { tex: '' })
 const tokens = computed(() => renderStep(currentStep.value.tex, canonTok))
 const currentNote = computed(() => currentStep.value.note ?? '')
+
+/* notes support inline math (`Apply $\mathbf{X}^\dagger$ on both sides`) —
+   rendered once per distinct note text and cached */
+const noteCache = new Map<string, string>()
+function noteHtml(note: string): string {
+  let h = noteCache.get(note)
+  if (h === undefined) {
+    h = renderNote(note)
+    noteCache.set(note, h)
+  }
+  return h
+}
+const currentNoteHtml = computed(() => (currentNote.value ? noteHtml(currentNote.value) : ''))
 
 /** canonical identity of a token tex: morphMap override, else the tex itself.
  *  Lookups tolerate script-brace variation: `x_2`, `x_{2}` both normalize to
@@ -233,7 +266,7 @@ onUnmounted(() => { morphGen++ })
   <div
     class="gov-derivation"
     :class="`gov-derivation--${size}`"
-    :style="{ '--gd-dur': `${duration}ms` }"
+    :style="rootStyle"
     @click="onRootClick"
   >
     <div ref="stageRef" class="gd-stage">
@@ -265,11 +298,11 @@ onUnmounted(() => { morphGen++ })
         class="gd-hist-line"
       >
         <span class="gd-hist-eq" v-html="historyHtml[i]"></span>
-        <span v-if="steps[i]?.note" class="gd-hist-note">{{ steps[i]!.note }}</span>
+        <span v-if="steps[i]?.note" class="gd-hist-note" v-html="noteHtml(steps[i]!.note!)"></span>
       </div>
     </TransitionGroup>
     <Transition name="gd-note" mode="out-in">
-      <p v-if="currentNote" :key="stepIndex" class="gd-note">{{ currentNote }}</p>
+      <p v-if="currentNote" :key="stepIndex" class="gd-note" v-html="currentNoteHtml"></p>
     </Transition>
     <div v-if="showProgress && steps.length > 1" class="gd-progress" aria-hidden="true">
       <span
