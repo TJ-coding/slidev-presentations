@@ -225,12 +225,12 @@ watch(stepIndex, async (n, o) => {
   ghostToks.value = []
 
   // measure the outgoing tokens — the DOM still shows step o
-  const oldRects = new Map<string, { left: number; top: number; width: number; height: number }>()
+  const oldRects = new Map<string, { left: number; top: number; width: number }>()
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
     const r = el.getBoundingClientRect()
-    oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width, height: r.height })
+    oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width })
   })
-  const oldIds = new Set(oldRects.keys())
+  const oldToks = renderStep(steps.value[o].tex, canonTok)
   const newToks = renderStep(steps.value[n].tex, canonTok)
   const newIds = new Set(newToks.map(t => t.id))
   const leaving = [...oldRects.keys()].filter(id => !newIds.has(id))
@@ -248,20 +248,13 @@ watch(stepIndex, async (n, o) => {
     const old = oldRects.get(el.dataset.gdId!)
     if (old) {
       const r = el.getBoundingClientRect()
-      const dx = (old.left - r.left) / scale
+      // position-only morph, like a mapped matrix cell: the token glides from
+      // its old spot to its new one, never stretched. Centre-x + top anchoring
+      // means a wide replacement (x_t → \underbrace{x_t}) wraps around the
+      // old glyph where it stood instead of sliding in from the left edge.
+      const dx = (old.left + old.width / 2 - (r.left + r.width / 2)) / scale
       const dy = (old.top - r.top) / scale
-      // FLIP scale: a surviving token starts at its previous box size and
-      // grows into the new shape — a small x_t widens into an underbrace
-      // instead of the new shape popping in at full size and sliding.
-      // translate and scale are separate CSS properties so they can run on
-      // different curves: position snaps, the shape morphs over the full beat.
-      const sx = old.width / (r.width || 1)
-      const sy = old.height / (r.height || 1)
       if (dx !== 0 || dy !== 0) el.style.translate = `${dx}px ${dy}px`
-      if (Math.abs(sx - 1) > 0.01 || Math.abs(sy - 1) > 0.01) {
-        el.style.transformOrigin = '0 0'
-        el.style.scale = `${sx} ${sy}`
-      }
     } else {
       // entering token: fade + rise, flashed crimson — this is what changed
       el.style.opacity = '0'
@@ -273,14 +266,12 @@ watch(stepIndex, async (n, o) => {
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
     el.classList.add('gd-tok--anim')
     el.style.translate = ''
-    el.style.scale = ''
     el.style.opacity = ''
     el.style.color = ''
   })
 
   // … and let the removed tokens drift out of a ghost overlay
   if (leaving.length) {
-    const oldToks = renderStep(steps.value[o].tex, canonTok)
     ghostToks.value = leaving.map((id) => {
       const r = oldRects.get(id)!
       const tk = oldToks.find(t => t.id === id)!

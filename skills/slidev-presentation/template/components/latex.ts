@@ -274,9 +274,52 @@ export function tokenize(src: string): Tok[] {
 /* rendering                                                           */
 /* ------------------------------------------------------------------ */
 
+/** \underbrace sits at the depth of its content, so on one line a brace
+ *  over a plain symbol rides higher than one over a subscripted token —
+ *  same for the label under it. Baking a fixed depth rule into every
+ *  underbraced content pins all braces (and labels) to one line;
+ *  \overbrace gets the mirrored height rule. */
+const BRACE_DEPTH = '\\rule[-0.32em]{0pt}{0pt}'
+const BRACE_HEIGHT = '\\rule[0.32em]{0pt}{0pt}'
+
+/** index of the `}` matching the `{` at `open`, or -1 */
+function closeBrace(tex: string, open: number): number {
+  let depth = 0
+  for (let i = open; i < tex.length; i++) {
+    const c = tex[i]
+    if (c === '\\') { i++; continue }
+    if (c === '{') depth++
+    else if (c === '}' && --depth === 0) return i
+  }
+  return -1
+}
+
+/** insert a depth/height strut inside every brace command's argument —
+ *  display-only: token tex (and thus morph identity) keeps the original. */
+function braceStruts(tex: string): string {
+  let out = ''
+  let i = 0
+  while (i < tex.length) {
+    const m = tex[i] === '\\' ? /^\\(under|over)brace\{/.exec(tex.slice(i)) : null
+    if (m) {
+      const open = i + m[0].length - 1
+      const close = closeBrace(tex, open)
+      if (close > 0) {
+        out += m[0] + braceStruts(tex.slice(open + 1, close))
+          + (m[1] === 'under' ? BRACE_DEPTH : BRACE_HEIGHT) + '}'
+        i = close + 1
+        continue
+      }
+    }
+    out += tex[i]
+    i++
+  }
+  return out
+}
+
 export function renderTex(tex: string): string {
   try {
-    return katex.renderToString(tex, {
+    return katex.renderToString(braceStruts(tex), {
       displayMode: true,
       throwOnError: false,
       strict: false,
@@ -317,7 +360,7 @@ export function renderNote(note: string): string {
     out += escapeHtml(text)
     text = ''
     try {
-      out += katex.renderToString(src, {
+      out += katex.renderToString(braceStruts(src), {
         displayMode: false,
         throwOnError: false,
         strict: false,
