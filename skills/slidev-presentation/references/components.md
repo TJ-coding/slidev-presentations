@@ -59,12 +59,12 @@ arrow = data, triangle = therefore.
 <GovTriangle color="green" dir="down" />     <!-- positive verdict -->
 <GovTriangle color="red" />                  <!-- negative verdict -->
 <GovTriangle dir="up" /> · <GovTriangle dir="left" /> · <GovTriangle dir="right" />
-<GovTriangle label="When $n$ is large" />    <!-- annotation above the ▼ -->
+<GovTriangle label="When $n$ is large" />    <!-- white text on the ▼ -->
 ```
 
 | | |
 |---|---|
-| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`); `label` — HTML / `$…$`, `$$…$$` LaTeX annotation rendered just above the ▼ |
+| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`); `label` — short HTML / `$…$`, `$$…$$` LaTeX rendered as plain white text **on the fill**, centred on the triangle's centroid; the labeled ▼ grows into a broad arrowhead wide enough to carry one line clear of its slanted edges |
 | animation | drops in top→bottom on click (`animated="false"` renders it plain for chains) |
 
 ![GovTriangle](components/img/gov-triangle.png)
@@ -90,7 +90,7 @@ triangle slides down to meet the bottom text.
 
 | | |
 |---|---|
-| props | `top` (HTML / LaTeX), `topBox` (renders `GovBox` instead), `bottom` (HTML / LaTeX), `label` (annotation on the triangle, HTML / LaTeX), `color`, `steps` (array of the above — chains any number). Top and bottom text also accept `$…$` / `$$…$$` LaTeX, typeset via KaTeX |
+| props | `top` (HTML / LaTeX), `topBox` (renders `GovBox` instead), `bottom` (HTML / LaTeX), `label` (white text on the triangle fill, HTML / LaTeX), `color`, `steps` (array of the above — chains any number). Top and bottom text also accept `$…$` / `$$…$$` LaTeX, typeset via KaTeX |
 | slots | `#top`, `#bottom` — full custom markup for either end |
 | animation | one click per step: tail fades, triangle slides, bottom arrives with it |
 
@@ -150,8 +150,8 @@ below. Use for the 2–4 claims a deck exists to defend.
 
 3Blue1Brown-style equation transformations. Each click morphs the equation one
 step: tokens that survive fly to their new position (FLIP), new tokens fade in
-flashed crimson, removed tokens drift away — Manim's `TransformMatchingTex`,
-in the browser.
+flashed crimson, removed tokens drift away quickly (~45% of the morph duration, so they don't
+linger distractingly) — Manim's `TransformMatchingTex`, in the browser.
 
 ```html
 <GovDerivation
@@ -164,7 +164,7 @@ in the browser.
 
 | | |
 |---|---|
-| props | `steps` — array of LaTeX strings or `{ tex, note }` (`note` renders under the equation, changes per step; `$…$` spans inside the note render as inline math, e.g. `'Apply $\\mathbf{X}^\\dagger$ on both sides'`); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`); `showHistory` (ledger of completed steps below the equation, default `true`); `historySize` — stacked-equation font size, number = em multiplier of the equation size (default `0.58`), string = raw CSS length (`'0.8rem'`); `historyOpacity` — stacked-equation opacity, 0–1 (default `1`); `morphMap` — `{ tokenTex: canonicalId }`: tokens sharing a canonical id morph into each other (in order of appearance) instead of fading apart |
+| props | `steps` — array of LaTeX strings or `{ tex, note, history, historyTex, historyNote }` (`note` renders under the equation and updates per step; a note identical to the previous step's stays put instead of fading in again; `$…$` spans inside the note render as inline math, e.g. `'Apply $\\mathbf{X}^\\dagger$ on both sides'`; `history: false` keeps that step out of the stacked ledger, e.g. a tall matrix line; `historyTex` / `historyNote` override that step's ledger line only — use a compact equation or short note while the main equation keeps its full form); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`); `showHistory` (ledger of completed steps below the equation, default `true`); `historySize` — stacked-equation font size, number = em multiplier of the equation size (default `0.58`), string = raw CSS length (`'0.8rem'`); `historyOpacity` — stacked-equation opacity, 0–1 (default `1`); `morphMap` — `{ tokenTex: canonicalId }`: tokens sharing a canonical id morph into each other (in order of appearance) instead of fading apart |
 | animation | one morph per click / arrow-key advance — the component registers one click slot per morph on the slide's click context at mount (in DOM order, so v-click elements placed before it keep the earlier clicks); each completed step is written below the equation as a small ledger line with its note, so the audience can catch up; print & exports show the final step plus the full ledger |
 | use when | derivations, reformulations, substitutions — any “watch the algebra work” moment |
 

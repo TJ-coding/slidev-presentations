@@ -241,24 +241,48 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-therefore--left { transform: rotate(90deg); }
 .gov-therefore--right { transform: rotate(-90deg); }
 
-/* Annotation riding the triangle (GovTriangle `label`) — the triangle div is
-   a 0×0 box whose borders draw the ▼, so the label hangs above its top edge.
-   `--label` opens headroom so the text clears the element above; rotated dirs
-   carry the label around, counter-rotating the text upright. */
-.gov-therefore--label { margin-top: 2rem; }
-.gov-triangle-label {
-  position: absolute;
-  bottom: 2.3rem;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-weight: 400;
-  font-size: 0.95rem;
-  color: var(--navy);
+/* Annotation on the triangle (`GovTriangle`/`GovChain` `label`).
+   No plate, no border, no overlay tricks: the labeled arrow simply grows
+   wide enough (15.6 × 4.6) that a single line of white text lies directly on
+   the navy fill, centred on the triangle's centroid (~upper third) — the
+   point reads as the arrow beneath the sentence, and the slanted edges clear
+   the text on both sides. One colour, one glyph, same white-on-navy as the
+   boxes. The label is a transparent flex sibling that dips into the fill via
+   a negative margin (direction-aware, ~2.15rem deep). */
+.gov-therefore-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 8.4rem;
+  margin: 1.6rem auto 0.4rem;
 }
-.gov-therefore--up .gov-triangle-label { transform: translateX(-50%) rotate(180deg); }
-.gov-therefore--left .gov-triangle-label { transform: translateX(-50%) rotate(-90deg); }
-.gov-therefore--right .gov-triangle-label { transform: translateX(-50%) rotate(90deg); }
+.gov-therefore-tag--up { flex-direction: column-reverse; }
+.gov-therefore-tag--left { flex-direction: row-reverse; }
+.gov-therefore-tag--right { flex-direction: row; }
+.gov-therefore-tag.slidev-vclick-hidden { translate: 0 -2rem; }
+.gov-triangle-label {
+  color: #fff;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+.gov-therefore-tag .gov-therefore {
+  border-left-width: 7.8rem;
+  border-right-width: 7.8rem;
+  border-top-width: 4.6rem;
+  margin: 0;
+}
+.gov-therefore-tag .gov-triangle-label { margin-bottom: -2.15rem; }
+.gov-therefore-tag--up .gov-triangle-label { margin-bottom: 0; margin-top: -2.15rem; }
+.gov-therefore-tag--left .gov-triangle-label { margin: 0 0 0 -2.15rem; }
+.gov-therefore-tag--right .gov-triangle-label { margin: 0 -2.15rem 0 0; }
 
 .gov-consequence { text-align: center; font-weight: 700; font-size: 1.15rem; margin: 0 0 0.7rem; color: var(--navy); }
 .gov-consequence--red { color: var(--crimson); }
@@ -337,6 +361,10 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 }
 .gov-chain-tail .gov-therefore { translate: 0 -2.5rem; }
 .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
+/* labeled triangle: the band+point wrapper slides as one, the point inside it stays put */
+.gov-chain-tail .gov-therefore-tag { translate: 0 -2.5rem; }
+.gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore-tag { translate: 0 0; }
+.gov-chain-tail .gov-therefore-tag .gov-therefore { translate: 0 0; }
 
 /* ============ Pipe primitive (GovPipe component) ============ */
 
@@ -455,6 +483,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
 .gov-derivation {
   --gd-dur: 700ms;
+  --gd-exit-dur: 315ms;
   --gd-size: 1.8rem;
   margin: 0.9rem 0 0.4rem;
 }
@@ -495,14 +524,17 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
     color calc(var(--gd-dur) * 0.6) ease-out;
 }
 
-/* removed tokens drift out of an overlay — same ink and size as the equation */
+/* removed tokens drift out of an overlay — same ink and size as the equation.
+   The exit runs on its own, faster clock (--gd-exit-dur, set by the component
+   to ~45% of the morph duration) so dead tokens clear out instead of
+   lingering distractingly while the survivors are still gliding. */
 .gd-ghost { position: absolute; inset: 0; pointer-events: none; color: var(--navy); font-size: var(--gd-size); }
 .gd-ghost-tok { display: inline-block; position: absolute; color: inherit; }
 .gd-ghost .gd-ghost-tok { margin: 0; }
 .gd-ghost-tok--out {
   opacity: 0;
   translate: 0 0.35em;
-  transition: opacity var(--gd-dur) ease-in, translate var(--gd-dur) ease-in;
+  transition: opacity var(--gd-exit-dur, 315ms) ease-in, translate var(--gd-exit-dur, 315ms) ease-in;
 }
 
 .gd-note {
