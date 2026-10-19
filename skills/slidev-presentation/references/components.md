@@ -160,8 +160,8 @@ in the browser.
 
 | | |
 |---|---|
-| props | `steps` — array of LaTeX strings or `{ tex, note }` (`note` renders under the equation, changes per step); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`) |
-| animation | one morph per click / arrow-key advance — the component registers one click slot per morph on the slide's click context at mount (in DOM order, so v-click elements placed before it keep the earlier clicks); print & exports show the final step |
+| props | `steps` — array of LaTeX strings or `{ tex, note }` (`note` renders under the equation, changes per step); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`); `showHistory` (ledger of completed steps below the equation, default `true`) |
+| animation | one morph per click / arrow-key advance — the component registers one click slot per morph on the slide's click context at mount (in DOM order, so v-click elements placed before it keep the earlier clicks); each completed step is written below the equation as a small ledger line with its note, so the audience can catch up; print & exports show the final step plus the full ledger |
 | use when | derivations, reformulations, substitutions — any “watch the algebra work” moment |
 
 ---

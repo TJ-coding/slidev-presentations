@@ -10,7 +10,9 @@
 // it rests on the last step. It registers its own click slots on the slide's
 // clicks context at mount (one per morph), so an arrow-key advance morphs
 // the derivation instead of navigating away; slides without it work unchanged.
-// Static exports (print) show the final step.
+// Steps the derivation has passed are written below the equation as a small
+// ledger (showHistory, default on) so latecomers can follow; exports show it
+// in full. Static exports (print) show the final step.
 //
 // Usage:
 //   <GovDerivation :steps="['ax^2 + bx + c = 0', 'x^2 + \\frac{b}{a}x = -\\frac{c}{a}']" />
@@ -19,7 +21,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'
 import type { ClicksContext } from '@slidev/types'
-import { renderStep, type RenderedTok, type TokClass } from './latex'
+import { renderStep, renderTex, type RenderedTok, type TokClass } from './latex'
 
 interface DerivationStep {
   tex: string
@@ -34,10 +36,13 @@ const props = withDefaults(defineProps<{
   size?: 'md' | 'lg' | 'xl'
   /** progress dots under the equation */
   showProgress?: boolean
+  /** write completed steps below the equation as a ledger, so the audience can catch up */
+  showHistory?: boolean
 }>(), {
   duration: 700,
   size: 'lg',
   showProgress: true,
+  showHistory: true,
 })
 
 const steps = computed<DerivationStep[]>(() =>
@@ -90,6 +95,27 @@ const stepIndex = computed(() => {
 const currentStep = computed(() => steps.value[stepIndex.value] ?? { tex: '' })
 const tokens = computed(() => renderStep(currentStep.value.tex))
 const currentNote = computed(() => currentStep.value.note ?? '')
+
+/* --- history ledger ---------------------------------------------------- */
+/* Every step the derivation has passed is written below the equation —
+   small, with its note — so anyone who missed a morph can still follow.
+   Rendered once per tex and cached. In print the ledger lists every step
+   except the last (the big equation shows the final step). */
+const histCache = new Map<string, string>()
+const historyHtml = computed<Record<number, string>>(() => {
+  const m: Record<number, string> = {}
+  for (let i = 0; i < steps.value.length; i++) {
+    const tex = steps.value[i]!.tex
+    if (!histCache.has(tex)) histCache.set(tex, renderTex(tex))
+    m[i] = histCache.get(tex)!
+  }
+  return m
+})
+const visited = computed(() => {
+  const out: number[] = []
+  for (let i = 0; i < stepIndex.value; i++) out.push(i)
+  return out
+})
 
 /* --- morphing ---------------------------------------------------------- */
 const stageRef = ref<HTMLElement | null>(null)
@@ -218,6 +244,16 @@ onUnmounted(() => { morphGen++ })
         ></span>
       </div>
     </div>
+    <TransitionGroup v-if="showHistory" tag="div" class="gd-history" name="gd-hist" aria-hidden="true">
+      <div
+        v-for="i in visited"
+        :key="i"
+        class="gd-hist-line"
+      >
+        <span class="gd-hist-eq" v-html="historyHtml[i]"></span>
+        <span v-if="steps[i]?.note" class="gd-hist-note">{{ steps[i]!.note }}</span>
+      </div>
+    </TransitionGroup>
     <Transition name="gd-note" mode="out-in">
       <p v-if="currentNote" :key="stepIndex" class="gd-note">{{ currentNote }}</p>
     </Transition>
