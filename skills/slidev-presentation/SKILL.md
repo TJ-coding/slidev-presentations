@@ -53,6 +53,15 @@ GovPipe, GovStress, GovDerivation (animated equation morphs), and the `dd`
 pair layout. Use the components instead of raw
 CSS classes; they embed the animations and hierarchy rules.
 
+## Live D3 figures (animated, click-driven)
+
+When a slide needs an animated D3 figure whose stages advance with the deck's
+→/← keys: `references/d3-live-figures.md` — the figure-side embedder contract
+(`template/snippets/d3-figure-embedder.js`), the generic slide-side embedder
+`template/components/D3Figure.vue`, the print/PDF fallback, and the headless
+verification loop (`scripts/drive-figure.mjs`). Static figures are covered by
+`references/diagrams.md` instead.
+
 ## Quality gate
 
 Before delivering a deck, all three must pass:
