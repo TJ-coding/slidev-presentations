@@ -22,8 +22,8 @@ const image = computed(() => {
 
 <style scoped>
 .govuk-section {
-  background: #0b0c0c;
-  color: #fff;
+  background: var(--paper);
+  color: var(--ink);
   width: 100%;
   height: 100%;
   display: flex;
@@ -34,21 +34,20 @@ const image = computed(() => {
   text-align: center;
 }
 .gov-section-title {
-  color: #fff !important;
+  color: var(--ink) !important;
   font-size: 3rem;
   font-weight: 700;
   margin: 1.4rem 0 0 !important;
   line-height: 1.1;
 }
 .govuk-tag { margin-bottom: 0.6rem; }
-.govuk-section :deep(p) { color: #f3f2f1 !important; }
-.govuk-section :deep(a) { color: var(--govuk-yellow) !important; }
+.govuk-section :deep(p) { color: var(--muted) !important; }
+.govuk-section :deep(a) { color: var(--accent) !important; }
 </style>
 
 <style>
 /* tag modifiers reused across layouts */
-.govuk-tag--yellow { background: var(--govuk-yellow) !important; color: var(--govuk-text) !important; }
-.govuk-tag--green { background: var(--govuk-green) !important; }
-.govuk-tag--red { background: var(--govuk-red) !important; }
-.govuk-tag--grey { background: var(--govuk-secondary) !important; }
+.govuk-tag--green { background: var(--good) !important; }
+.govuk-tag--red { background: var(--bad) !important; }
+.govuk-tag--grey { background: var(--muted) !important; }
 </style>

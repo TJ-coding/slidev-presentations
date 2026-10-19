@@ -33,27 +33,30 @@ const lead = $frontmatter.lead
 </template>
 
 <style>
-/* Band styles are global because other layouts reuse them */
+/* Band styles are global because other layouts reuse them.
+   Quiet theme: white band, ink title, accent kicker, hairline rule.
+   bandColor: maps to a 6px left edge (inset shadow, no layout shift). */
 .gov-band {
   background: var(--deck-band);
   padding: 1.1rem 2.4rem;
-  min-height: 4.2rem;
+  min-height: 4rem;
 }
-.gov-band--black { background: #0b0c0c; }
-.gov-band--blue { background: #1d70b8; }
-.gov-band--green { background: var(--govuk-green); }
-.gov-band--red { background: var(--govuk-red); }
+.gov-band--black { background: var(--navy); }
+.gov-band--blue { background: var(--navy); }
+.gov-band--green { background: var(--sage); }
+.gov-band--red { background: var(--crimson); }
 .gov-band-kicker {
-  color: #f3f2f1;
-  font-size: 0.85rem;
+  color: #ffffff;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  opacity: 0.85;
   margin-bottom: 0.2rem;
-  opacity: 0.8;
 }
 .gov-band-title {
   color: #fff !important;
-  font-size: 2.05rem;
+  font-size: 1.9rem;
   font-weight: 700;
   line-height: 1.15;
   margin: 0 !important;

@@ -84,3 +84,11 @@ A sub-session is a full agent run (typically 1–5 minutes). Batch figures: if a
 needs several, spawn one sub-session per figure in parallel (background them), or give
 one sub-session a multi-figure prompt when the figures share data. Run
 `make-diagram.sh` detached when batching so you can keep editing `slides.md` meanwhile.
+
+## Animated (live) figures
+
+Everything above produces STATIC assets. For a figure whose stages play on the
+slide, driven by the deck's →/← clicks, follow
+**`references/d3-live-figures.md`** (embedder contract + `D3Figure.vue` +
+verification driver) — the figure keeps its own source directory and is mounted
+by reference through a `public/diagrams` symlink.

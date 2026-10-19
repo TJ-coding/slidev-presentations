@@ -1,0 +1,11 @@
+# Deck builds & dependencies — shipped with every scaffolded deck
+node_modules/
+dist/
+png/
+.slidev*
+.dev.log
+.export.log
+__pycache__/
+*.pyc
+*.pdf
+.DS_Store

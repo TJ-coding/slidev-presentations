@@ -14,6 +14,13 @@ evidence, and what to remember.** This document is the design contract.
 > **Show, don't tell.** If the idea has structure, draw it. Diagrams are the
 > default body; text exists to LABEL a diagram, never to replace one. Every
 > sentence you can delete without breaking the diagram gets deleted.
+>
+> **Maximum type.** Text is as large as possible *while preserving the visual
+> hierarchy*. Hierarchy is carried by size, colour and position — so scale
+> every element up until the ranking would break, then stop. If you must add
+> text that can only be read at a small size, it doesn't belong on the slide:
+> shorten it or move it to speaker notes. Tiny text is a design failure, not a
+> detail.
 
 The user's reference decks are built this way: pipelines are arrows between
 boxes, comparisons are columns of colour-coded boxes, results are highlighted
