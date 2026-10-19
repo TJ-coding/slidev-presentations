@@ -483,6 +483,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
 .gov-derivation {
   --gd-dur: 700ms;
+  --gd-exit-dur: 315ms;
   --gd-size: 1.8rem;
   margin: 0.9rem 0 0.4rem;
 }
@@ -523,14 +524,17 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
     color calc(var(--gd-dur) * 0.6) ease-out;
 }
 
-/* removed tokens drift out of an overlay — same ink and size as the equation */
+/* removed tokens drift out of an overlay — same ink and size as the equation.
+   The exit runs on its own, faster clock (--gd-exit-dur, set by the component
+   to ~45% of the morph duration) so dead tokens clear out instead of
+   lingering distractingly while the survivors are still gliding. */
 .gd-ghost { position: absolute; inset: 0; pointer-events: none; color: var(--navy); font-size: var(--gd-size); }
 .gd-ghost-tok { display: inline-block; position: absolute; color: inherit; }
 .gd-ghost .gd-ghost-tok { margin: 0; }
 .gd-ghost-tok--out {
   opacity: 0;
   translate: 0 0.35em;
-  transition: opacity var(--gd-dur) ease-in, translate var(--gd-dur) ease-in;
+  transition: opacity var(--gd-exit-dur, 315ms) ease-in, translate var(--gd-exit-dur, 315ms) ease-in;
 }
 
 .gd-note {

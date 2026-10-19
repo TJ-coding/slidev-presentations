@@ -78,9 +78,16 @@ const steps = computed<DerivationStep[]>(() =>
 )
 
 /* root styling vars — historySize/historyOpacity only bind when set, so the
-   CSS defaults (0.58 of the equation size, full opacity) stay in charge */
+   CSS defaults (0.58 of the equation size, full opacity) stay in charge.
+   Removed tokens fade out on a faster clock than the morph itself (--gd-exit-dur):
+   they only need to get out of the way, not keep pace with the survivors. */
+const EXIT_SCALE = 0.45
+const exitDur = computed(() => Math.round(props.duration * EXIT_SCALE))
 const rootStyle = computed(() => {
-  const style: Record<string, string> = { '--gd-dur': `${props.duration}ms` }
+  const style: Record<string, string> = {
+    '--gd-dur': `${props.duration}ms`,
+    '--gd-exit-dur': `${exitDur.value}ms`,
+  }
   if (typeof props.historySize === 'number') style['--gd-hist-scale'] = String(props.historySize)
   else if (typeof props.historySize === 'string') style['--gd-hist-size'] = props.historySize
   if (props.historyOpacity !== undefined) style['--gd-hist-opacity'] = String(props.historyOpacity)
@@ -307,7 +314,7 @@ watch(stepIndex, async (n, o) => {
     stage.querySelectorAll('.gd-ghost-tok').forEach(el => el.classList.add('gd-ghost-tok--out'))
     setTimeout(() => {
       if (gen === morphGen) ghostToks.value = []
-    }, props.duration + 120)
+    }, exitDur.value + 120)
   }
 })
 
