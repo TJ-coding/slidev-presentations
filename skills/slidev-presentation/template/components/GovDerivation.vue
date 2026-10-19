@@ -256,8 +256,6 @@ watch(stepIndex, async (n, o) => {
   })
   const oldToks = renderStep(steps.value[o].tex, canonTok)
   const newToks = renderStep(steps.value[n].tex, canonTok)
-  const newIds = new Set(newToks.map(t => t.id))
-  const leaving = [...oldRects.keys()].filter(id => !newIds.has(id))
 
   await nextTick() // the DOM now shows step n
   if (gen !== morphGen) return
@@ -267,17 +265,89 @@ watch(stepIndex, async (n, o) => {
   const stageRect = stage.getBoundingClientRect()
   const scale = stageRect.width / stage.offsetWidth || 1
 
+  /* --- which old token does each new token continue? --------------------- */
+  /* Element-wise pairing by canonical id, resolved as a whole-stream sequence
+     alignment (longest common subsequence, total token travel as tie-break)
+     rather than per-token occurrence matching. Order preservation is what
+     makes duplicated tokens behave: in
+         X = [m]  →  X' = [m'], X = [m]
+     the old run "X = [m]" can only stay order-consistent by aligning
+     wholesale with the second "X = [m]" — so '=' travels with its X and the
+     X' copy fades in fresh, instead of '=' pairing with X' while X runs off
+     to the second copy. Ties in match count go to the least token travel. */
+  const baseOf = (id: string) => id.replace(/#\d+$/, '')
+  const newRects = new Map<string, { left: number; top: number; width: number }>()
+  stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
+    const r = el.getBoundingClientRect()
+    newRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width })
+  })
+  const oldSeq = oldToks.filter(t => t.html && oldRects.has(t.id))
+  const newSeq = newToks.filter(t => t.html && newRects.has(t.id))
+  const travel = (a: { left: number; top: number; width: number }, b: { left: number; top: number; width: number }) =>
+    Math.abs(a.left + a.width / 2 - b.left - b.width / 2) + Math.abs(a.top - b.top)
+  type Rect = { left: number; top: number; width: number }
+  // dp[i][j] = best { matches, -travel } aligning oldSeq[i..] with newSeq[j..]
+  const N = oldSeq.length
+  const M = newSeq.length
+  const dp: { m: number; d: number }[][] = Array.from(
+    { length: N + 1 },
+    () => Array.from({ length: M + 1 }, () => ({ m: 0, d: 0 })),
+  )
+  for (let i = N - 1; i >= 0; i--) {
+    for (let j = M - 1; j >= 0; j--) {
+      // skips add nothing — start from the better of the two skip moves
+      let m = dp[i + 1]![j]!.m
+      let d = dp[i + 1]![j]!.d
+      const up = dp[i]![j + 1]!
+      if (up.m > m || (up.m === m && up.d > d)) { m = up.m; d = up.d }
+      if (baseOf(oldSeq[i]!.id) === baseOf(newSeq[j]!.id)) {
+        const c = dp[i + 1]![j + 1]!
+        const cm = c.m + 1
+        const cd = c.d - travel(oldRects.get(oldSeq[i]!.id)!, newRects.get(newSeq[j]!.id)!)
+        if (cm > m || (cm === m && cd > d)) { m = cm; d = cd }
+      }
+      dp[i]![j] = { m, d }
+    }
+  }
+  // walk the alignment: paired tokens morph, the rest ghost out / fade in
+  const matchNew = new Map<string, Rect>()
+  const matchedOld = new Set<number>()
+  {
+    let i = 0
+    let j = 0
+    while (i < N && j < M) {
+      const cur = dp[i]![j]!
+      const o = oldSeq[i]!
+      const n = newSeq[j]!
+      if (baseOf(o.id) === baseOf(n.id)) {
+        const c = dp[i + 1]![j + 1]!
+        const cd = c.d - travel(oldRects.get(o.id)!, newRects.get(n.id)!)
+        if (cur.m === c.m + 1 && cur.d === cd) {
+          matchNew.set(n.id, oldRects.get(o.id)!)
+          matchedOld.add(i)
+          i++
+          j++
+          continue
+        }
+      }
+      const skipOld = dp[i + 1]![j]!
+      if (cur.m === skipOld.m && cur.d === skipOld.d) i++
+      else j++
+    }
+  }
+  const leaving = oldSeq.filter((_, i) => !matchedOld.has(i))
+
   // place every token at its "from" state …
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
-    const old = oldRects.get(el.dataset.gdId!)
-    if (old) {
-      const r = el.getBoundingClientRect()
+    const r = el.getBoundingClientRect()
+    const from = matchNew.get(el.dataset.gdId!)
+    if (from) {
       // position-only morph, like a mapped matrix cell: the token glides from
       // its old spot to its new one, never stretched. Centre-x + top anchoring
       // means a wide replacement (x_t → \underbrace{x_t}) wraps around the
       // old glyph where it stood instead of sliding in from the left edge.
-      const dx = (old.left + old.width / 2 - (r.left + r.width / 2)) / scale
-      const dy = (old.top - r.top) / scale
+      const dx = (from.left + from.width / 2 - (r.left + r.width / 2)) / scale
+      const dy = (from.top - r.top) / scale
       if (dx !== 0 || dy !== 0) el.style.translate = `${dx}px ${dy}px`
     } else {
       // entering token: fade + rise, flashed crimson — this is what changed
@@ -296,9 +366,8 @@ watch(stepIndex, async (n, o) => {
 
   // … and let the removed tokens drift out of a ghost overlay
   if (leaving.length) {
-    ghostToks.value = leaving.map((id) => {
-      const r = oldRects.get(id)!
-      const tk = oldToks.find(t => t.id === id)!
+    ghostToks.value = leaving.map((tk) => {
+      const r = oldRects.get(tk.id)!
       return {
         key: ++ghostSeq,
         html: tk.html,
