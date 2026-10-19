@@ -197,10 +197,10 @@ watch(stepIndex, async (n, o) => {
   ghostToks.value = []
 
   // measure the outgoing tokens — the DOM still shows step o
-  const oldRects = new Map<string, { left: number; top: number; width: number }>()
+  const oldRects = new Map<string, { left: number; top: number; width: number; height: number }>()
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
     const r = el.getBoundingClientRect()
-    oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width })
+    oldRects.set(el.dataset.gdId!, { left: r.left, top: r.top, width: r.width, height: r.height })
   })
   const oldIds = new Set(oldRects.keys())
   const newToks = renderStep(steps.value[n].tex, canonTok)
@@ -222,18 +222,30 @@ watch(stepIndex, async (n, o) => {
       const r = el.getBoundingClientRect()
       const dx = (old.left - r.left) / scale
       const dy = (old.top - r.top) / scale
-      if (dx !== 0 || dy !== 0) el.style.transform = `translate(${dx}px, ${dy}px)`
+      // FLIP scale: a surviving token starts at its previous box size and
+      // grows into the new shape — a small x_t widens into an underbrace
+      // instead of the new shape popping in at full size and sliding.
+      // translate and scale are separate CSS properties so they can run on
+      // different curves: position snaps, the shape morphs over the full beat.
+      const sx = old.width / (r.width || 1)
+      const sy = old.height / (r.height || 1)
+      if (dx !== 0 || dy !== 0) el.style.translate = `${dx}px ${dy}px`
+      if (Math.abs(sx - 1) > 0.01 || Math.abs(sy - 1) > 0.01) {
+        el.style.transformOrigin = '0 0'
+        el.style.scale = `${sx} ${sy}`
+      }
     } else {
       // entering token: fade + rise, flashed crimson — this is what changed
       el.style.opacity = '0'
-      el.style.transform = 'translateY(0.3em)'
+      el.style.translate = '0 0.3em'
       el.style.color = 'var(--crimson)'
     }
   })
   void stage.offsetWidth // reflow so the "from" states are the start point …
   stage.querySelectorAll<HTMLElement>('.gd-tok').forEach((el) => {
     el.classList.add('gd-tok--anim')
-    el.style.transform = ''
+    el.style.translate = ''
+    el.style.scale = ''
     el.style.opacity = ''
     el.style.color = ''
   })
