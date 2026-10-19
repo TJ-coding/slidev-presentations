@@ -70,6 +70,7 @@ const CLOSE_CMDS = new Set([
 // stay inside the token — \mathbf alone is a KaTeX parse error.
 // NOTE: bare names, not \-prefixed — the tokenizer matches against `name`
 const ONE_ARG_CMDS = new Set([
+  'boxed', 'fbox',
   'mathbf', 'mathrm', 'mathcal', 'mathbb', 'mathsf', 'mathtt', 'mathit',
   'bm', 'boldsymbol', 'pmb', 'bold',
   'hat', 'widehat', 'bar', 'overline', 'underline',
@@ -142,18 +143,85 @@ export function tokenize(src: string): Tok[] {
     return src.slice(start + 1)
   }
 
-  /** Read the argument of a `^`/`_`: a brace group, a command, or one char. */
+  /** Read the argument of a `^`/`_`: a brace group, a command, or one char.
+   *  A command keeps its own argument(s), so `_\text{state}` stays whole. */
   const readScriptArg = (): string => {
     if (src[i] === '{')
       return `{${readBraceGroup()}}`
-    if (src[i] === '\\') {
-      let j = i + 1
-      while (j < n && /[a-zA-Z]/.test(src[j]!)) j++
-      const cmd = src.slice(i, j)
-      i = j
-      return cmd
-    }
+    if (src[i] === '\\')
+      return readCommand()
     return src[i++]!
+  }
+
+  /** Read a `\cmd` with its arguments — one unit, cursor on the backslash.
+   *  Argument-bearing commands keep their braces so the token renders
+   *  standalone (`\mathbf` alone is a KaTeX parse error). */
+  const readCommand = (): string => {
+    i++ // past the backslash
+    let name = ''
+    while (i < n && /[a-zA-Z]/.test(src[i]!)) { name += src[i]; i++ }
+    if (name === '') { name = src[i]!; i++ } // single-char command: \, \; \: \! \\ …
+
+    let tex = `\\${name}`
+    if (name === 'frac' || name === 'dfrac' || name === 'tfrac' || name === 'binom'
+      || name === 'genfrac' || name === 'overset' || name === 'underset') {
+      tex += `{${readBraceGroup()}}{${readBraceGroup()}}`
+    } else if (name === 'sqrt') {
+      if (src[i] === '[') {
+        let j = i + 1
+        let d = 0
+        while (j < n) {
+          if (src[j] === '[') d++
+          else if (src[j] === ']') { d--; if (d === 0) break }
+          j++
+        }
+        tex += src.slice(i, Math.min(j + 1, n))
+        i = Math.min(j + 1, n)
+      }
+      tex += `{${readBraceGroup()}}`
+    } else if (name === 'sum' || name === 'prod' || name === 'coprod' || name === 'int'
+      || name === 'iint' || name === 'iiint' || name === 'oint' || name === 'lim'
+      || name === 'liminf' || name === 'limsup' || name === 'min' || name === 'max'
+      || name === 'sup' || name === 'inf' || name === 'det' || name === 'gcd') {
+      // limits may come in either order: \sum_{i=0}^{n}
+      while (src[i] === '_' || src[i] === '^') {
+        const kind = src[i]!
+        i++
+        const arg = readScriptArg()
+        tex += `${kind}${arg.startsWith('{') ? arg : `{${arg}}`}`
+      }
+    } else if (name === 'left' || name === 'right') {
+      if (src[i] === '\\') {
+        let j = i + 1
+        while (j < n && /[a-zA-Z]/.test(src[j]!)) j++
+        tex += src.slice(i, j)
+        i = j
+      } else {
+        tex += src[i]!
+        i++
+      }
+    } else if (name === 'begin') {
+      // whole environment is one token: \begin{env}…\end{env} — matrices
+      // and aligned blocks must render as a unit, & and \\ included
+      const env = readBraceGroup()
+      const BEG = `\\begin{${env}}`
+      const END = `\\end{${env}}`
+      let depth = 1
+      let j = i
+      while (j < n && depth > 0) {
+        const b = src.indexOf(BEG, j)
+        const e = src.indexOf(END, j)
+        if (e === -1) { j = n; break }
+        if (b !== -1 && b < e) { depth++; j = b + BEG.length }
+        else { depth--; j = e + END.length }
+      }
+      tex += `{${env}}${src.slice(i, j)}`
+      i = j
+    } else if (ONE_ARG_CMDS.has(name)) {
+      const arg = readScriptArg()
+      tex += arg.startsWith('{') ? arg : `{${arg}}`
+    }
+    return tex
   }
 
   /** Push a token, attaching any trailing `^{…}`/`_{…}` scripts to it. */
@@ -173,70 +241,7 @@ export function tokenize(src: string): Tok[] {
     if (/\s/.test(c)) { i++; continue }
 
     if (c === '\\') {
-      i++
-      let name = ''
-      while (i < n && /[a-zA-Z]/.test(src[i]!)) { name += src[i]; i++ }
-      if (name === '') { name = src[i]!; i++ } // single-char command: \, \; \: \! \\ …
-
-      let tex = `\\${name}`
-      if (name === 'frac' || name === 'dfrac' || name === 'tfrac' || name === 'binom'
-        || name === 'genfrac' || name === 'overset' || name === 'underset') {
-        tex += `{${readBraceGroup()}}{${readBraceGroup()}}`
-      } else if (name === 'sqrt') {
-        if (src[i] === '[') {
-          let j = i + 1
-          let d = 0
-          while (j < n) {
-            if (src[j] === '[') d++
-            else if (src[j] === ']') { d--; if (d === 0) break }
-            j++
-          }
-          tex += src.slice(i, Math.min(j + 1, n))
-          i = Math.min(j + 1, n)
-        }
-        tex += `{${readBraceGroup()}}`
-      } else if (name === 'sum' || name === 'prod' || name === 'coprod' || name === 'int'
-        || name === 'iint' || name === 'iiint' || name === 'oint' || name === 'lim'
-        || name === 'liminf' || name === 'limsup' || name === 'min' || name === 'max'
-        || name === 'sup' || name === 'inf' || name === 'det' || name === 'gcd') {
-        // limits may come in either order: \sum_{i=0}^{n}
-        while (src[i] === '_' || src[i] === '^') {
-          const kind = src[i]!
-          i++
-          const arg = readScriptArg()
-          tex += `${kind}${arg.startsWith('{') ? arg : `{${arg}}`}`
-        }
-      } else if (name === 'left' || name === 'right') {
-        if (src[i] === '\\') {
-          let j = i + 1
-          while (j < n && /[a-zA-Z]/.test(src[j]!)) j++
-          tex += src.slice(i, j)
-          i = j
-        } else {
-          tex += src[i]!
-          i++
-        }
-      } else if (name === 'begin') {
-        // whole environment is one token: \begin{env}…\end{env} — matrices
-        // and aligned blocks must render as a unit, & and \\ included
-        const env = readBraceGroup()
-        const BEG = `\\begin{${env}}`
-        const END = `\\end{${env}}`
-        let depth = 1
-        let j = i
-        while (j < n && depth > 0) {
-          const b = src.indexOf(BEG, j)
-          const e = src.indexOf(END, j)
-          if (e === -1) { j = n; break }
-          if (b !== -1 && b < e) { depth++; j = b + BEG.length }
-          else { depth--; j = e + END.length }
-        }
-        tex += `{${env}}${src.slice(i, j)}`
-        i = j
-      } else if (ONE_ARG_CMDS.has(name)) {
-        const arg = readScriptArg()
-        tex += arg.startsWith('{') ? arg : `{${arg}}`
-      }
+      const tex = readCommand()
       pushTok(tex, classifyCmd(tex))
       continue
     }
