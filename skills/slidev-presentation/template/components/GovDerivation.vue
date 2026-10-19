@@ -99,9 +99,15 @@ const currentStep = computed(() => steps.value[stepIndex.value] ?? { tex: '' })
 const tokens = computed(() => renderStep(currentStep.value.tex, canonTok))
 const currentNote = computed(() => currentStep.value.note ?? '')
 
-/** canonical identity of a token tex: morphMap override, else the tex itself */
+/** canonical identity of a token tex: morphMap override, else the tex itself.
+ *  Lookups tolerate script-brace variation: `x_2`, `x_{2}` both normalize to
+ *  `x_2`, so map keys can be written the natural way. */
+const normScript = (s: string) => s.replace(/([_^])\{([a-zA-Z0-9])\}/g, '$1$2')
 function canonTok(tex: string): string {
-  return props.morphMap?.[tex] ?? tex
+  const map = props.morphMap
+  if (!map) return normScript(tex)
+  const v = map[tex] ?? map[normScript(tex)]
+  return v !== undefined ? normScript(v) : normScript(tex)
 }
 
 /* --- history ledger ---------------------------------------------------- */
