@@ -491,7 +491,6 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gd-tok--anim {
   transition:
     translate var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
-    scale var(--gd-dur) cubic-bezier(0.65, 0, 0.35, 1),
     opacity var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
     color calc(var(--gd-dur) * 0.6) ease-out;
 }
