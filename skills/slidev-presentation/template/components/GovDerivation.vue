@@ -133,9 +133,13 @@ function noteHtml(note: string): string {
 const currentNoteHtml = computed(() => (currentNote.value ? noteHtml(currentNote.value) : ''))
 
 /** canonical identity of a token tex: morphMap override, else the tex itself.
- *  Lookups tolerate script-brace variation: `x_2`, `x_{2}` both normalize to
- *  `x_2`, so map keys can be written the natural way. */
-const normScript = (s: string) => s.replace(/([_^])\{([a-zA-Z0-9])\}/g, '$1$2')
+ *  Lookups tolerate script-brace variation: `x_2`/`x_{2}` and
+ *  `_\text{state}`/`_{\text{state}}` both normalize the same, so map keys
+ *  can be written the natural way. */
+const normScript = (s: string) =>
+  s
+    .replace(/([_^])\{([a-zA-Z0-9])\}/g, '$1$2')
+    .replace(/([_^])\{(\\[a-zA-Z]+(?:\{[^{}]*\})?)\}/g, '$1$2')
 function canonTok(tex: string): string {
   const map = props.morphMap
   if (!map) return normScript(tex)
