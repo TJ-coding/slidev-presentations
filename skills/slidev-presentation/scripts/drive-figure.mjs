@@ -20,13 +20,17 @@ import path from "node:path";
 import fs from "node:fs";
 
 const [url, spec = "R:4200,R:4200,L:4500,L:4200", outdir = "/tmp/d3-drive"] = process.argv.slice(2);
-if (!url) { console.error(__doc__); process.exit(2); }
+if (!url) {
+  console.error("usage: drive-figure.mjs <slide-url> [R:ms,L:ms,...] [outdir]");
+  process.exit(2);
+}
 
 let chromium;
 try {
-  ({ chromium } = createRequire(path.join(process.env.DECK ?? process.cwd(), "package.json"))("playwright-chromium"));
+  ({ chromium } = createRequire(path.resolve(process.env.DECK ?? process.cwd(), "package.json"))("playwright-chromium"));
 } catch {
-  ({ chromium } = createRequire("/Users/tomoyuki-j/Projects/diagram-skills/skills/d3-diagrams/")("playwright-chromium"));
+  console.error("playwright not found — run from the deck dir (or set DECK=), or `npm i -D playwright-chromium`");
+  process.exit(2);
 }
 
 const waits = spec.split(",").map(s => s.trim().split(":"));

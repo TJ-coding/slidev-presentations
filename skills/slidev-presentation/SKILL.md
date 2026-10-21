@@ -62,6 +62,29 @@ When a slide needs an animated D3 figure whose stages advance with the deck's
 verification loop (`scripts/drive-figure.mjs`). Static figures are covered by
 `references/diagrams.md` instead.
 
+Two laws matter beyond the figure itself: at most one playback at a time, and
+no module-level render state (presenter mode mounts the figure several times per
+window). Both bugs looked like sync failures in acl26 — see the reference.
+
+## Presenter mode, audience windows, multi-tab sync
+
+The template ships `setup/main.ts`, which fixes stock Slidev's sync gaps
+(viewer↔viewer never follows; the viewer echo can lose or rewind clicks):
+one-way server flow + a same-origin BroadcastChannel bus + hello/nav handshake
+so tabs opened mid-talk join the live position. Copy it into any existing deck
+(`setup/main.ts`, auto-loaded by Slidev).
+
+Before presenting live, from the deck dir:
+
+```bash
+node <kit>/scripts/check-sync.mjs http://localhost:3030/<first-figure-slide>
+```
+
+It asserts presenter ↔ audience ↔ tab sync, rapid-click resilience under CPU
+throttling, late join, and viewer-only mode. Operational rules (one server per
+deck, one origin for all windows, restart after editing `setup/`) and the
+failure modes are in **`references/presenting.md`**.
+
 ## Quality gate
 
 Before delivering a deck, all three must pass:

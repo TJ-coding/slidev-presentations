@@ -242,23 +242,71 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-therefore--right { transform: rotate(-90deg); }
 
 /* Annotation on the triangle (`GovTriangle`/`GovChain` `label`).
-   No plate, no border, no overlay tricks: the labeled arrow simply grows
-   wide enough (15.6 × 4.6) that a single line of white text lies directly on
-   the navy fill, centred on the triangle's centroid (~upper third) — the
-   point reads as the arrow beneath the sentence, and the slanted edges clear
-   the text on both sides. One colour, one glyph, same white-on-navy as the
-   boxes. The label is a transparent flex sibling that dips into the fill via
-   a negative margin (direction-aware, ~2.15rem deep). */
+   Vertical labels form the head of a compact tag: the label wraps at 10.5rem
+   and the ▼ tail is only as wide as the head, so long conditions grow
+   downwards instead of inflating the base. One colour, one glyph: the label
+   plate and tail are the same navy (or green/red) fill, forming a single
+   downward/upward arrow with a flat head. Horizontal labels (dir left/right)
+   keep the rotated band treatment below. */
 .gov-therefore-tag {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   min-width: 8.4rem;
-  margin: 1.6rem auto 0.4rem;
+  margin: 1.4rem auto 0.4rem;
 }
 .gov-therefore-tag--up { flex-direction: column-reverse; }
 .gov-therefore-tag--left { flex-direction: row-reverse; }
 .gov-therefore-tag--right { flex-direction: row; }
+
+/* Vertical tag: the label is the head (wrapping at a fixed max width), the
+   tail is a clip-path triangle sized from it. No fixed 15.6rem base. */
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-triangle-label {
+  color: #fff;
+  background: var(--navy);
+  box-sizing: border-box;
+  padding: 0.35rem 0.9rem 0.3rem;
+  margin: 0;
+  max-width: 10.5rem;
+  white-space: normal;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--green .gov-triangle-label { background: var(--sage); }
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--red .gov-triangle-label { background: var(--crimson); }
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore {
+  width: 100%;
+  height: auto;
+  min-height: 2rem;
+  max-height: 3.6rem;
+  aspect-ratio: 2.8;
+  border: 0;
+  background: var(--navy);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  margin: 0;
+  transform: none;
+}
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore.gov-therefore--green { background: var(--sage); }
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore.gov-therefore--red { background: var(--crimson); }
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--up .gov-therefore { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+/* Horizontal labeled triangles (dir left/right): the rotated fill paints centred
+   inside a far wider layout box, so a flow-placed label misses it (white-on-white)
+   and the box carries a phantom ~11rem gap. Centre the label absolutely on the
+   visible 4.6rem-wide band (wrapping inside it) and collapse the overflow. */
+.gov-therefore-tag--left, .gov-therefore-tag--right { position: relative; align-items: center; margin-left: -5.5rem; margin-right: -5.5rem; }
+.gov-therefore-tag--left .gov-triangle-label, .gov-therefore-tag--right .gov-triangle-label {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  white-space: normal;
+  width: 4.4rem;
+}
 .gov-therefore-tag.slidev-vclick-hidden { translate: 0 -2rem; }
 .gov-triangle-label {
   color: #fff;
@@ -273,16 +321,13 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
   position: relative;
   z-index: 1;
 }
-.gov-therefore-tag .gov-therefore {
+.gov-therefore-tag--left .gov-therefore,
+.gov-therefore-tag--right .gov-therefore {
   border-left-width: 7.8rem;
   border-right-width: 7.8rem;
   border-top-width: 4.6rem;
   margin: 0;
 }
-.gov-therefore-tag .gov-triangle-label { margin-bottom: -2.15rem; }
-.gov-therefore-tag--up .gov-triangle-label { margin-bottom: 0; margin-top: -2.15rem; }
-.gov-therefore-tag--left .gov-triangle-label { margin: 0 0 0 -2.15rem; }
-.gov-therefore-tag--right .gov-triangle-label { margin: 0 -2.15rem 0 0; }
 
 .gov-consequence { text-align: center; font-weight: 700; font-size: 1.15rem; margin: 0 0 0.7rem; color: var(--navy); }
 .gov-consequence--red { color: var(--crimson); }
@@ -344,21 +389,63 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 /* ============ Chain primitive (GovChain component) ============ */
 
 .gov-chain { display: flex; flex-direction: column; align-items: center; }
-.gov-chain-item { display: flex; flex-direction: column; align-items: center; }
+.gov-chain-item { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; position: relative; z-index: 1; }
+.gov-chain-top { font-weight: 700; }
 .gov-chain-bottom { font-weight: 700; margin-top: 0.45rem; }
 
+/* Vertical chain (dir down/up): multiple tops/bottoms fan out in horizontal rows
+   beside the ▼ — premises spread above it, conclusions below it. Equal columns
+   keep the fan symmetric, so the ▼ points at the centre between the boxes
+   instead of drifting toward the widest one. */
+.gov-chain--v .gov-chain-item {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+/* Horizontal chain (dir left/right): tops column → ◀/▶ → bottoms column, all
+   stacked vertically; the triangle points at the bottoms. */
+.gov-chain--h { flex-direction: row; align-items: center; gap: 1rem; }
+.gov-chain--h .gov-chain-item {
+  display: inline-grid;
+  grid-auto-flow: row;
+  grid-auto-rows: 1fr;
+  justify-items: center;
+  gap: 0.45rem;
+}
+.gov-chain--h .gov-chain-tail { flex-direction: row; align-items: center; gap: 0.9rem; }
+.gov-chain--h .gov-chain-bottom { margin-top: 0; }
+/* unlabeled horizontal ▶: painted band is 2rem wide centred in an 8.4rem layout
+   box — collapse the transparent 3.2rem overflow on each side (direct child only;
+   the labeled variant is nested in the tag and handled above) */
+.gov-chain--h .gov-chain-tail > .gov-therefore { margin-left: -3.2rem; margin-right: -3.2rem; }
+.gov-chain--h .gov-chain-tail .gov-therefore { translate: -1.5rem 0; }
+.gov-chain--h .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
+.gov-chain--h .gov-chain-tail .gov-therefore-tag { translate: -1.5rem 0; }
+.gov-chain--h .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore-tag { translate: 0 0; }
+
 /* Display math inside components sits inline — KaTeX's .katex-display adds
-   block margins that would balloon the box / bottom label. */
+   block margins that would balloon the box / top label / bottom label. */
 .gov-box .katex-display,
+.gov-chain-top .katex-display,
 .gov-chain-bottom .katex-display { display: contents; margin: 0; }
 .gov-box .katex,
+.gov-chain-top .katex,
 .gov-chain-bottom .katex { text-align: center; }
+
 .gov-chain-tail {
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: opacity 0.3s linear;
 }
+/* The ▼ slides through the chain on reveal; keep it behind the boxes so it
+   never paints over them mid-animation. */
+.gov-chain-tail .gov-therefore,
+.gov-chain-tail .gov-therefore-tag { position: relative; z-index: 0; }
 .gov-chain-tail .gov-therefore { translate: 0 -2.5rem; }
 .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
 /* labeled triangle: the band+point wrapper slides as one, the point inside it stays put */
@@ -376,6 +463,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-box {
   background: var(--navy);
   color: #fff;
+  border: 3px solid transparent;
   padding: 0.7rem 1.6rem;
   font-weight: 700;
   text-align: center;

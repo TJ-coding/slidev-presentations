@@ -16,7 +16,7 @@
 // so edits in the figure's source directory propagate live — never copy files.
 //
 // Required slide frontmatter: `clicks: N` where N = number of stages − 1.
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'   // root import — the @slidev/client/context subpath breaks vite pre-transform
 
 const props = defineProps<{
@@ -34,7 +34,13 @@ const props = defineProps<{
   alt?: string
 }>()
 
-const { $clicks } = useSlideContext()
+const { $clicks, $renderContext } = useSlideContext()
+// Only the real show animates: the audience view ('slide') and the presenter's
+// current panel ('presenter'). The presenter's next-frame panel ('previewNext')
+// and the overview grid ('overview') settle instantly — Slidev renders those
+// frames as static previews, and animating them there made the presenter's
+// window show a long transition that the audience view had already finished.
+const isLiveStage = computed(() => ['slide', 'presenter'].includes($renderContext.value))
 const el = ref<HTMLElement>()
 const failed = ref(false)
 
@@ -43,12 +49,17 @@ interface FigureController {
   prev: () => boolean
   jumpTo: (n: number) => void
   stage: () => number
+  /** true while a stage transition is playing (old figures may not expose it) */
+  busy?: () => boolean
   cleanup: () => void
 }
 
-// module-level load cache: several D3Figure instances (and HMR remounts)
-// share one script load per URL
-const loaded = new Map<string, Promise<void>>()
+// script load cache, keyed per URL. Stored on `window` so that every copy of
+// this component module shares it — dev HMR can evaluate the module twice and
+// a per-module cache lets the second copy observe the first copy's still-loading
+// <script> tag and mount the figure before d3 exists.
+type LoadCache = Map<string, Promise<void>>
+const loaded: LoadCache = ((window as unknown as { __d3FigureLoads?: LoadCache }).__d3FigureLoads ??= new Map())
 function loadScript(src: string): Promise<void> {
   let p = loaded.get(src)
   if (!p) {
@@ -80,13 +91,31 @@ onMounted(async () => {
     controller = api()!.mount(el.value!, { steps: 'clicks', ...props.mountOpts })
     // resync: deep link (?clicks=), HMR remount — render stages 1..clicks+1 instantly
     controller.jumpTo($clicks.value + 1)
-  } catch {
+  } catch (e) {
+    const w = window as unknown as Record<string, unknown>
+    console.error('[D3Figure] mount failed', props.script, `d3=${typeof w.d3}`, `api=${typeof w[props.global]}`, e)
     failed.value = true   // print fallback stays visible
   }
 })
 
+// Reconcile the figure with the slide's click state whenever the window can
+// see it again. Presenter mode runs this component in several windows at once
+// (audience, presenter current, presenter next-frame preview) and each plays
+// its own timers; an occluded/throttled window can miss the tail of an
+// animation, so when it is idle we snap it to the exact frame for `$clicks`.
+function resync() {
+  if (!controller) return
+  if (controller.busy?.()) return                            // never cut a live animation
+  const target = $clicks.value + 1
+  if (controller.stage() !== target) controller.jumpTo(target)
+}
+
 watch($clicks, (n, o) => {
   if (!controller) return
+  if (!isLiveStage.value) {                                  // previews: exact frame, no animation
+    controller.jumpTo(n + 1)
+    return
+  }
   if (n > o) {
     controller.next()                                            // → : play the next stage
     if (controller.stage() !== n + 1) controller.jumpTo(n + 1)   // multi-click jump: settle instantly
@@ -97,7 +126,18 @@ watch($clicks, (n, o) => {
   }
 })
 
+function onVisibility() {
+  if (!document.hidden) resync()
+}
+
+onMounted(() => {
+  window.addEventListener('focus', resync)
+  document.addEventListener('visibilitychange', onVisibility)
+})
+
 onBeforeUnmount(() => {
+  window.removeEventListener('focus', resync)
+  document.removeEventListener('visibilitychange', onVisibility)
   controller?.cleanup()
   controller = null
 })

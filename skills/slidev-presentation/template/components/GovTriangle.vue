@@ -2,11 +2,10 @@
 // GovTriangle — the wide ▼ "therefore" mark. Never inside a data pipeline.
 // Animated (default): drops into place on the next click.
 // `animated="false"` renders it plain — for chains that animate a wrapper.
-// `label` renders short HTML/LaTeX as plain white text directly on the fill,
-// centred on the triangle's centroid. The labeled ▼ grows into a broad
-// arrowhead (15.6 × 4.6) wide enough to carry one line clear of its slanted
-// edges — one colour, one glyph, same white-on-navy as the boxes
-// (e.g. "When $n$ is large").
+// `label` renders HTML/LaTeX as the head of a compact tag: the text wraps at
+// 10.5rem and the ▼ tail is sized from the head, so a long condition grows
+// downwards instead of inflating the triangle's base — one colour, one glyph,
+// same white-on-navy as the boxes (e.g. "When $n$ is large").
 // Usage:
 //   <GovTriangle /> · <GovTriangle color="green" /> · <GovTriangle color="red" />
 //   <GovTriangle dir="up" /> · <GovTriangle dir="left" /> · <GovTriangle dir="right" />
@@ -18,7 +17,7 @@ const props = defineProps<{
   dir?: 'down' | 'up' | 'left' | 'right'
   /** default true — v-click reveal; false for statically-driven chains */
   animated?: boolean
-  /** HTML / LaTeX annotation rendered inside the shape */
+  /** HTML / LaTeX annotation rendered as the tag's head */
   label?: string
 }>()
 const cls = [

@@ -23,7 +23,7 @@
 //   // a step can opt out of the ledger — e.g. a tall matrix line:
 //   <GovDerivation :steps="[{ tex: '\\mathbf{X} = …', history: false }]" />
 //   // …or keep the equation but give its ledger line its own tex/note:
-//   <GovDerivation :steps="[{ tex: '\\mathbf{X} = \\begin{bmatrix} …', note: 'full matrix', historyTex: '\\mathbf{X}', historyNote: 'snapshots' }]" />
+//   <GovDerivation :steps="[{ tex: '\\mathbf{X} = \\begin{bmatrix} …', note: 'full matrix', histTex: '\\mathbf{X}', histNote: 'snapshots' }]" />
 //   <GovDerivation :steps="…" :history-size="0.7" :history-opacity="0.55" />
 
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -39,8 +39,12 @@ interface DerivationStep {
   history?: boolean
   /** LaTeX shown for this step in the history ledger instead of `tex` —
    *  e.g. a compact form when the full equation is too tall */
-  historyTex?: string
+  histTex?: string
   /** note shown for this step in the history ledger instead of `note` */
+  histNote?: string
+  /** alias of `histTex` */
+  historyTex?: string
+  /** alias of `histNote` */
   historyNote?: string
 }
 
@@ -210,13 +214,14 @@ const histCache = new Map<string, string>()
 const historyHtml = computed<Record<number, string>>(() => {
   const m: Record<number, string> = {}
   for (let i = 0; i < steps.value.length; i++) {
-    const tex = steps.value[i]!.historyTex ?? steps.value[i]!.tex
+    const tex = steps.value[i]!.histTex ?? steps.value[i]!.historyTex ?? steps.value[i]!.tex
     if (!histCache.has(tex)) histCache.set(tex, renderTex(tex))
     m[i] = histCache.get(tex)!
   }
   return m
 })
-const historyNote = (step: DerivationStep | undefined) => step?.historyNote ?? step?.note
+const historyNote = (step: DerivationStep | undefined) =>
+  step?.histNote ?? step?.historyNote ?? step?.note
 const visited = computed(() => {
   const out: number[] = []
   for (let i = 0; i < stepIndex.value; i++) {

@@ -15,11 +15,14 @@ template/                   The Slidev deck template (copy, never edit in place)
 ├── layouts/                govuk-cover, govuk, govuk-two-cols, govuk-image-right,
 │                           govuk-section, govuk-end + the dd pair layout
 ├── components/             Runnable pattern components (see below)
+├── setup/main.ts           Navigation sync: presenter ↔ audience ↔ tabs
 ├── snippets/               Code snippets importable from slides.md
 └── public/                 Static assets (local images referenced as /img.png)
-references/                 planning, slidev-syntax, design-guidelines, diagrams
+references/                 planning, slidev-syntax, design-guidelines, diagrams,
+                            d3-live-figures, presenting
 scripts/                    new-deck.sh, serve.sh, export.sh, lint-deck.py,
-                            check-plan.py, make-diagram.sh
+                            check-plan.py, make-diagram.sh, drive-figure.mjs,
+                            check-sync.mjs
 example-reference/          Sample reference deck (PDFs) used for the brand
 .githooks/                  Merge-policy enforcement hooks ([](.githooks))
 ```
@@ -31,7 +34,7 @@ example-reference/          Sample reference deck (PDFs) used for the brand
 | `GovArrow` | Data arrow: example value on top, name below, slides in on click |
 | `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text; `label` takes HTML or `$…$`/`$$…$$` LaTeX) |
 | `GovTriangle` | The wide "therefore" ▼ — `color="green\|red"`, `dir="up\|left\|right"`, drops in on click; `label` annotates it (HTML/LaTeX) |
-| `GovChain` | Block → ▼ → consequence, single click; `:steps="[…]"` chains any number; text accepts HTML or LaTeX; `label` annotates the triangle |
+| `GovChain` | Tops → ▼ → bottoms, single click; `:tops="[…]"` / `:bottoms="[…]"` accept any number of HTML strings or `{ box, inverted? }` items (filled by default, `inverted: true` gives white fill + navy outline), either side may be omitted (lone ▼); `dir` points the ▼ (`down` default / `up` vertical, `left` / `right` horizontal) and multiple items stack perpendicular to the flow (rows beside ▼, columns beside ◀/▶); `:steps="[…]"` chains any number; text accepts HTML or LaTeX; `label` annotates the triangle |
 | `GovDerivation` | 3Blue1Brown-style equation morphs — `:steps="[…]"` LaTeX, tokens fly/fade per click |
 | `GovPipe` | N inputs through an icon-name or box stage into M outputs |
 | `GovStress` | The verdict box: infilled navy header + value frame |

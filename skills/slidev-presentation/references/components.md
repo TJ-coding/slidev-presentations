@@ -59,40 +59,61 @@ arrow = data, triangle = therefore.
 <GovTriangle color="green" dir="down" />     <!-- positive verdict -->
 <GovTriangle color="red" />                  <!-- negative verdict -->
 <GovTriangle dir="up" /> · <GovTriangle dir="left" /> · <GovTriangle dir="right" />
-<GovTriangle label="When $n$ is large" />    <!-- white text on the ▼ -->
+<GovTriangle label="When $n$ is large" />    <!-- white text in the tag head -->
+<GovTriangle label="When the state dimension is very large" />  <!-- wraps; base stays compact -->
 ```
 
 | | |
 |---|---|
-| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`); `label` — short HTML / `$…$`, `$$…$$` LaTeX rendered as plain white text **on the fill**, centred on the triangle's centroid; the labeled ▼ grows into a broad arrowhead wide enough to carry one line clear of its slanted edges |
+| props | `color`: `navy` (default) / `green` / `red`; `dir`: `down` (default) / `up` / `left` / `right`; `animated` (default `true`); `label` — HTML / `$…$`, `$$…$$` LaTeX rendered as the head of a compact tag; long text wraps at 10.5rem and the ▼ tail is sized from the head, so the base never inflates to fit the label |
 | animation | drops in top→bottom on click (`animated="false"` renders it plain for chains) |
 
 ![GovTriangle](components/img/gov-triangle.png)
 
 ---
 
-## GovChain — block → triangle → consequence
+## GovChain — tops → triangle → bottoms
 
 The bottom-line verdict, chainable. On one click the tail fades in while the
-triangle slides down to meet the bottom text.
+triangle slides down to meet the bottom text. Like GovPipe, either side is a
+list: N premises converge on the ▼, M conclusions fan out beyond it, and either
+side may be empty — leaving a lone ▼ (annotate it with `label`). Items are raw
+HTML strings or `{ box: '…' }` for a GovBox — filled by default; add
+`inverted: true` for the white box with a navy outline. Multiple items stack
+perpendicular to the flow: rows beside a vertical ▼ (`dir` down/up, default),
+columns beside a horizontal ◀/▶ (`dir` left/right — the triangle points at the
+bottoms).
 
 ```html
 <GovChain top-box="Installed Cache" bottom="Drops Latency" />
+<GovChain top-box="Installed Cache" bottom-box="Drops Latency" />   <!-- filled both sides -->
+<GovChain top-box="Installed Cache" :bottoms="[{ box: 'Drops Latency', inverted: true }]" />
 <GovChain top="<b>Installed Cache</b>" bottom="Drops <u>Latency</u>" color="green" />
 <GovChain top-box="$$\mathbf{A} \in \mathbb{C}^{n \times n}$$" bottom="Drops Latency" />
 <GovChain top-box="Cache hit" bottom="Drops Latency" label="When $n$ is large" />
+<GovChain label="Why Linear?" bottom="Memory Efficiency" />   <!-- 0 → 1: lone ▼ -->
+<GovChain top-box="Cache hit" />                              <!-- 1 → 0: ▼ alone -->
+<GovChain
+  :tops="['$$\\mathbf{A} \\in \\mathbb{C}^{n \\times n}$$', { box: 'n is large', inverted: true }]"
+  :bottoms="['A is infeasible', { box: 'O(n³) flops' }]"
+  label="When $n$ is large" />
+<GovChain dir="right" top-box="Cache hit" :bottoms="['Drops Latency', 'No LLM calls']" />
 <GovChain
   :steps="[
-    { topBox: 'Installed Cache',      bottom: 'Drops Latency' },
+    { tops: ['Installed Cache'],      bottoms: ['Drops Latency'] },
     { top: '<b>Free of LLM calls</b>', bottom: 'Scales linearly' },
   ]" color="green" />
 ```
 
+> Inside a bound array (`:tops` / `:bottoms` / `:steps`) the value is a
+> JavaScript expression, so LaTeX needs a doubled backslash (`\\mathbf{…}`);
+> plain attributes (`top-box="…"`) need only one.
+
 | | |
 |---|---|
-| props | `top` (HTML / LaTeX), `topBox` (renders `GovBox` instead), `bottom` (HTML / LaTeX), `label` (white text on the triangle fill, HTML / LaTeX), `color`, `steps` (array of the above — chains any number). Top and bottom text also accept `$…$` / `$$…$$` LaTeX, typeset via KaTeX |
-| slots | `#top`, `#bottom` — full custom markup for either end |
-| animation | one click per step: tail fades, triangle slides, bottom arrives with it |
+| props | `tops` / `bottoms` — arrays of HTML strings and/or `{ box, inverted? }` items (any number, either side may be omitted); single-item sugar `top` (HTML / LaTeX), `topBox` / `bottomBox` (render a filled `GovBox`), `bottom`; `inverted: true` switches a box to white fill + navy outline; `label` (white text in the tag head, wraps at 10.5rem, HTML / LaTeX), `color`, `dir` (`down` default, `up`, `left`, `right`), `steps` (array of the above — chains any number). Top and bottom text also accept `$…$` / `$$…$$` LaTeX, typeset via KaTeX |
+| slots | `#top`, `#bottom` — full custom markup for either end; `#triangle` overrides the ▼ itself |
+| animation | one click per step: tail fades, triangle slides, bottoms arrive with it |
 
 ![GovChain](components/img/gov-chain.png)
 
@@ -164,7 +185,7 @@ Manim's `TransformMatchingTex`, in the browser.
 
 | | |
 |---|---|
-| props | `steps` — array of LaTeX strings or `{ tex, note, history, historyTex, historyNote }` (`note` renders under the equation and updates per step; a note identical to the previous step's stays put instead of fading in again; `$…$` spans inside the note render as inline math, e.g. `'Apply $\\mathbf{X}^\\dagger$ on both sides'`; `history: false` keeps that step out of the stacked ledger, e.g. a tall matrix line; `historyTex` / `historyNote` override that step's ledger line only — use a compact equation or short note while the main equation keeps its full form); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`); `showHistory` (ledger of completed steps below the equation, default `true`); `historySize` — stacked-equation font size, number = em multiplier of the equation size (default `0.58`), string = raw CSS length (`'0.8rem'`); `historyOpacity` — stacked-equation opacity, 0–1 (default `1`); `morphMap` — `{ tokenTex: canonicalId }`: tokens sharing a canonical id morph into each other (in order of appearance) instead of fading apart |
+| props | `steps` — array of LaTeX strings or `{ tex, note, history, histTex, histNote }` (`note` renders under the equation and updates per step; a note identical to the previous step's stays put instead of fading in again; `$…$` spans inside the note render as inline math, e.g. `'Apply $\\mathbf{X}^\\dagger$ on both sides'`; `history: false` keeps that step out of the stacked ledger, e.g. a tall matrix line; `histTex` / `histNote` override that step's ledger line only — use a compact equation or short note while the main equation keeps its full form; `historyTex` / `historyNote` are accepted aliases); `duration` (ms, default 700); `size`: `md` / `lg` / `xl`; `showProgress` (dots, default `true`); `showHistory` (ledger of completed steps below the equation, default `true`); `historySize` — stacked-equation font size, number = em multiplier of the equation size (default `0.58`), string = raw CSS length (`'0.8rem'`); `historyOpacity` — stacked-equation opacity, 0–1 (default `1`); `morphMap` — `{ tokenTex: canonicalId }`: tokens sharing a canonical id morph into each other (in order of appearance) instead of fading apart |
 | animation | one morph per click / arrow-key advance — the component registers one click slot per morph on the slide's click context at mount (in DOM order, so v-click elements placed before it keep the earlier clicks); each completed step is written below the equation as a small ledger line with its note, so the audience can catch up; print & exports show the final step plus the full ledger |
 | use when | derivations, reformulations, substitutions — any “watch the algebra work” moment |
 

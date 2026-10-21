@@ -61,13 +61,15 @@ window.<Name> = { mount }        // mount(container, opts?) → controller
 | `prev()` | play the current stage **backwards**; `false` at stage 1 or mid-flight |
 | `jumpTo(n)` | render **exactly** stages 1..n instantly (resync primitive) |
 | `stage()` | current stage number (1-based) |
+| `busy()` | `true` while a playback ticker is live — the host only resyncs when settled |
 | `cleanup()` | stop the ticker — the host unmounts |
 
 `opts.steps` selects the driver: `'auto'` (the standalone hero page plays on
 load), `'clicks'` (the slide drives everything), plus the `?static` URL flag /
 `opts.static` for the settled frame.
 
-Three laws make reverse playback and resync possible — **do not violate them**:
+Five laws make reverse playback, resync and multi-window staging possible —
+**do not violate them**:
 
 1. **Every stage event's `apply(e)` is a pure function of progress e ∈ [0,1]** —
    set opacities, positions, bar heights from `e`; nothing tweens on its own.
@@ -77,6 +79,27 @@ Three laws make reverse playback and resync possible — **do not violate them**
 3. **All timeline state is function-scoped** (`script`, `anims`, `animTimer`,
    `stage`) and hoisted ABOVE the controller closures — a `const` inside a
    setup branch makes every controller call throw `ReferenceError`.
+4. **At most ONE playback runs at a time.** `next()`, `prev()` and `jumpTo()`
+   must each cancel any in-flight playback (stop the ticker, clear queued
+   events) BEFORE starting their own. Overlapping animation sets write the same
+   elements from two timers; the visible frame becomes whichever timer happens
+   to finish last. This is exactly how the presenter and audience windows
+   settled on different frames during the acl26 talk: an early `next()` was
+   still ticking when the next command (and then `jumpTo`) applied the final
+   frame, and the stale ticker overwrote it milliseconds later. Symptoms were
+   "stages advance by different amounts in each window" and figures that looked
+   correct in the audience but wrong in presenter mode (or vice versa).
+   Concretely: `stopPlayback()` = `{ stopTimer(); anims.length = 0; playing =
+   pending = false }`; every command starts with it.
+5. **No module-level mutable RENDER state.** A `let TILT = 0`, a shared
+   `d3.scale`, a cached selection — anything a `draw()` iteration mutates — must
+   live INSIDE `draw()`. Presenter mode mounts the figure several times in ONE
+   window: the current slide panel, the next-slide preview (`previewNext`), and
+   overview thumbnails. A module-level variable is shared by all those
+   instances, so one instance's animation rewrites another instance's geometry.
+   In acl26 a module-level `TILT` made the presenter panel tilt differently from
+   the audience. Pass it like `Pbar(..., tilt)`, or keep it in the draw
+   closure.
 
 Write the timeline as flat events, not nested callbacks:
 
@@ -117,20 +140,25 @@ clicks: 2            ← stages − 1 (3-stage figure ⇒ 2 clicks before → le
 </p>
 ```
 
-3. The component handles everything else: loading d3 + the figure script
-   (cached per URL, shared across remounts), mounting with `steps: 'clicks'`,
-   the `$clicks` watcher (forward / reverse / multi-jump fallback), and the
-   print fallback.
+3. The component handles everything else: loading d3 + the figure script,
+   mounting with `steps: 'clicks'`, the `$clicks` watcher (forward / reverse /
+   multi-jump fallback), preview-context settling, idle resync on
+   focus/visibility, and the print fallback.
 
 ### The `$clicks` wiring — why the fallbacks exist
 
 ```js
+const isLiveStage = computed(() => ['slide', 'presenter'].includes($renderContext.value))
+
 watch($clicks, (n, o) => {
-  if (n > o) { controller.next();                                  // → one stage
-    if (controller.stage() !== n + 1) controller.jumpTo(n + 1); }  // multi-jump
-  else if (n < o) {
-    const played = controller.prev();                              // ← reverse
-    if (!played || controller.stage() !== n + 1) controller.jumpTo(n + 1); }
+  if (!isLiveStage.value) { controller.jumpTo(n + 1); return }  // previews: exact frame
+  if (n > o) {
+    controller.next()                                             // → one stage
+    if (controller.stage() !== n + 1) controller.jumpTo(n + 1)    // multi-jump
+  } else if (n < o) {
+    const played = controller.prev()                              // ← reverse
+    if (!played || controller.stage() !== n + 1) controller.jumpTo(n + 1)
+  }
 })
 ```
 
@@ -141,8 +169,34 @@ watch($clicks, (n, o) => {
   reverse from a partial state. Instead the figure settles instantly
   (`prev()` returns false → `jumpTo` fallback). Reversing only ever starts
   from a settled stage.
+- **Previews**: Slidev mounts the same component in several render contexts.
+  Only `slide` (audience) and `presenter` (the presenter's current panel) are
+  live; `previewNext` (next-frame panel), `overview` and `print` render an
+  exact frame with `jumpTo` — no animation. Animating a preview made the
+  presenter window take seconds to catch up with a frame the audience had
+  already finished.
+- **Idle resync**: an occluded, throttled or hidden window can miss the tail
+  of a playback. On window `focus` / `visibilitychange` (when not
+  `controller.busy()`), snap to `$clicks + 1`. Never cut a live animation.
 - **Import**: `useSlideContext` comes from the `@slidev/client` ROOT. The
   `@slidev/client/context` subpath breaks vite pre-transform.
+
+### Script-load cache: keep it on `window`, not in module scope
+
+The component caches one `<script>` Promise per URL. Under dev HMR the SFC
+module can be evaluated twice; a module-scoped `Map` then gives the second copy
+a different cache, so it sees the first copy's `<script>` tag already in the DOM,
+resolves immediately, and mounts **before d3 exists** — the console shows
+`d3=undefined` or `Cannot read properties of undefined (reading 'select')`, and
+the figure silently never appears. Keep the cache on `window` so both module
+copies share it:
+
+```js
+const loaded = (window.__d3FigureLoads ??= new Map())
+```
+
+The mount `catch` should log `d3=` and `api=` types — that one line localises
+this class of failure immediately.
 
 ## Reverse navigation (←)
 
@@ -203,6 +257,17 @@ the reversed states hard, not just "looks different": after ← the figure must
 match the earlier stage EXACTLY (no lingering later-stage elements — see the
 jumpTo trap).
 
+Also run the multi-window check whenever the deck has a live figure or
+presenter mode:
+
+```bash
+node <kit>/scripts/check-sync.mjs http://localhost:3030/<slide>
+```
+
+It asserts presenter ↔ audience ↔ second-tab navigation stays in step, rapid
+presses are not lost to the viewer-echo race, and a late-joining tab adopts the
+live position (procedure in `references/presenting.md`).
+
 ## Pitfalls (each cost us a debugging round)
 
 - `useSlideContext` from `@slidev/client` **root** — the `/context` subpath
@@ -215,7 +280,17 @@ jumpTo trap).
   `<v-click>`s on the same slide, the click budgets desync.
 - `clicks: N` must equal stages − 1, or → leaves the slide mid-story / ← dies
   at stage 1 unexpectedly.
-- Multi-instance decks: script loads are cached per URL at module level, so
-  two `D3Figure`s with different `global` names coexist; two mounts of the
-  SAME figure do not (the second mount draws a second SVG — give the figure's
-  `draw` a guard if you ever need that).
+- **Figure pages that disagree between windows are an animation race, not a
+  sync bug** if the slide NUMBER is in step: check law 4 (overlapping
+  playbacks) and law 5 (shared module-level render state). Both were live in
+  acl26 and produced "the presenter shows a different stage than the audience".
+- Script loads are cached per URL on `window` (`window.__d3FigureLoads`) so
+  HMR can't double-load and two `D3Figure`s with different `global` names
+  coexist. Two *live* mounts of the SAME figure still draw two SVGs — give the
+  figure's `draw` a container guard if you ever need that.
+- In the dev-server console, `Failed to patch FloatingVue … reading 'Popper'`
+  during a slide open is a benign twoslash/theme warning, unrelated to sync or
+  figures. Don't chase it.
+- Slide-number sync between presenter/audience/tabs is a separate layer — see
+  `references/presenting.md` and run `scripts/check-sync.mjs`. A figure that
+  is wrong in ONE window while the slide numbers agree is never a sync issue.
