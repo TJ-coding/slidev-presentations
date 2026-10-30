@@ -1,11 +1,14 @@
 # slidev-presentations
 
+📖 **Documentation: <https://tj-coding.github.io/slidev-presentations/>**: every component, layout, prop and script, with copy-paste examples (source in [`docs/`](docs/)).
+
 The **Quiet** deck kit (GOV.UK-inspired: navy ink, crimson keyword, Poppins,
 white ground) — agent skill + deck template + hooks + animatable components.
 **Designed to be consumed as a git submodule** by the repository where decks
 are actually built and versioned.
 
 ```
+skills/slidev-presentation/
 SKILL.md                    Routing + workflow instructions (Agent Skills spec)
 template/                   The Slidev deck template (copy, never edit in place)
 ├── slides.md               Showcase deck — every slide demonstrates a pattern
@@ -61,10 +64,11 @@ git commit -m "chore: add slidev-presentations kit"
 Then:
 
 ```bash
-kit/scripts/new-deck.sh "My Talk" my-talk    # scaffold a new deck from kit/template
-cd my-talk && npm install && npm run dev     # http://localhost:3030
-node kit/scripts/lint-deck.py slides.md      # quality gate (or kit/scripts/check-plan.py .)
-node kit/scripts/export.sh . pdf             # → slides.pdf
+S=kit/skills/slidev-presentation/scripts
+$S/new-deck.sh "My Talk" my-talk             # scaffold a new deck from the template (runs npm install)
+cd my-talk && npm run dev                    # http://localhost:3030
+python3 ../$S/lint-deck.py slides.md         # quality gate (and ../$S/check-plan.py .)
+../$S/export.sh . pdf                        # → slides.pdf
 ```
 
 Update the kit independently; bump the pin whenever you want the improvements:

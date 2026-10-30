@@ -114,3 +114,4 @@ ln -sfn <this-dir> ~/.pi/agent/skills/slidev-presentation
 
 Submodule consumers: symlink `~/.pi/agent/skills/slidev-presentation` to
 `<deck-repo>/kit/skills/slidev-presentation`.
+- Full human-readable docs (GitHub Pages): https://tj-coding.github.io/slidev-presentations/
