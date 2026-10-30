@@ -6,4 +6,11 @@ export default defineConfig({
   build: {
     cssMinify: 'esbuild',
   },
+  server: {
+    // Decks often symlink a shared diagrams folder in as ./diagrams (it lives
+    // in the parent repo); allow the dev server to serve modules through it.
+    fs: {
+      allow: ['..'],
+    },
+  },
 })

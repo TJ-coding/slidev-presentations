@@ -1,28 +1,35 @@
 <script setup lang="ts">
-// GOV.UK cover: black phase band + kicker tag, big title, blue meta, grey author.
-// Frontmatter: title, subtitle, kicker, author, meta
+// GOV.UK cover, mirroring the reference decks' title page:
+//   1. navy band  — Title Case title (white, bold, can wrap to 2 lines)
+//   2. sage band  — white bold subtitle
+//   3. white body — name (navy), Japanese title (big, bold), grey meta lines
+// Frontmatter: title, subtitle, name, jpTitle, meta (HTML allowed), author
 import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
+import { typeset } from '../components/math'
 
 const { $frontmatter } = useSlideContext()
-const title = $frontmatter.title || ''
+const title = computed(() => $frontmatter.title || '')
 const subtitle = $frontmatter.subtitle
-const kicker = $frontmatter.kicker
-const author = $frontmatter.author
+const name = $frontmatter.name
+const jpTitle = $frontmatter.jpTitle
 const meta = $frontmatter.meta
-const accent = computed(() => `govuk-tag ${$frontmatter.tagColor ? 'govuk-tag--' + $frontmatter.tagColor : ''}`)
+const author = $frontmatter.author
 </script>
 
 <template>
-  <div class="slidev-layout govuk govuk-cover">
+  <div class="slidev-layout govuk-cover">
     <div class="gov-cover-band">
-      <span v-if="kicker" :class="accent" class="govuk-tag">{{ kicker }}</span>
-      <h1 class="cover-band-title">{{ title }}</h1>
+      <h1 class="cover-band-title" v-html="typeset(title)" />
     </div>
+    <div v-if="subtitle" class="gov-cover-subband" v-html="typeset(subtitle)" />
     <div class="gov-cover-body">
-      <p v-if="subtitle" class="gov-cover-subtitle">{{ subtitle }}</p>
-      <p v-if="meta" class="gov-cover-meta">{{ meta }}</p>
-      <p v-if="author" class="gov-cover-author">{{ author }}</p>
+      <p v-if="name" class="gov-cover-name">{{ name }}</p>
+      <p v-if="jpTitle" class="gov-cover-jp">{{ jpTitle }}</p>
+      <div class="gov-cover-meta-block">
+        <p v-if="meta" class="gov-cover-meta" v-html="meta"></p>
+        <p v-if="author" class="gov-cover-author">{{ author }}</p>
+      </div>
       <slot />
     </div>
   </div>
@@ -33,10 +40,12 @@ const accent = computed(() => `govuk-tag ${$frontmatter.tagColor ? 'govuk-tag--'
   background: #fff;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .gov-cover-band {
   background: var(--deck-band);
-  padding: 1.1rem 2.4rem;
+  padding: 1.6rem 2.4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,40 +54,56 @@ const accent = computed(() => `govuk-tag ${$frontmatter.tagColor ? 'govuk-tag--'
 }
 .cover-band-title {
   color: #fff;
-  font-size: 2.1rem;
+  font-size: 2.7rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0;
+  text-align: center;
+  max-width: 90%;
+}
+.gov-cover-subband {
+  background: var(--sage);
+  color: #fff;
+  font-size: 1.45rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.45rem 2.4rem;
 }
 .gov-cover-body {
-  padding: 3.2rem 3rem 0;
+  flex: 1;
+  padding: 2.6rem 3rem 2.2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.gov-cover-title {
-  font-size: 3.1rem;
-  font-weight: 700;
-  margin: 0 0 1.2rem !important;
-  letter-spacing: -0.02em;
-  /* Title Case on the cover, as in the reference decks.
-     (CSS capitalises every word; write proper Title Case in the
-     frontmatter `title:` if you want minor words lowercase) */
-  text-transform: capitalize;
-}
-.gov-cover-subtitle {
-  font-size: 1.5rem;
-  color: var(--muted);
-  margin: 0 0 0.9rem;
-}
-.gov-cover-meta {
-  font-size: 1.15rem;
-  color: var(--accent);
-  font-weight: 700;
+.gov-cover-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--navy);
   margin: 0 0 1.6rem;
 }
+.gov-cover-jp {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.02em;
+  margin: 0 0 2.6rem;
+}
+.gov-cover-meta-block {
+  margin-top: auto;
+}
+.gov-cover-meta {
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--steel);
+  margin: 0;
+}
 .gov-cover-author {
-  font-size: 1.05rem;
-  color: var(--govuk-secondary);
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--steel);
   margin: 0;
 }
 </style>

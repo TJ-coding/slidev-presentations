@@ -1,0 +1,33 @@
+\definecolor{navy}{HTML}{0D2641}
+\definecolor{crimson}{HTML}{D71C56}
+% Example inset for <TikzSync name="example-chain" />. Click k seeks the clock
+% to 1.2k s; each click's single fade runs in (1.2k-0.35)s .. (1.2k)s.
+%   click 0: x_0        click 1: + A, x_1        click 2: + A, x_2 (crimson)
+% Shared style vocabulary — keep identical across insets (README "Animation rules").
+\begin{document}
+\begin{tikzpicture}[
+  font=\Large,
+  state/.style={draw=navy, line width=1.6pt, rounded corners=3pt, fill=white,
+    minimum size=1.4cm, inner sep=0pt},
+  stateOn/.style={state, fill=navy, text=white},
+  op/.style={-{Latex[length=3.2mm,width=3mm]}, draw=navy, line width=2.2pt},
+  opR/.style={op, draw=crimson},
+  ghost/.style={op, draw=navy!35, dashed, line width=1.6pt},
+  opLab/.style={text=navy, font=\LARGE},
+  opLabR/.style={text=crimson, font=\LARGE},
+  brN/.style={decorate, decoration={brace, amplitude=7pt}, draw=navy, line width=1.8pt},
+  brC/.style={decorate, decoration={brace, amplitude=7pt, mirror}, draw=crimson, line width=1.8pt},
+  brLabN/.style={text=navy, font=\LARGE},
+  brLabC/.style={text=crimson, font=\LARGE},
+]
+\node[state] at (-3.4,0) {$\mathbf{x}_0$};
+\begin{scope}[animate={myself:opacity={0s="0", 0.85s="0", 1.2s="1", 100s="1"}}]
+\draw[op] (-2.55,0) -- node[above=3pt, opLab] {$\mathbf{A}$} (-0.85,0);
+\node[state] at (0,0) {$\mathbf{x}_1$};
+\end{scope}
+\begin{scope}[animate={myself:opacity={0s="0", 2.05s="0", 2.4s="1", 100s="1"}}]
+\draw[opR] (0.85,0) -- node[above=3pt, opLabR] {$\mathbf{A}$} (2.55,0);
+\node[state, draw=crimson] at (3.4,0) {$\mathbf{x}_2$};
+\end{scope}
+\end{tikzpicture}
+\end{document}

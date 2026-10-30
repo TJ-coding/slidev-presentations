@@ -49,9 +49,20 @@ The full contract is `references/design-guidelines.md`. The laws:
 
 Props, usage, and rendered look of every component:
 **`references/components.md`** — GovArrow, GovBox, GovTriangle, GovChain,
-GovPipe, GovStress, GovDerivation (animated equation morphs), and the `dd`
-pair layout. Use the components instead of raw
+GovPipe, GovStress, GovWindow (pop-up window chrome), GovDerivation (animated
+equation morphs, ledger sections), TikzSync (animated TikZ insets on the slide
+clock), the settings footer, the click-driven playback pattern, and the `dd`
+pair layout. Layout frontmatter (cover `name`/`jpTitle`, `govuk-about`
+self-introduction, `govuk-section` progress rail via `sections:`) is in
+`references/slidev-syntax.md`. Use the components instead of raw
 CSS classes; they embed the animations and hierarchy rules.
+
+## Animated TikZ insets
+
+Schematics that build up click by click beside a derivation: write
+`<deck>/tikz/src/<name>.tex`, run `npm run build:tikz`, place
+`<TikzSync name="<name>" />` inside `.tikz-inset`. Follow the animation rules in
+`template/tikz/src/README.md` (fade-only, one change per click, fixed layout).
 
 ## Live D3 figures (animated, click-driven)
 

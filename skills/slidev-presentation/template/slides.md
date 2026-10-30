@@ -5,9 +5,10 @@ colorSchema: light
 title: 'Canonical Template Deck'
 layout: govuk-cover
 subtitle: 'One-sentence outcome: what the audience will know or be able to do'
-kicker: 'REGULAR MEETING'
-meta: 'Group name · 17 June 2026'
-author: 'Presenter Name · Laboratory'
+name: 'Presenter Name (D1)'
+jpTitle: '日本語タイトル（任意）'
+meta: 'Regular Meeting<br>17 June 2026'
+author: 'Laboratory, University'
 info: |
   Canonical template deck. Every slide demonstrates one named pattern.
 highlighter: shiki
@@ -18,12 +19,33 @@ mdc: true
 lineNumbers: false
 ---
 
-<!-- Cover mirror of the reference decks: band + Title Case + meta + authors. -->
+<!-- Cover mirror of the reference decks: navy title band + sage subtitle band,
+then name, optional Japanese title, meta (HTML allowed) and affiliation. -->
+
+---
+layout: govuk-about
+title: 'About Me'
+image: https://cover.sli.dev
+---
+
+- **Presenter Name** (D1)
+  * From City, Country
+- **Research Interests**:
+  * Topic one
+  * <span class="accent-amber">Topic two</span>
+- **Hobbies**: one, two
+
+<!-- Self-introduction: full-bleed photo left (`image`, e.g. /about.jpg in
+public/), navy panel right with the bullets. -->
 
 ---
 layout: govuk-section
-kicker: '01'
+kicker: '1'
 title: 'How to use this template'
+subtitle: 'Patterns, budgets and the component kit'
+sections:
+  - How to use this template
+  - Animated figures
 ---
 
 Band → reading order → budgets → patterns → ship.
@@ -305,6 +327,31 @@ All animated at the component level; static exports show the end state.
 
 ---
 layout: govuk
+title: 'Pattern: pop-up window'
+lead: 'A <strong>window</strong> lifts one result above the slide — detail stays in the frame.'
+---
+
+<div class="govuk-grid-2">
+  <div>
+    <GovWindow title="Retrieval · n = 512" width="25rem">
+      <div class="govuk-takeaway govuk-accent-green" style="margin:0">410ms → 40ms</div>
+    </GovWindow>
+  </div>
+  <div>
+    <GovWindow title="Caveat" tone="red" width="23rem">
+      The cross-encoder still scores <span class="govuk-emph">every pair</span>.
+    </GovWindow>
+  </div>
+</div>
+
+<!--
+GovWindow: one click per window (result, then caveat). Use for a result, quote,
+or aside that should layer above the slide; `overlay` dims the page behind it
+when the window needs the whole floor. The × is decorative — no pointer logic.
+-->
+
+---
+layout: govuk
 title: 'Pattern: animated derivation'
 lead: 'Equations <strong>morph</strong> — tokens fly, substitutions land, nothing teleports.'
 ---
@@ -325,6 +372,7 @@ lead: 'Equations <strong>morph</strong> — tokens fly, substitutions land, noth
     '\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}': 'rhs',
   }"
   size="md"
+  history-align="="
 />
 
 <!--
@@ -336,8 +384,50 @@ Notes narrate each move. Static exports show the final step.
 -->
 
 ---
+layout: govuk-section
+kicker: '2'
+title: 'Animated figures'
+subtitle: 'TikZ insets driven by the slide clock'
+sections:
+  - How to use this template
+  - Animated figures
+---
+
+<!-- Section divider: `kicker` is the 1-based index into `sections`; the rail
+on the right shows every section with the current one highlighted. Repeat the
+same `sections` list on every divider. -->
+
+---
+layout: govuk
+title: 'Pattern: TikZ inset in sync with a derivation'
+lead: 'One <strong>fade</strong> per click — the figure and the equation share the clock.'
+---
+
+<div class="tikz-inset" style="--tikz-width: 34rem">
+  <TikzSync name="example-chain" :at="[0, 1.2, 2.4]" />
+</div>
+
+<GovDerivation
+  :steps="[
+    { tex: '\\mathbf{x}_0', section: 'Evolution' },
+    { tex: '\\mathbf{x}_1 = \\mathbf{A}\\mathbf{x}_0' },
+    { tex: '\\mathbf{x}_2 = \\mathbf{A}\\mathbf{x}_1 = \\mathbf{A}^2\\mathbf{x}_0', note: 'apply <strong>A</strong> again' },
+  ]"
+  size="md"
+/>
+
+<p class="gov-settings">Settings footer · one line of run configuration, pinned to the slide foot</p>
+
+<!--
+TikzSync inlines tikz/example-chain.svg (built from tikz/src/example-chain.tex
+by `npm run build:tikz`) and seeks its SMIL clock from the slide's clicks, so it
+registers no clicks of its own. See tikz/src/README.md for the animation rules.
+-->
+
+---
 layout: govuk-end
-title: 'Questions?'
+title: 'Thank you'
+subtitle: 'Questions?'
 kicker: 'github.com/your-repo'
 author: 'Laboratory · @yourhandle'
 ---
