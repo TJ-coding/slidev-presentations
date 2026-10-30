@@ -12,10 +12,13 @@ template/                   The Slidev deck template (copy, never edit in place)
 ├── plan.md                 Deck-plan skeleton (story + per-slide message/intention)
 ├── style.css               Theme tokens (palette, fonts, components, animations)
 ├── global-bottom.vue       Grey page number, bottom-right, on every content slide
-├── layouts/                govuk-cover, govuk, govuk-two-cols, govuk-image-right,
-│                           govuk-section, govuk-end + the dd pair layout
+├── layouts/                govuk-cover, govuk-about, govuk, govuk-two-cols,
+│                           govuk-image-right, govuk-section (progress rail),
+│                           govuk-end + the dd pair layout
 ├── components/             Runnable pattern components (see below)
 ├── setup/main.ts           Navigation sync: presenter ↔ audience ↔ tabs
+├── scripts/build-tikz.mjs  TikZ → animated SVG (node-tikzjax, KaTeX font remap)
+├── tikz/src/               TikZ inset sources + animation rules (README.md)
 ├── snippets/               Code snippets importable from slides.md
 └── public/                 Static assets (local images referenced as /img.png)
 references/                 planning, slidev-syntax, design-guidelines, diagrams,
@@ -32,12 +35,14 @@ example-reference/          Sample reference deck (PDFs) used for the brand
 | Component | Purpose |
 |---|---|
 | `GovArrow` | Data arrow: example value on top, name below, slides in on click |
-| `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text; `label` takes HTML or `$…$`/`$$…$$` LaTeX) |
+| `GovBox` | Filled label block (navy fill / white text; `inverted` → white fill, ink text; `size` sets text size; `label` takes HTML or `$…$`/`$$…$$` LaTeX) |
 | `GovTriangle` | The wide "therefore" ▼ — `color="green\|red"`, `dir="up\|left\|right"`, drops in on click; `label` annotates it (HTML/LaTeX) |
-| `GovChain` | Tops → ▼ → bottoms, single click; `:tops="[…]"` / `:bottoms="[…]"` accept any number of HTML strings or `{ box, inverted? }` items (filled by default, `inverted: true` gives white fill + navy outline), either side may be omitted (lone ▼); `dir` points the ▼ (`down` default / `up` vertical, `left` / `right` horizontal) and multiple items stack perpendicular to the flow (rows beside ▼, columns beside ◀/▶); `:steps="[…]"` chains any number; text accepts HTML or LaTeX; `label` annotates the triangle |
+| `GovChain` | Tops → ▼ → bottoms, single click; `:tops="[…]"` / `:bottoms="[…]"` / `:lefts="[…]"` / `:rights="[…]"` accept any number of HTML strings or `{ box, inverted?, size? }` items (filled by default, `inverted: true` gives white fill + navy outline), either side may be omitted (lone ▼); `lefts`/`rights` flank a vertical ▼ or, with no bottoms, turn the step horizontal; `dir` points the ▼ (`down` default / `up` vertical, `left` / `right` horizontal; per step too) and multiple items stack perpendicular to the flow (rows beside ▼, columns beside ◀/▶); `:steps="[…]"` chains any number; text accepts HTML or LaTeX; `label` annotates the triangle |
 | `GovDerivation` | 3Blue1Brown-style equation morphs — `:steps="[…]"` LaTeX, tokens fly/fade per click |
 | `GovPipe` | N inputs through an icon-name or box stage into M outputs |
 | `GovStress` | The verdict box: infilled navy header + value frame |
+| `TikzSync` | Inline an animated TikZ SVG (`npm run build:tikz`) and seek its SMIL clock from the slide's clicks — no clicks of its own, so it tracks a `GovDerivation` |
+| `GovWindow` | Floating pop-up window: chrome bar + body/footer, optional overlay |
 
 All are animated at the component level (0.3s linear, disabled on print);
 static exports always show the settled state.

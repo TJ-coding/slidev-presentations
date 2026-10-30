@@ -136,7 +136,7 @@ def main() -> int:
 
         # show-don't-tell: does the slide carry a visual, or is it prose?
         visual = re.search(
-            r"gov-flow|gov-node|gov-matrix|gov-contrast|gov-bignum|mermaid|image:|<img|GovDerivation",
+            r"gov-flow|gov-node|gov-matrix|gov-contrast|gov-bignum|gov-window|mermaid|image:|<img|GovDerivation|GovWindow|TikzSync|D3Figure",
             body,
         )
         words = len(re.findall(r"[A-Za-z][A-Za-z'-]*", strip_markup(body)))

@@ -3,6 +3,7 @@
 // No lead: the pair IS the focal point. Frontmatter: title, kicker, bandColor
 import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
+import { typeset } from '../components/math'
 
 const {$frontmatter} = useSlideContext()
 const bandClass = computed(() => `gov-band gov-band--${$frontmatter.bandColor || 'blue'}`)
@@ -12,7 +13,7 @@ const bandClass = computed(() => `gov-band gov-band--${$frontmatter.bandColor ||
   <div class="slidev-layout dd-slide" style="height: 100%;">
     <header v-if="$frontmatter.title" :class="bandClass" class="gov-band">
       <div v-if="$frontmatter.kicker" class="gov-band-kicker">{{ $frontmatter.kicker }}</div>
-      <h1 class="gov-band-title">{{ $frontmatter.title }}</h1>
+      <h1 class="gov-band-title" v-html="typeset($frontmatter.title)" />
     </header>
     <div class="dd-body-wrap">
       <slot />

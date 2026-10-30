@@ -6,6 +6,7 @@
 import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
 import { resolveAssetUrl } from '@slidev/client'
+import { typeset } from '../components/math'
 
 const {$frontmatter} = useSlideContext()
 const bandClass = computed(() => `gov-band gov-band--${$frontmatter.bandColor || 'black'}`)
@@ -16,7 +17,7 @@ const image = computed(() => $frontmatter.image ? resolveAssetUrl($frontmatter.i
   <div class="slidev-layout govuk">
     <header v-if="$frontmatter.title" :class="bandClass" class="gov-band">
       <div v-if="$frontmatter.kicker" class="gov-band-kicker">{{ $frontmatter.kicker }}</div>
-      <h1 class="gov-band-title">{{ $frontmatter.title }}</h1>
+      <h1 class="gov-band-title" v-html="typeset($frontmatter.title)" />
     </header>
     <div class="gov-body gov-img-right">
       <div class="gov-img-right-text">

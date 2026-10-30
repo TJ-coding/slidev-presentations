@@ -9,6 +9,7 @@
 // Frontmatter: title, kicker, lead, bandColor
 import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
+import { typeset } from '../components/math'
 
 const {$frontmatter} = useSlideContext()
 const bandClass = computed(() => `gov-band gov-band--${$frontmatter.bandColor || 'black'}`)
@@ -19,10 +20,10 @@ const lead = $frontmatter.lead
   <div class="slidev-layout govuk">
     <header v-if="$frontmatter.title" :class="bandClass" class="gov-band">
       <div v-if="$frontmatter.kicker" class="gov-band-kicker">{{ $frontmatter.kicker }}</div>
-      <h1 class="gov-band-title">{{ $frontmatter.title }}</h1>
+      <h1 class="gov-band-title" v-html="typeset($frontmatter.title)" />
     </header>
     <div class="gov-body">
-      <h2 v-if="lead" class="govuk-lead" v-html="lead" />
+      <h2 v-if="lead" class="govuk-lead" v-html="typeset(lead)" />
       <div class="gov-two">
         <div>
           <slot />

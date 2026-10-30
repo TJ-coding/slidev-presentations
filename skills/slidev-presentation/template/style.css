@@ -50,10 +50,15 @@ html.dark .slidev-layout p,
 html.dark .slidev-layout li { color: var(--navy) !important; background-color: transparent; }
 
 h1, h2, h3, h4 { font-family: var(--govuk-font); font-weight: 700; letter-spacing: -0.01em; color: var(--navy); }
-.slidev-layout p { line-height: 1.5; }
+
+/* Type scale & body colour — body copy is the navy ink (the deck's "blue"),
+   sized up for the talk room. Captions/asides stay steel grey. */
+.slidev-layout { font-size: 1.15rem; }
+.slidev-layout p { line-height: 1.6; font-size: 1.15rem; color: var(--navy); }
+.slidev-layout ul, .slidev-layout ol { font-size: 1.15rem; }
 a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
-.slidev-layout li { margin: 0.55rem 0; color: var(--navy); }
+.slidev-layout li { margin: 0.6rem 0; color: var(--navy); font-size: 1.15rem; line-height: 1.6; }
 .slidev-layout li::marker { color: var(--navy); font-size: 1em; }
 
 /* ============ Components (reference restyle) ============ */
@@ -105,8 +110,8 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 /* ============ Hierarchy primitives ============ */
 
 .govuk-lead {
-  font-size: 1.4rem;
-  line-height: 1.3;
+  font-size: 1.6rem;
+  line-height: 1.35;
   font-weight: 700;
   margin: 0 0 1.1rem;
   color: var(--navy);
@@ -138,14 +143,14 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .govuk-steps li::marker { content: none !important; }
 .govuk-steps li { color: var(--navy); }
 
-.govuk-caption { font-size: 0.8rem; color: var(--steel); margin: 0.3rem 0 0; }
+.govuk-caption { font-size: 0.9rem; color: var(--steel); margin: 0.3rem 0 0; }
 
 .govuk-aside {
   border-top: 1px solid var(--line);
   margin-top: 1.3rem;
   padding-top: 0.8rem;
   color: var(--steel);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .govuk-takeaway {
@@ -155,7 +160,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
   border-left: 4px solid var(--sage);
   background: var(--soft);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 .govuk-takeaway.govuk-accent-red { border-left-color: var(--crimson); }
 .govuk-takeaway.govuk-accent-blue { border-left-color: var(--navy); }
@@ -242,12 +247,14 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-therefore--right { transform: rotate(-90deg); }
 
 /* Annotation on the triangle (`GovTriangle`/`GovChain` `label`).
-   Vertical labels form the head of a compact tag: the label wraps at 10.5rem
-   and the ▼ tail is only as wide as the head, so long conditions grow
-   downwards instead of inflating the base. One colour, one glyph: the label
-   plate and tail are the same navy (or green/red) fill, forming a single
-   downward/upward arrow with a flat head. Horizontal labels (dir left/right)
-   keep the rotated band treatment below. */
+   Vertical labels sit in a white rectangular plate with a navy outline at the
+   centre of the ▼
+   (on its centroid, one third down from the base where the shape is widest),
+   so the condition rides the fill instead of forming a head above it. The
+   labeled triangle is sized once (14 × 4.5) rather than from the label, which
+   keeps the mark compact and stable; the plate may spill past the slants,
+   which is fine. Horizontal labels (dir left/right) keep the rotated band
+   treatment below. */
 .gov-therefore-tag {
   display: inline-flex;
   flex-direction: column;
@@ -259,31 +266,42 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-therefore-tag--left { flex-direction: row-reverse; }
 .gov-therefore-tag--right { flex-direction: row; }
 
-/* Vertical tag: the label is the head (wrapping at a fixed max width), the
-   tail is a clip-path triangle sized from it. No fixed 15.6rem base. */
+/* Vertical tag: fixed broad ▼ with the label plate absolutely centred on it. */
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) {
+  display: block;
+  position: relative;
+  width: 14rem;
+  height: 4.5rem;
+  min-width: 0;
+}
 .gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-triangle-label {
-  color: #fff;
-  background: var(--navy);
+  color: var(--navy);
+  background: #fff;
+  border: 3px solid var(--navy);
   box-sizing: border-box;
   padding: 0.35rem 0.9rem 0.3rem;
   margin: 0;
+  width: max-content;
   max-width: 10.5rem;
   white-space: normal;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.4;
   text-align: center;
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 33.333%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
-.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--green .gov-triangle-label { background: var(--sage); }
-.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--red .gov-triangle-label { background: var(--crimson); }
 .gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
-  min-height: 2rem;
-  max-height: 3.6rem;
-  aspect-ratio: 2.8;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
   border: 0;
   background: var(--navy);
   clip-path: polygon(0 0, 100% 0, 50% 100%);
@@ -292,6 +310,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 }
 .gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore.gov-therefore--green { background: var(--sage); }
 .gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right) .gov-therefore.gov-therefore--red { background: var(--crimson); }
+.gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--up .gov-triangle-label { top: 66.667%; }
 .gov-therefore-tag:not(.gov-therefore-tag--left):not(.gov-therefore-tag--right).gov-therefore-tag--up .gov-therefore { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 
 /* Horizontal labeled triangles (dir left/right): the rotated fill paints centred
@@ -344,6 +363,20 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-eq-value--dark { color: var(--navy); }
 
 .gov-stress { margin: 0.9rem 0; }
+/* headless (solo) stress box — no navy band, so the body closes its own top
+   border and drops to a text size that fits a full sentence */
+.gov-stress--solo .gov-stress-body {
+  border-top: 7px solid var(--navy);
+  font-size: 1.6rem;
+}
+/* inverted stress box — value box flips to navy fill / white text, the
+   GovBox counterpart (border drops out: solid navy block, like the chain's
+   'A is Infeasible'); muted value colors read on navy */
+.gov-stress--inverted .gov-stress-body {
+  background: var(--navy);
+  color: #fff;
+}
+.gov-stress--inverted .gov-stress-head { background: #fff; color: var(--navy); }
 .gov-stress-head {
   background: var(--navy); color: #fff; font-weight: 700;
   padding: 0.45rem 0.9rem; font-size: 2.2rem;
@@ -392,6 +425,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-chain-item { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; position: relative; z-index: 1; }
 .gov-chain-top { font-weight: 700; }
 .gov-chain-bottom { font-weight: 700; margin-top: 0.45rem; }
+.gov-chain-left, .gov-chain-right { font-weight: 700; }
 
 /* Vertical chain (dir down/up): multiple tops/bottoms fan out in horizontal rows
    beside the ▼ — premises spread above it, conclusions below it. Equal columns
@@ -408,7 +442,11 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
 /* Horizontal chain (dir left/right): tops column → ◀/▶ → bottoms column, all
    stacked vertically; the triangle points at the bottoms. */
-.gov-chain--h { flex-direction: row; align-items: center; gap: 1rem; }
+.gov-chain--h { flex-direction: row; align-items: center; justify-content: center; gap: 1rem; }
+/* Left-pointing step: keep the premises on the far side of the ◀. Reordering
+   (rather than row-reverse) keeps the whole group centred when the chain is a
+   full-width block. */
+.gov-chain--h.gov-chain--left > .gov-chain-tail { order: -1; }
 .gov-chain--h .gov-chain-item {
   display: inline-grid;
   grid-auto-flow: row;
@@ -426,15 +464,53 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-chain--h .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
 .gov-chain--h .gov-chain-tail .gov-therefore-tag { translate: -1.5rem 0; }
 .gov-chain--h .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore-tag { translate: 0 0; }
+/* The leftward ◀ enters from the right instead. */
+.gov-chain--h.gov-chain--left .gov-chain-tail .gov-therefore { translate: 1.5rem 0; }
+.gov-chain--h.gov-chain--left .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
+.gov-chain--h.gov-chain--left .gov-chain-tail .gov-therefore-tag { translate: 1.5rem 0; }
+.gov-chain--h.gov-chain--left .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore-tag { translate: 0 0; }
+/* Compact ◀/▶ for a lefts/rights branch: the full-size rotated mark is
+   ~8.4rem tall and swamps a one-box branch, so use a roughly square arrow and
+   drop the negative margins that collapse the wide layout box. */
+.gov-chain--h .gov-chain-tail > .gov-therefore.gov-therefore--sm {
+  border-left-width: 1.6rem;
+  border-right-width: 1.6rem;
+  border-top-width: 3.2rem;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Side branches flanking a vertical ▼ (`lefts` / `rights` while `bottoms` is
+   present): a horizontal row of left items, the ▼, right items. */
+.gov-chain-cross {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.gov-chain-side {
+  display: inline-grid;
+  grid-auto-flow: row;
+  grid-auto-rows: 1fr;
+  justify-items: center;
+  gap: 0.45rem;
+  position: relative;
+  z-index: 1;
+}
 
 /* Display math inside components sits inline — KaTeX's .katex-display adds
    block margins that would balloon the box / top label / bottom label. */
 .gov-box .katex-display,
 .gov-chain-top .katex-display,
-.gov-chain-bottom .katex-display { display: contents; margin: 0; }
+.gov-chain-bottom .katex-display,
+.gov-chain-left .katex-display,
+.gov-chain-right .katex-display { display: contents; margin: 0; }
 .gov-box .katex,
 .gov-chain-top .katex,
-.gov-chain-bottom .katex { text-align: center; }
+.gov-chain-bottom .katex,
+.gov-chain-left .katex,
+.gov-chain-right .katex { text-align: center; }
 
 .gov-chain-tail {
   display: flex;
@@ -449,7 +525,7 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gov-chain-tail .gov-therefore { translate: 0 -2.5rem; }
 .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore { translate: 0 0; }
 /* labeled triangle: the band+point wrapper slides as one, the point inside it stays put */
-.gov-chain-tail .gov-therefore-tag { translate: 0 -2.5rem; }
+.gov-chain-tail .gov-therefore-tag { translate: 0 -2.5rem; transition: translate 0.1s ease-out; }
 .gov-chain-tail:not(.slidev-vclick-hidden) .gov-therefore-tag { translate: 0 0; }
 .gov-chain-tail .gov-therefore-tag .gov-therefore { translate: 0 0; }
 
@@ -472,6 +548,127 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
   background: #fff;
   color: var(--navy);
   border: 3px solid var(--navy);
+}
+
+/* ============ Window primitive (GovWindow component) ============ */
+
+/* The layer is the v-click root, so it owns the click slot; the window and
+   backdrop animate inside it (scaling the fixed overlay itself would also
+   scale the dimming backdrop). */
+.gov-window-layer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.gov-window {
+  width: min(var(--gw-width, 30rem), 100%);
+  max-height: calc(100% - 1rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--navy);
+  border: 2px solid var(--navy);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(13, 38, 65, 0.22);
+  text-align: left;
+  transition: opacity 0.3s linear, transform 0.3s linear;
+  transform-origin: center;
+}
+.gov-window-layer.slidev-vclick-hidden .gov-window {
+  opacity: 0;
+  transform: translateY(1.25rem) scale(0.94);
+}
+.gov-window-layer--overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+.gov-window-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 38, 65, 0.3);
+  transition: opacity 0.3s linear;
+}
+.gov-window-layer.slidev-vclick-hidden .gov-window-backdrop {
+  opacity: 0;
+}
+.gov-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 600;
+}
+.gov-window--green .gov-window-bar { background: var(--sage); }
+.gov-window--red .gov-window-bar { background: var(--crimson); }
+.gov-window-dots {
+  display: inline-flex;
+  gap: 0.28rem;
+  flex: 0 0 auto;
+}
+.gov-window-dots i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+.gov-window-dots i:first-child { background: rgba(255, 255, 255, 0.9); }
+.gov-window-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gov-window-close {
+  flex: 0 0 auto;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+.gov-window-body {
+  padding: 1rem 1.1rem;
+  overflow: auto;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.gov-window-title .katex-display,
+.gov-window-footer .katex-display { display: contents; margin: 0; }
+.gov-window-body .gov-box,
+.gov-window-body .gov-stress { margin: 0; }
+.gov-window-footer {
+  padding: 0.55rem 1.1rem 0.8rem;
+  border-top: 1px solid var(--line);
+  color: var(--steel);
+  font-size: 0.8rem;
+}
+@media print {
+  .gov-window-layer--overlay {
+    position: static;
+    display: flex;
+    padding: 0;
+  }
+  .gov-window-backdrop { display: none; }
+  .gov-window,
+  .gov-window-layer.slidev-vclick-hidden .gov-window {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gov-window,
+  .gov-window-backdrop { transition: none; }
 }
 
 /* ============ Don't / Do pairs ============ */
@@ -567,21 +764,80 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 
 .dd-body-wrap { padding: 0.7rem 1.6rem 0.9rem; height: calc(100% - 6.4rem); box-sizing: border-box; }
 
+.gov-body { padding: 1.5rem 2.4rem 2rem; }
+.gov-body--centered { height: calc(100% - 6.5rem); display: flex; flex-direction: column; justify-content: center; }
+
 /* ============ Derivation primitive (GovDerivation component) ============ */
 
 .gov-derivation {
   --gd-dur: 700ms;
   --gd-exit-dur: 140ms;
   --gd-size: 1.8rem;
+  position: relative;
+  /* above decorative slide insets (e.g. a TikzSync inset), whose opaque
+     node fills would otherwise cover the morphing tokens */
+  z-index: 2;
   margin: 0.9rem 0 0.4rem;
+}
+.gov-derivation--annotated {
+  --gd-annotation-gutter: 13rem;
+  --gd-annotation-width: 12rem;
 }
 .gov-derivation--md { --gd-size: 1.35rem; }
 .gov-derivation--lg { --gd-size: 1.8rem; }
 .gov-derivation--xl { --gd-size: 2.4rem; }
 
+/* --gd-main lays the ledger and the equation out according to
+   historyPosition: stacked (top/bottom) or side by side (left/right). */
+.gd-main { display: flex; flex-direction: column; }
+/* the current-equation area collapses to zero height when a step is empty,
+   so the ledger glides into the freed space instead of jumping */
+.gd-current {
+  display: grid;
+  grid-template-rows: 1fr;
+  width: 100%;
+  min-width: 0;
+  transition: grid-template-rows var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Do not clip the morphing equation. A ledger line opening above the current
+   equation (the default history position) pushes the equation down, so the
+   tokens' "from" positions sit above this box — with `overflow: hidden` they
+   were painted out and the symbols looked like they vanished into the white
+   page before arriving. Let them fly outside the box; the history ledger is an
+   earlier sibling, so the tokens still paint on top of it. */
+.gd-current-inner { min-height: 0; overflow: visible; }
+.gd-current--empty { grid-template-rows: 0fr; }
+.gov-derivation--hist-bottom .gd-main { flex-direction: column-reverse; }
+.gov-derivation--hist-bottom .gd-history { margin: 0.15em 0 0; }
+
+.gov-derivation--hist-left .gd-main,
+.gov-derivation--hist-right .gd-main {
+  display: grid;
+  align-items: center;
+  gap: 1.4rem;
+}
+.gov-derivation--hist-left .gd-main { grid-template-columns: max-content minmax(0, 1fr); }
+.gov-derivation--hist-right .gd-main { grid-template-columns: minmax(0, 1fr) max-content; }
+.gov-derivation--hist-left .gd-history {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  margin: 0;
+}
+.gov-derivation--hist-left .gd-current { grid-column: 2; grid-row: 1; }
+.gov-derivation--hist-right .gd-history {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin: 0;
+}
+.gov-derivation--hist-right .gd-current { grid-column: 1; grid-row: 1; }
+
 .gd-stage { position: relative; width: 100%; }
 
 .gd-equation {
+  position: relative;
+  z-index: 1;
   text-align: center;
   font-size: var(--gd-size);
   line-height: 1.25;
@@ -590,7 +846,48 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
   max-width: 100%;
 }
 
+/* focus box — an overlay around the current equation so the eye stays on
+   the line that is morphing. Its rect is measured in JS and transitioned,
+   so the frame glides between steps instead of snapping to the new size. */
+.gov-derivation--boxed .gd-equation {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 0.28em 0.55em;
+}
+/* an intentionally empty step clears the equation area — no leftover box
+   or padding, so the settled ledger can stand alone */
+.gov-derivation--boxed .gd-equation--empty { padding: 0; }
+.gd-focus-box {
+  position: absolute;
+  z-index: 0;
+  box-sizing: border-box;
+  pointer-events: none;
+  font-size: var(--gd-size);
+  border: 0.06em solid var(--navy);
+  background: var(--paper);
+  box-shadow: 0 0.1em 0.3em rgb(13 38 65 / 0.08);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.gd-focus-box--ready {
+  opacity: 1;
+  transition:
+    left var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    top var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    width var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    height var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+.gd-focus-box--ready.gd-focus-leave-active { transition: opacity 0.18s ease; }
+.gd-focus-leave-to { opacity: 0; }
+
 .gd-tok { display: inline-block; color: inherit; }
+
+/* top-level `\\` in a step's tex — a zero-height full-width block between
+   the line's tokens: the inline flow breaks around it, stacking the two
+   halves of a multi-line equation, while the tokens on both lines keep
+   their morph identity (matched by id across lines) */
+.gd-br { display: block; width: 100%; height: 0; }
 
 /* KaTeX display wrapper would add block margins inside the equation */
 .gd-tok .katex-display,
@@ -605,6 +902,45 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gd-tok--punct { margin-right: 0.17em; }
 .gd-tok--op { margin-right: 0.11em; }
 
+/* \boxed / \fbox — the box can't be a real KaTeX \fbox (that would fuse the
+   inner tokens into one rendered unit and kill the morph), so the border is
+   CSS drawn around the live tokens: same rule weight and padding as KaTeX's
+   own fbox (0.04em solid, 0.3em horizontal boxpad). Vertical padding is the
+   fboxrule echo of \fboxsep's vertical half-strut; the wrapper's baseline is
+   the content baseline, so it sits on the equation line like KaTeX's. */
+.gd-box {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.14em 0.3em 0.22em;
+  border: 0.04em solid currentColor;
+}
+
+/* matrix-like environments: one bracket piece each side of the body grid.
+ * KaTeX arrays give each row an \@arstrut (0.7em high + 0.3em deep at the
+ * default \arraystretch -> baseline pitch 1.2em); latex.ts bakes that strut
+ * into every cell as an invisible \rule. KaTeX renders the rule as a strut
+ * twin (box [-0.84em,+0.36em] — the exact row band) plus an invisible paint
+ * rule whose layout box is [-h,0] and which would otherwise inflate the
+ * line box to ~1.55em. So: zapping line-height takes the glyph span boxes
+ * out of the band, display:none takes the paint rule out of layout — the
+ * cell box collapses to the strut box and the grid bands come out at
+ * KaTeX's exact 1.2em row pitch. */
+.gd-matrix {
+  display: inline-grid;
+  align-items: baseline;
+  justify-items: center;
+  column-gap: 1.21em; /* 2 × \arraycolsep (0.5em) at KaTeX's 1.21 em scale */
+  vertical-align: middle;
+}
+.gd-matrix .gd-tok { margin: 0; line-height: 0; }
+.gd-matrix .katex { line-height: 0; }
+  .gd-matrix .katex-rule { display: none !important; }
+
+/* bracket pieces render as tall as the whole environment (a \vphantom of
+ * the array sizes the \left…\right skeleton) — equal-tall boxes, so
+ * middle-aligning them lands the array's axis centering */
+.gd-env-delim { vertical-align: middle; }
+
 .gd-tok--anim {
   transition:
     translate var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1),
@@ -616,9 +952,15 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
    The exit runs on its own, fast clock (--gd-exit-dur, set by the component
    to ~20% of the morph duration) and eases out, so dead tokens vanish
    immediately instead of lingering while the survivors are still gliding. */
-.gd-ghost { position: absolute; inset: 0; pointer-events: none; color: var(--navy); font-size: var(--gd-size); }
+.gd-ghost { position: absolute; z-index: 2; inset: 0; pointer-events: none; color: var(--navy); font-size: var(--gd-size); }
 .gd-ghost-tok { display: inline-block; position: absolute; color: inherit; }
 .gd-ghost .gd-ghost-tok { margin: 0; }
+/* matrix cells bake in a row-strut rule and rely on the matrix's zero
+ * line-height — mirror both here or the ghost cell grows and the glyphs
+ * drop by half a line the moment they leave the live equation */
+.gd-ghost-tok--cell { line-height: 0; }
+.gd-ghost-tok--cell .katex { line-height: 0; }
+.gd-ghost-tok--cell .katex-rule { display: none !important; }
 .gd-ghost-tok--out {
   opacity: 0;
   translate: 0 0.25em;
@@ -644,29 +986,184 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 .gd-history {
   font-size: var(--gd-hist-size, calc(var(--gd-size) * var(--gd-hist-scale, 0.58)));
   line-height: 1.6;
-  margin: 0.15em 0 0;
+  margin: 0 0 0.15em;
+}
+/* once the callouts appear, reserve a gutter on the right so the ledger
+   glides left to make room for them. The shift is delayed by one morph so
+   the ledger finishes moving up (equation collapsing) first, then moves
+   left — vertical then horizontal, never diagonal. */
+.gov-derivation--gutter .gd-history {
+  box-sizing: border-box;
+  padding-right: var(--gd-annotation-gutter);
+  transition: padding-right var(--gd-dur) cubic-bezier(0.22, 1, 0.36, 1) var(--gd-dur);
 }
 .gd-hist-line {
   display: flex;
   justify-content: center;
   align-items: baseline;
   gap: 0.7em;
+  /* muted slate by default; a deck that wants the ledger in full ink sets
+     `color: var(--navy)` here (historyOpacity only multiplies over this
+     color, it cannot darken it) */
   color: var(--steel);
   opacity: var(--gd-hist-opacity, 1);
+  /* block children of .gd-history get no line-height spacing between them
+     and KaTeX margins are stripped — add explicit room so tall lines
+     (matrix brackets, sub/superscripts) don't land on the line above */
+  margin: 0.4em 0;
 }
 .gd-hist-eq .katex-display { display: contents; margin: 0; }
 .gd-hist-eq .katex { text-align: left; }
+
+/* ledger section headings — a step may declare `section: '…'`; the ledger
+   groups every step naming the same label under one heading, in order of
+   first appearance. Typeset like the ledger equations (the label renders
+   via KaTeX's note renderer, so $…$ spans work too) in the LaTeX main
+   font, bold, left-aligned. In the aligned grid the heading spans every
+   column like a line does (grid-column is ignored in the plain flex
+   layout). */
+.gd-hist-section {
+  grid-column: 1 / -1;
+  text-align: left;
+  font-family: KaTeX_Main, 'Times New Roman', serif;
+  font-weight: 700;
+  color: var(--navy);
+  opacity: var(--gd-hist-opacity, 1);
+  margin: 0.9em 0 0.2em;
+}
+
+/* aligned ledger — steps that name a marker (`histAlign`, or the component's
+   `historyAlign`) are split into shared tracks [left][marker][right][note];
+   subgrid makes every aligned line use the same track widths, so the markers
+   line up vertically. Lines that don't opt in keep their individual centering. */
+.gd-history--aligned {
+  display: grid;
+  grid-template-columns: max-content max-content max-content max-content max-content;
+  justify-content: center;
+}
+.gd-history--aligned .gd-hist-line {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  margin: 0.4em 0;
+}
+.gd-history--aligned .gd-hist-line:not(.gd-hist-line--aligned) {
+  display: flex;
+  justify-content: center;
+  gap: 0.7em;
+}
+.gd-hist-part { display: inline-block; }
+.gd-hist-part--left { justify-self: end; }
+.gd-hist-part--mark { justify-self: center; padding: 0 0.22em; }
+.gd-hist-part--mark:empty { padding: 0; }
+.gd-hist-part--mark:empty + .gd-hist-part--right { padding-left: 0.22em; }
+.gd-hist-part--right { justify-self: start; }
+.gd-hist-part .katex-display { display: contents; margin: 0; }
+.gd-hist-part .katex { text-align: left; }
+.gd-history--aligned .gd-hist-note { padding-left: 0.7em; }
+/* no subgrid (old browsers): fall back to per-line centering rather than
+   stacking the columns vertically */
+@supports not (grid-template-columns: subgrid) {
+  .gd-history--aligned .gd-hist-line {
+    display: flex;
+    justify-content: center;
+    gap: 0.22em;
+  }
+}
+
 .gd-hist-note {
   font-family: var(--font-body, inherit);
-  font-size: 0.62em;
+  font-size: 0.7em;
   opacity: 0.75;
   white-space: nowrap;
 }
+.gd-hist-tag {
+  font-family: var(--font-body, inherit);
+  font-size: 0.62em;
+  color: var(--steel);
+  white-space: nowrap;
+}
+.gd-history--aligned .gd-hist-tag {
+  justify-self: start;
+  padding-left: 0.5em;
+}
 .gd-hist-move { transition: transform 0.35s ease; }
+/* a new line rises out of the formula into its slot (direction follows the
+   ledger's side, so the motion always points away from the equation) */
 .gd-hist-enter-active { transition: opacity 0.6s ease 0.25s, translate 0.6s ease 0.25s; }
-.gd-hist-enter-from { opacity: 0; translate: 0 -0.6em; }
+.gd-hist-enter-from { opacity: 0; translate: 0 0.6em; }
+.gov-derivation--hist-bottom .gd-hist-enter-from { translate: 0 -0.6em; }
+.gov-derivation--hist-left .gd-hist-enter-from { translate: 0.6em 0; }
+.gov-derivation--hist-right .gd-hist-enter-from { translate: -0.6em 0; }
 .gd-hist-leave-active { transition: opacity 0.3s ease, translate 0.3s ease; }
 .gd-hist-leave-to { opacity: 0; }
+
+/* end-of-derivation callouts — each box sits in the reserved right gutter,
+   its leader running back to the ledger row it explains. The dot stays just
+    clear of the row while the box may be nudged vertically so boxes never
+    overlap, so the leader is an elbow (SVG path: vertical, then horizontal)
+    rather than a flex row. */
+.gd-annotations {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.gd-annotation-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.45s ease 0.05s;
+}
+.gd-annotation-links--ready { opacity: 1; }
+.gd-annotation-links path {
+  fill: none;
+  stroke: var(--steel);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.gd-annotation-links circle { fill: var(--crimson); }
+.gd-annotation {
+  position: absolute;
+  right: 0;
+  width: var(--gd-annotation-width);
+  transform: translateY(-50%);
+  opacity: 0;
+  translate: 0.6rem 0;
+  transition:
+    opacity 0.45s ease var(--gd-ann-delay, 0ms),
+    translate 0.45s cubic-bezier(0.22, 1, 0.36, 1) var(--gd-ann-delay, 0ms),
+    top 0.3s cubic-bezier(0.22, 1, 0.36, 1) var(--gd-ann-delay, 0ms);
+}
+.gd-annotation--ready { opacity: 1; translate: 0 0; }
+.gd-annotation-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45em;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5em 0.6em;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--crimson);
+  background: var(--paper);
+  box-shadow: 0 0.1em 0.3em rgb(13 38 65 / 0.07);
+  color: var(--navy);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.gd-annotation-num {
+  flex: none;
+  color: var(--crimson);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.gd-annotation-text { min-width: 0; }
+.gd-annotation-text .katex { font-size: 1em; }
 
 .gd-progress {
   display: flex;
@@ -687,12 +1184,34 @@ a { color: var(--sage); text-decoration-thickness: max(1px, 0.0625em); }
 @media print {
   .gd-ghost { display: none; }
   .gd-tok, .gd-ghost-tok, .gd-note-enter-active, .gd-note-leave-active,
-  .gd-hist-enter-active, .gd-hist-leave-active, .gd-hist-move { transition: none; }
+  .gd-hist-enter-active, .gd-hist-leave-active, .gd-hist-move,
+  .gd-annotation, .gd-annotation-links { transition: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gd-tok--anim, .gd-ghost-tok--out, .gd-note-enter-active, .gd-note-leave-active,
-  .gd-hist-enter-active, .gd-hist-leave-active, .gd-hist-move { transition: none !important; }
+  .gd-hist-enter-active, .gd-hist-leave-active, .gd-hist-move,
+  .gd-annotation, .gd-annotation-links { transition: none !important; }
 }
 
-.gov-body { padding: 1.5rem 2.4rem 2rem; }
-.gov-body--centered { height: calc(100% - 6.5rem); display: flex; flex-direction: column; justify-content: center; }
+/* ============ TikZ inset above a derivation (TikzSync) ============ */
+/* Wrap <TikzSync> in .tikz-inset; set --tikz-width per slide. The row
+   collapses (animated) once TikzSync's hideAt hides the diagram, so the
+   derivation below glides up into the freed space. */
+.tikz-inset {
+  position: static;
+  display: grid;
+  grid-template-rows: 1fr;
+  width: var(--tikz-width, 46rem);
+  max-width: 100%;
+  margin: 0 auto;
+  pointer-events: none;
+  transition: grid-template-rows 350ms ease;
+}
+.tikz-inset > * { min-height: 0; overflow: hidden; }
+.tikz-inset:has(.tikz-sync--hidden) { grid-template-rows: 0fr; }
+.gov-body > .tikz-inset + .gov-derivation { margin-top: 0.35rem; }
+
+/* ============ Settings footer ============ */
+/* One-line run configuration pinned to the slide foot (left of the page
+   number): <p class="gov-settings">m = 5, r = 5 · cutoff 1950 · …</p> */
+.slidev-layout p.gov-settings { position: fixed; left: 3.6rem; right: 4rem; bottom: 0.3rem; margin: 0; padding: 0; font-size: 0.62rem; color: var(--steel); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

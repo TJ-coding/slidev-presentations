@@ -6,11 +6,29 @@ Frontmatter keys honoured by these layouts:
 
 | Key | Layouts | Effect |
 | --- | --- | --- |
-| `title:` | all | text in the black band (or big title on cover/section) |
-| `kicker:` | cover, band, section | small eyebrow line / yellow tag (e.g. `'01'`, `'MEETING') |
+| `title:` | all | text in the navy band (or big title on cover/section/end); `$…$` LaTeX works |
+| `subtitle:` | cover, section, end | sage band under the title (cover/end) / grey line under the title (section) |
+| `name:`, `jpTitle:` | cover | presenter name (navy) and an optional big secondary-language title |
+| `meta:` | cover | grey meta lines — HTML allowed (`'Regular Meeting<br>30 October 2026'`) |
+| `author:` | cover, end | affiliation line |
+| `kicker:` | band, section, end | band eyebrow; on **govuk-section** the 1-based section number; on **govuk-end** the contact line |
+| `sections:` | govuk-section | list of ALL section names → progress rail on the right, current one highlighted (repeat the same list on every divider) |
 | `bandColor:` | band layouts | `blue`\|`green`\|`red` band variant |
-| `image:` | govuk-image-right, govuk-section | right image / full-bleed dimmed photo |
-| `subtitle:`, `meta:`, `author:` | cover, end | cover & closing lines |
+| `image:` | govuk-image-right, govuk-about | right image / full-bleed photo on the left of the about-me slide |
+
+```yaml
+---
+layout: govuk-section
+kicker: '2'
+title: 'Approach'
+subtitle: 'Language evolution as a dynamical system'
+sections: [Motivation, Approach, Method, Results]
+---
+```
+
+`govuk-about` is the self-introduction slide: photo left (`image: /about.jpg`
+in `public/`), navy panel right with `title` (default `About Me`) and the
+slide's bullet list; `<span class="accent-amber">` highlights an item.
 
 ```yaml
 ---
@@ -174,9 +192,10 @@ graph TD
 
 ## Page numbers (global-bottom.vue)
 
-- `global-bottom.vue` renders the bottom-right grey page number via `<SlideCurrentNo />` (hidden on govuk-cover / govuk-section / govuk-end).
-- Global layers use `$nav` / `$slidev` directly — do NOT use `useSlideContext()` there; it is outside slide context and silently fails.
-- Exports MUST pass `--per-slide` or page numbers all render as "1" (nav state is per page only then). The npm scripts and `export.sh` already include it.
+- `global-bottom.vue` renders the bottom-right grey page number as `{{ $nav.currentSlideNo }}` (hidden on govuk-cover / govuk-end; translucent white on the navy govuk-section).
+- Do NOT use the `<SlideCurrentNo />` builtin in global layers: it reads `useSlideContext().$page`, which in stacked print/export renders resolves to the app-route nav (root provide, stuck at slide 1) — so every exported page numbers "1". `$nav` inside global layers is the per-slide context nav and is correct in every render mode.
+- Global layers use `$nav` / `$slidev` directly — do NOT use `useSlideContext()` there; only `$nav` from the global-layer context is per-slide-safe.
+- Export paths: the npm scripts and `export.sh` pass `--per-slide`, and page numbers stay correct even without it. Keep `--per-slide` anyway: other nav-state-dependent content in global layers (clicks state, transitions) still needs it.
 - Disable per deck via frontmatter `deckFooter: false`.
 
 ## Export notes
