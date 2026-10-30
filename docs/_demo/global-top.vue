@@ -3,9 +3,10 @@
 // template). Inside an iframe on the docs site it:
 //  - reports { clicks, total } of the current slide to the parent page,
 //  - obeys { slidevDemoCmd: 'next' | 'prev' | 'reset' } messages,
-//  - pins the iframe to its own slide: keys never leave the slide.
+//  - pins the iframe to its own slide: keys never leave the slide,
+//  - turns off Slidev's cross-window sync (all demos share one origin).
 import { onBeforeUnmount, watch } from 'vue'
-import { useNav } from '@slidev/client'
+import { disableBuiltinSync, useNav } from '@slidev/client'
 
 const nav = useNav()
 const inFrame = window.parent !== window
@@ -36,6 +37,9 @@ function onKey(e: KeyboardEvent) {
 }
 
 if (inFrame) {
+  // every demo on a docs page is a same-origin window of this deck: Slidev's
+  // BroadcastChannel sync would make them follow each other's slide/clicks
+  disableBuiltinSync()
   document.documentElement.classList.add('demo-embed')
   window.addEventListener('message', onMessage)
   window.addEventListener('keydown', onKey, { capture: true })

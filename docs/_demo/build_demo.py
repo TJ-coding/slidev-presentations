@@ -81,6 +81,8 @@ for page in sorted(docs.glob('*.md')):
 body = '\n\n'.join(s.rstrip() + '\n' for s in slides)
 (deck / 'demo.md').write_text(HEADMATTER + '\n' + body)
 shutil.copy(Path(__file__).with_name('global-top.vue'), deck / 'global-top.vue')
+# the template's presenter/tab sync would tie all demos on a page together
+(deck / 'setup' / 'main.ts').unlink(missing_ok=True)
 # placeholder images the examples reference (/about.jpg, /results.png, ...)
 shutil.copytree(Path(__file__).with_name('public'), deck / 'public', dirs_exist_ok=True)
 print(f'demo.md: {len(slides)} demo slides')
