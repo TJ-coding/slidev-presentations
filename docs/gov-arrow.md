@@ -17,6 +17,7 @@ Use it for any input to stage or stage to output flow, usually inside a [GovPipe
 
 ## Quick start
 
+<!-- demo: gov-arrow-quick-start -->
 ```html
 <GovArrow value="こんにちは" label="x₁ · hypothesis" />
 ```
@@ -41,6 +42,7 @@ Use it for any input to stage or stage to output flow, usually inside a [GovPipe
 
 ### Rich value or label
 
+<!-- demo: gov-arrow-rich-value-or-label -->
 ```html
 <GovArrow>
   <template #value><b>ŷ</b> = Hello</template>
@@ -52,6 +54,7 @@ Use it for any input to stage or stage to output flow, usually inside a [GovPipe
 
 Arrows are `flex: 1 1 auto` with a minimum width of 5.5rem, so inside a flex row they share the space. Put them in a `gov-flow` row:
 
+<!-- demo: gov-arrow-several-arrows-side-by-side -->
 ```html
 <div class="gov-flow">
   <GovArrow value="Hello" label="x₁" />
@@ -66,6 +69,7 @@ For N inputs and M outputs around one stage use [GovPipe](gov-pipe.html), which 
 
 There is no `color` prop, but the stylesheet defines `.gov-io--green` and `.gov-io--red` (line and arrowhead turn sage / crimson). Attributes fall through to the root, so add the class directly:
 
+<!-- demo: gov-arrow-colour-variants -->
 ```html
 <GovArrow class="gov-io--green" value="410 → 40 ms" label="latency" />
 <GovArrow class="gov-io--red" value="O(n²)" label="cost" />

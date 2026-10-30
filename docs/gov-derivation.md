@@ -12,6 +12,7 @@ nav_order: 1
 
 ## Quick start
 
+<!-- demo: gov-derivation-quick-start -->
 ```html
 <GovDerivation
   :steps="[
@@ -87,6 +88,7 @@ Notes on the table:
 
 Tokens are matched across steps by their source text (`x`, `\frac{b}{a}`, `x^2`, ...). Matched tokens glide to the new place; unmatched new tokens fade in crimson; unmatched old tokens fade out. Use this for the default behaviour: simply write the steps and let identical pieces carry over.
 
+<!-- demo: gov-derivation-morphing-and-token-identity -->
 ```html
 <GovDerivation
   :steps="[
@@ -103,6 +105,7 @@ How tokens are paired (so you can predict it): first, tokens declared in `morphM
 
 Use when a symbol changes form but is conceptually the same object, so it should morph instead of vanish and reappear.
 
+<!-- demo: gov-derivation-morphmap-renaming-a-symbol-across-steps -->
 ```html
 <GovDerivation
   :steps="[
@@ -121,6 +124,7 @@ Decorations are handled automatically: `\underbrace{\mathbf{x}_t}_{...}` and `\o
 
 Use a note to say in words what changed. It renders under the equation and cross-fades per step.
 
+<!-- demo: gov-derivation-notes -->
 ```html
 <GovDerivation
   :steps="[
@@ -132,6 +136,7 @@ Use a note to say in words what changed. It renders under the equation and cross
 
 Inside notes: `$...$` is inline KaTeX math; `\$` is a literal dollar sign; an unbalanced `$` stays literal; `<strong>`, `<em>`, `<b>`, `<i>` and `<br>` (or a plain newline) pass through; any other tag is shown as escaped text. The ledger uses `note` too, or `histNote` if given:
 
+<!-- demo: gov-derivation-notes-2 -->
 ```html
 <GovDerivation
   :steps="[
@@ -146,6 +151,7 @@ Inside notes: `$...$` is inline KaTeX math; `\$` is a literal dollar sign; an un
 
 A top-level `\\` in `tex` wraps the step onto centred lines. Backslash pairs inside braces or environments (`\underbrace{...\\...}`, `\begin{bmatrix}...\\...`) do not cut. An optional `\\[1em]` spacing argument is consumed with the break. Tokens still morph across lines. Because of the doubled escaping, a line break is written `\\\\` in a prop.
 
+<!-- demo: gov-derivation-multi-line-equations -->
 ```html
 <GovDerivation
   :steps="[
@@ -161,6 +167,7 @@ Use for long derivations that would overflow the slide width.
 
 `\tag{n}` (or `\tag*{n}`) at any position in `tex` (the first one found) is removed from the equation, because it would split the token stream, and shown as `(n)` next to the line in the ledger. Set `tag` on the step to override or to use a number.
 
+<!-- demo: gov-derivation-equation-tags -->
 ```html
 <GovDerivation
   :steps="[
@@ -177,6 +184,7 @@ The tag is displayed in the ledger only; the large current equation does not sho
 
 On by default. Every completed step is written small beside the equation, so the audience can catch up. Control it with `showHistory`, `historyPosition`, `historyOrder`, `historySize` and `historyOpacity`; opt single steps out with `history: false`.
 
+<!-- demo: gov-derivation-history-ledger -->
 ```html
 <GovDerivation
   :steps="[
@@ -192,6 +200,7 @@ On by default. Every completed step is written small beside the equation, so the
 
 Use `history: false` for tall lines such as matrices; use `histTex` to substitute a compact form instead, so the ledger still records the step:
 
+<!-- demo: gov-derivation-history-ledger-2 -->
 ```html
 <GovDerivation
   :steps="[
@@ -208,6 +217,7 @@ Ledger positions: `top` (default; the newest line lands directly against the equ
 
 Use `historyAlign` (all lines) or `histAlign` (per line) to line the ledger up on a marker, like LaTeX `align`: lines split into a right-aligned left part, a centred marker, and a left-aligned right part, sharing columns. Lines that lack every marker stay centred (the grid is used only if at least one visible line aligns).
 
+<!-- demo: gov-derivation-aligned-ledger-lines -->
 ```html
 <GovDerivation
   :steps="[
@@ -233,6 +243,7 @@ Details:
 
 Use `section` to group the ledger into labelled phases.
 
+<!-- demo: gov-derivation-sections -->
 ```html
 <GovDerivation
   :steps="[
@@ -251,6 +262,7 @@ Steps naming the same label share one block; blocks appear in order of the label
 
 A step normally appends to the ledger. `histIndex` inserts its line at a 0-based slot counted from the oldest line when the step completes; later lines shift down with animation. The slot is clamped to the current depth.
 
+<!-- demo: gov-derivation-pinning-ledger-positions-with-histindex -->
 ```html
 <GovDerivation
   :steps="[
@@ -269,6 +281,7 @@ Use it to retroactively place a definition at the top of the ledger. When any st
 
 `boxed` draws a framed box around the current equation. The box is an overlay that glides to each step's size, so the frame does not jump while tokens morph. It is hidden on an empty step.
 
+<!-- demo: gov-derivation-focus-box -->
 ```html
 <GovDerivation :steps="['a^2 + b^2', 'a^2 + b^2 = c^2']" boxed />
 ```
@@ -279,6 +292,7 @@ This is separate from `\boxed{...}` in the LaTeX (see [Writing LaTeX that morphs
 
 A step whose `tex` is empty (or only whitespace) clears the stage: the equation area collapses with animation and the ledger glides into the freed space; the box disappears. Put an empty step last to end the derivation on the complete ledger (this is also what the callouts typically point at):
 
+<!-- demo: gov-derivation-empty-steps -->
 ```html
 <GovDerivation :steps="['a = 1', 'a + b = 3', { tex: '', note: '' }]" />
 ```
@@ -287,6 +301,7 @@ A step whose `tex` is empty (or only whitespace) clears the stage: the equation 
 
 `annotations` shows numbered callout boxes in a right-hand gutter once the derivation reaches its last step. Each box is connected by an elbow leader to the ledger line of the step it explains. Boxes are nudged vertically so they never overlap. Anchor by `id` (stable under reordering) or by index with `step`.
 
+<!-- demo: gov-derivation-annotations-callouts -->
 ```html
 <GovDerivation
   :steps="[

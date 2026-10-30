@@ -18,6 +18,7 @@ Not for small labels or nodes (use [GovBox](gov-box.html)) nor for popped-up asi
 
 ## Quick start
 
+<!-- demo: gov-stress-quick-start -->
 ```html
 <GovStress label="Latency">410 → 40 ms</GovStress>
 ```
@@ -41,6 +42,7 @@ Not for small labels or nodes (use [GovBox](gov-box.html)) nor for popped-up asi
 
 ### Labelled box
 
+<!-- demo: gov-stress-labelled-box -->
 ```html
 <GovStress label="Scaling">O(n²) → O(n)</GovStress>
 <GovStress label="Latency" value="410 → 40 ms" />
@@ -48,6 +50,7 @@ Not for small labels or nodes (use [GovBox](gov-box.html)) nor for popped-up asi
 
 ### Headless solo box with LaTeX
 
+<!-- demo: gov-stress-headless-solo-box-with-latex -->
 ```html
 <GovStress value="How do we acquire <br> $\mathbf{\Psi}$ and $\mathbf{\Lambda}$ of $\mathbf{A}$ <br> without constructing $\mathbf{A}$?" />
 ```
@@ -56,6 +59,7 @@ The solo box gets a 7px navy top border and a 1.6rem body size so a sentence fit
 
 ### Inverted
 
+<!-- demo: gov-stress-inverted -->
 ```html
 <GovStress inverted value="Can we model <u>nonlinear</u> dynamics?" />
 ```
@@ -66,6 +70,7 @@ The ACL talk uses `<GovStress v-click.fade-in="7" inverted value="…" />` for t
 
 Wrap words in `gov-stress-value--red`, `--green` or `--blue`:
 
+<!-- demo: gov-stress-coloured-words-in-the-value -->
 ```html
 <GovStress value="Issue: <span class='gov-stress-value--red'>O(n²)</span>" inverted />
 ```
@@ -74,6 +79,7 @@ These three colours are **light tints** (`#f3a9c3`, `#a3d8cb`, `#b7c7dd`) chosen
 
 ### Custom label content
 
+<!-- demo: gov-stress-custom-label-content -->
 ```html
 <GovStress>
   <template #label>Latency <small>(p95)</small></template>

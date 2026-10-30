@@ -24,12 +24,14 @@ Use it for derivations of the "because / therefore" kind, a claim and its conseq
 
 ## Quick start
 
+<!-- demo: gov-chain-quick-start -->
 ```html
 <GovChain top-box="Installed Cache" bottom="Drops Latency" />
 ```
 
 A chain with two implications; the first click reveals the first triangle and conclusion, the second click the next:
 
+<!-- demo: gov-chain-quick-start-2 -->
 ```html
 <GovChain
   :steps="[
@@ -90,6 +92,7 @@ Slot content is not run through the LaTeX typesetter (write HTML, or put the tex
 
 Plain strings render as bold text; box items render as GovBox blocks. Mixed lists are fine.
 
+<!-- demo: gov-chain-boxes-versus-text -->
 ```html
 <GovChain top-box="Installed Cache" bottom="Drops Latency" />
 <GovChain top-box="Installed Cache" bottom-box="Drops Latency" />
@@ -100,6 +103,7 @@ Plain strings render as bold text; box items render as GovBox blocks. Mixed list
 
 Use `inverted` for the "given" side and a filled box for the conclusion (the pattern used throughout the ACL deck):
 
+<!-- demo: gov-chain-inverted-boxes-and-sizes -->
 ```html
 <GovChain top-box="Cache hit" :bottoms="[{ box: 'Drops Latency', inverted: true }]" />
 <GovChain :tops="[{ box: 'Cache hit', size: '0.8rem' }]" :bottoms="[{ box: 'Drops Latency', size: 1.2 }]" />
@@ -111,6 +115,7 @@ Use `inverted` for the "given" side and a filled box for the conclusion (the pat
 
 Everything is typeset: `top`, `bottom`, `label`, `box` and `html` strings. Single backslashes in plain attributes, **doubled backslashes inside bound `:tops="[...]"` / `:steps="[...]"`** (they are JS strings in a Vue expression).
 
+<!-- demo: gov-chain-latex -->
 ```html
 <GovChain top-box="$$\mathbf{A} \in \mathbb{C}^{n \times n}$$" bottom="Drops Latency" />
 <GovChain
@@ -124,6 +129,7 @@ Display math is flattened inline inside chain items (`display: contents`), so `$
 
 `label` puts the condition on the triangle:
 
+<!-- demo: gov-chain-labelled-triangle -->
 ```html
 <GovChain top-box="Cache hit" bottom="Drops Latency" label="When $n$ is large" color="green" />
 ```
@@ -132,6 +138,7 @@ Display math is flattened inline inside chain items (`display: contents`), so `$
 
 In a vertical chain, items of one side sit in a row of equal-width columns so the triangle points at the centre between them.
 
+<!-- demo: gov-chain-multiple-premises-and-conclusions-fan-in -->
 ```html
 <GovChain
   :tops="['$$\\mathbf{A} \\in \\mathbb{C}^{n \\times n}$$', { box: 'n is large' }]"
@@ -141,6 +148,7 @@ In a vertical chain, items of one side sit in a row of equal-width columns so th
 
 ### Empty sides (lone triangle)
 
+<!-- demo: gov-chain-empty-sides-lone-triangle -->
 ```html
 <GovChain label="Why Linear?" bottom="Memory Efficiency" />   <!-- 0 premises -> 1 conclusion -->
 <GovChain top-box="Cache hit" />                              <!-- 1 premise -> triangle alone -->
@@ -155,6 +163,7 @@ In a vertical chain, items of one side sit in a row of equal-width columns so th
 | `right` | Horizontal: a column of tops (and lefts), ▶, a column of bottoms (and rights). |
 | `left` | Mirrored: bottoms (and lefts), ◀, then tops (and rights) on the right. |
 
+<!-- demo: gov-chain-direction -->
 ```html
 <GovChain dir="right" top-box="Cache hit" :bottoms="['Drops Latency', 'No LLM calls']" />
 ```
@@ -165,12 +174,14 @@ In a horizontal chain the items of a side stack in a **column** (perpendicular t
 
 With `bottoms` present, side branches flank the vertical triangle in one row:
 
+<!-- demo: gov-chain-side-branches-lefts-rights -->
 ```html
 <GovChain top-box="A is n×n" :rights="['Infeasible']" :bottoms="['O(n³)']" />
 ```
 
 With **no bottoms** and only one of `lefts` / `rights`, the step turns horizontal automatically and the triangle becomes a compact ▶ / ◀ (class `gov-therefore--sm`; not compact when a `label` is set or `dir` is explicit):
 
+<!-- demo: gov-chain-side-branches-lefts-rights-2 -->
 ```html
 <GovChain :rights="[{ box: 'Infeasible' }]" />     <!-- ▶ Infeasible -->
 <GovChain :lefts="[{ box: 'Infeasible' }]" />      <!-- Infeasible ◀ -->
@@ -182,6 +193,7 @@ If you give both `lefts` and `rights` and no bottoms, the chain stays vertical a
 
 `steps` renders its steps back to back in one vertical column. The conclusion of step *k* is followed directly by the triangle of step *k+1*, so omit `tops` in later steps:
 
+<!-- demo: gov-chain-steps-chaining -->
 ```html
 <GovChain
   :steps="[
@@ -192,6 +204,7 @@ If you give both `lefts` and `rights` and no bottoms, the chain stays vertical a
 
 A step can switch direction, e.g. end with a side branch:
 
+<!-- demo: gov-chain-steps-chaining-2 -->
 ```html
 <GovChain
   :steps="[
@@ -202,6 +215,7 @@ A step can switch direction, e.g. end with a side branch:
 
 Real example from the ACL talk (premise inverted, two conclusions, then a conclusion step):
 
+<!-- demo: gov-chain-steps-chaining-3 -->
 ```html
 <GovChain
   :steps="[
@@ -224,6 +238,7 @@ Steps notes: `color` and `dir` on the component apply to every step; `dir` per s
 - **Pinning to an absolute click.** If the whole chain is revealed with `<GovChain v-click="4" … />`, the inner tails would otherwise resolve against the running offset and appear *before* the container. So the component detects a numeric `v-click` on itself and pins tail *k* to `4 + k`. For wrappers (`<div v-click="4"><GovChain … /></div>`) pass the anchor yourself with `at`: `<GovChain :at="4" … />`. Only a numeric value is detected; a bare `v-click` is relative.
 - **Print / PDF export** shows the final state: all tails are visible. `@media print` is not needed for the chain itself.
 
+<!-- demo: gov-chain-animation-click-behaviour-and-print -->
 ```html
 <div v-click="4">
   <GovChain :at="4" :steps="[{ tops: ['If n = 1 billion'], bottoms: ['1 quintillion elements'] }, { bottoms: ['4 exabytes'] }]" />

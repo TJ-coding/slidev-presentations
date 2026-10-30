@@ -65,6 +65,7 @@ Override a token for one deck by redefining it in the deck's own `style.css`
 Normally set via frontmatter `lead:`. As a class (for layouts that have no
 `lead` key, such as `govuk-image-right`):
 
+<!-- demo: styling-lead -->
 ```html
 <h2 class="govuk-lead">Utility replaces hand-tuned metrics, but you pay for <strong>every pair</strong>.</h2>
 ```
@@ -76,12 +77,14 @@ Normally set via frontmatter `lead:`. As a class (for layouts that have no
 The single line a slide exists to deliver. Accent: `govuk-accent-green`
 (default), `govuk-accent-red`, `govuk-accent-blue` (left edge colour).
 
+<!-- demo: styling-takeaway -->
 ```html
 <div class="govuk-takeaway govuk-accent-green">Latency drops from 410ms to 40ms at n=512.</div>
 ```
 
 ### Steps, caption, aside
 
+<!-- demo: styling-steps-caption-aside -->
 ```html
 <ol class="govuk-steps">
   <li>Encode hypotheses</li>
@@ -99,6 +102,7 @@ only on other layouts.
 
 ## Panels, insets, tags
 
+<!-- demo: styling-panels-insets-tags -->
 ```html
 <div class="govuk-panel govuk-accent-green">
   <p class="govuk-panel-title">Finding</p>
@@ -124,6 +128,7 @@ Panel accents: `govuk-accent-red`, `govuk-accent-green`, `govuk-accent-blue`
 
 ## Layout helpers
 
+<!-- demo: styling-layout-helpers -->
 ```html
 <div class="govuk-grid-2">
   <div>left</div>
@@ -143,6 +148,7 @@ smaller. `govuk-page-number` colours a hand-placed page number.
 
 ## Emphasis spans
 
+<!-- demo: styling-emphasis-spans -->
 ```html
 <span class="govuk-emph">the keyword</span>        <!-- crimson, bold -->
 <span class="govuk-emph-alt">the counter-term</span> <!-- sage, bold -->
@@ -163,6 +169,7 @@ classes below are for hand-written diagrams.
 
 ### Flow: nodes and connectors
 
+<!-- demo: styling-flow-nodes-and-connectors -->
 ```html
 <div class="gov-flow">
   <span class="gov-node">
@@ -196,6 +203,7 @@ classes below are for hand-written diagrams.
 
 ### Therefore, consequence, equation
 
+<!-- demo: styling-therefore-consequence-equation -->
 ```html
 <div class="gov-therefore gov-therefore--red"></div>
 <p class="gov-consequence gov-consequence--red">A is infeasible</p>
@@ -230,6 +238,7 @@ below. For most uses prefer the `GovStress` component (see its page).
 
 ### Contrast, big numbers, matrix
 
+<!-- demo: styling-contrast-big-numbers-matrix -->
 ```html
 <div class="gov-contrast">
   <div class="gov-bignum gov-bignum--bad">
@@ -262,6 +271,7 @@ below. For most uses prefer the `GovStress` component (see its page).
 One line of run configuration pinned to the slide foot, left of the page
 number (0.62rem, steel, single line with ellipsis).
 
+<!-- demo: styling-settings-footer -->
 ```html
 <p class="gov-settings">m = 5, r = 5 · cutoff 1950 · seed 0</p>
 ```
@@ -272,6 +282,7 @@ Wrap a `<TikzSync>` in `tikz-inset`; set the width per slide with
 `--tikz-width` (default `46rem`). The row collapses with an animation once
 `hide-at` fires, so a `GovDerivation` below glides up.
 
+<!-- demo: styling-tikz-inset -->
 ```html
 <div class="tikz-inset" style="--tikz-width: 34rem">
   <TikzSync name="example-chain" :at="[0, 1.2, 2.4]" />

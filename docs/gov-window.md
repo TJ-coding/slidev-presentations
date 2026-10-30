@@ -16,6 +16,7 @@ With `overlay`, the window is centred on the slide and the slide behind is dimme
 
 ## Quick start
 
+<!-- demo: gov-window-quick-start -->
 ```html
 <GovWindow title="Search result">410 → 40 ms</GovWindow>
 ```
@@ -44,6 +45,7 @@ With `overlay`, the window is centred on the slide and the slide behind is dimme
 
 ### Tones
 
+<!-- demo: gov-window-tones -->
 ```html
 <GovWindow title="Result" tone="green">410 → 40 ms</GovWindow>
 <GovWindow title="Caveat" tone="red">The cross-encoder still scores every pair.</GovWindow>
@@ -51,6 +53,7 @@ With `overlay`, the window is centred on the slide and the slide behind is dimme
 
 ### Width and side by side
 
+<!-- demo: gov-window-width-and-side-by-side -->
 ```html
 <div class="grid grid-cols-2 gap-6">
   <GovWindow title="Retrieval · n = 512" width="25rem">410 ms → 40 ms</GovWindow>
@@ -62,6 +65,7 @@ Each window takes its own click.
 
 ### Overlay
 
+<!-- demo: gov-window-overlay -->
 ```html
 <GovWindow title="Caveat" tone="red" overlay>
   The cross-encoder still scores every pair.
@@ -72,12 +76,14 @@ With `overlay` the layer is `position: fixed; inset: 0; z-index: 40` with a 30% 
 
 ### Title, body and footer with LaTeX
 
+<!-- demo: gov-window-title-body-and-footer-with-latex -->
 ```html
 <GovWindow title="Eigenvalues of $\mathbf{A}$" body="$$\lambda_k = e^{(\alpha_k + i\beta_k)\Delta t}$$" footer="Source: Section 3, Eq. (2)" />
 ```
 
 ### Rich content and footer slot
 
+<!-- demo: gov-window-rich-content-and-footer-slot -->
 ```html
 <GovWindow title="Result" width="34rem">
   <GovStress label="Latency">410 → 40 ms</GovStress>
