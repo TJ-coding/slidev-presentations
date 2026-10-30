@@ -335,3 +335,32 @@ The skill's `name` is `slidev-presentation`. It tells the agent to plan first,
 follow the slide budgets, use the component cookbook, and pass the quality gate
 before delivering. It is not for editing `.pptx` files (use a PowerPoint skill
 for that), although the kit can export `.pptx`.
+
+## Adding a live demo to these docs
+
+Every example on this site with a **Live** panel is a real slide. To make a new
+example live, put a marker on the line right before its fenced block:
+
+````md
+<!-- demo: my-unique-id -->
+```html
+<GovBox label="Hello" />
+```
+````
+
+On every push to `ai-main` that touches `docs/` or the template, the `docs`
+workflow (`.github/workflows/pages.yml`) runs `docs/_demo/build_demo.py`. The
+script turns each marked block into a slide of a demo deck (route `#/my-unique-id`),
+builds that deck into `docs/demo/` and then builds the site. A block that starts
+with `---` frontmatter is used as a whole slide, which is how layout examples
+work; any other block is wrapped in a `govuk` slide. Images an example references
+(`/about.jpg`, `/results.png`) come from `docs/_demo/public/`.
+
+Preview locally:
+
+```sh
+T=$(mktemp -d)
+rsync -a --exclude node_modules skills/slidev-presentation/template/ "$T/"
+python3 docs/_demo/build_demo.py docs "$T"
+cd "$T" && npm install && npx slidev demo.md      # http://localhost:3030/#/my-unique-id
+```

@@ -31,6 +31,23 @@ It registers no `v-click` elements, so it adds nothing to the slide's click
 budget. Pair it with a `GovDerivation` (which does register one click per morph)
 or with `v-click`s and it stays in lockstep.
 
+Live: the template's `example-chain` inset, driven by the derivation's clicks.
+
+<!-- demo: figures-tikzsync-live -->
+```html
+<div class="tikz-inset" style="--tikz-width: 34rem">
+  <TikzSync name="example-chain" :at="[0, 1.2, 2.4]" />
+</div>
+<GovDerivation
+  :steps="[
+    { tex: '\\mathbf{x}_0', section: 'Evolution' },
+    { tex: '\\mathbf{x}_1 = \\mathbf{A}\\mathbf{x}_0' },
+    { tex: '\\mathbf{x}_2 = \\mathbf{A}\\mathbf{x}_1 = \\mathbf{A}^2\\mathbf{x}_0', note: 'apply <strong>A</strong> again' },
+  ]"
+  size="md"
+/>
+```
+
 ### Props
 
 | Prop | Type | Default | Meaning |

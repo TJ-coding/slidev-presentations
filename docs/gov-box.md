@@ -21,6 +21,7 @@ Use it when the content is short (a phrase or one formula). For a long sentence 
 
 ## Quick start
 
+<!-- demo: gov-box-quick-start -->
 ```html
 <GovBox label="Installed Cache" />
 <GovBox inverted label="Installed Cache" />
@@ -44,6 +45,7 @@ Use it when the content is short (a phrase or one formula). For a long sentence 
 
 ### Inverted variant
 
+<!-- demo: gov-box-inverted-variant -->
 ```html
 <GovBox inverted label="Given" />
 ```
@@ -56,6 +58,7 @@ Use it when the content is short (a phrase or one formula). For a long sentence 
 
 In a plain attribute write single backslashes. Inside a bound (`:label="…"`) JavaScript string, double them.
 
+<!-- demo: gov-box-latex-labels -->
 ```html
 <GovBox label="$$\mathbf{A} \in \mathbb{C}^{n \times n}$$" />
 <GovBox :label="'Operator $\\mathbf{A}_r$ <br> reduced'" />
@@ -63,6 +66,7 @@ In a plain attribute write single backslashes. Inside a bound (`:label="…"`) J
 
 ### Text size
 
+<!-- demo: gov-box-text-size -->
 ```html
 <GovBox label="Small print" size="0.8rem" />
 <GovBox label="Big claim" :size="1.6" />
@@ -72,6 +76,7 @@ Note that a bare `size="1.6"` is the **string** `"1.6"`, which is not a valid CS
 
 ### Custom content through the slot
 
+<!-- demo: gov-box-custom-content-through-the-slot -->
 ```html
 <GovBox>
   Latency <span style="color:#f3a9c3">410 ms</span>

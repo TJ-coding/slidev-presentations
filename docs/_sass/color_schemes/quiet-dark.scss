@@ -1,0 +1,21 @@
+// Quiet dark: deep navy night, crimson keyword, cyan links: the kit's palette
+// inverted for reading at night.
+@import "./color_schemes/dark";
+
+$color-scheme: dark;
+$body-background-color: #070d18;
+$sidebar-color: #0a1322;
+$search-background-color: #0f1b2e;
+$table-background-color: #0c1626;
+$code-background-color: #0b1424;
+$feedback-color: darken($sidebar-color, 3%);
+
+$body-heading-color: #f3f6fc;
+$body-text-color: #b9c4d8;
+$nav-child-link-color: #9fb0c9;
+$search-result-preview-color: #8193b0;
+
+$link-color: #5ad1ff;
+$btn-primary-color: #d71c56;
+$base-button-color: #13213a;
+$border-color: #1a2840;

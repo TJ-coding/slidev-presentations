@@ -73,6 +73,7 @@ The workhorse. Reading order is enforced by the layout:
 
 Slots: default (body), `#aside`.
 
+<!-- demo: layouts-govuk -->
 ```md
 ---
 layout: govuk
@@ -116,6 +117,7 @@ grey meta lines at the foot.
 The default slot renders at the bottom of the body, if you need extra content.
 The page number is hidden on this layout.
 
+<!-- demo: layouts-govuk-cover -->
 ```md
 ---
 layout: govuk-cover
@@ -144,6 +146,7 @@ Slot: default (bullets). Inside this layout `<span class="accent-amber">` is
 styled amber; the class is scoped to this layout (see
 [styling](styling.md#emphasis-spans)).
 
+<!-- demo: layouts-govuk-about -->
 ```md
 ---
 layout: govuk-about
@@ -177,6 +180,7 @@ In the rail the current section is white with a sage square, earlier sections
 are dimmer, later ones dimmest. The page number turns translucent white on
 this layout. Dividers are the one slide type that needs no speaker notes.
 
+<!-- demo: layouts-govuk-section -->
 ```md
 ---
 layout: govuk-section
@@ -207,6 +211,7 @@ code). Use it only when the roles are clear; otherwise prefer `govuk`.
 Keys: `title`, `kicker`, `bandColor` (default `black`), `lead` (same as
 [govuk](#govuk)). Slots: default (left), `::right::` (right).
 
+<!-- demo: layouts-govuk-two-cols -->
 ```md
 ---
 layout: govuk-two-cols
@@ -245,6 +250,7 @@ want a lead on this layout, put `<h2 class="govuk-lead">...</h2>` at the top
 of the body, or use the template's pattern slide, which still sets `lead:` for
 the linter.
 
+<!-- demo: layouts-govuk-image-right -->
 ```md
 ---
 layout: govuk-image-right
@@ -275,6 +281,7 @@ hidden.
 | `kicker` | bold navy line under the bands; used for the contact / repo link |
 | `author` | grey affiliation line |
 
+<!-- demo: layouts-govuk-end -->
 ```md
 ---
 layout: govuk-end
@@ -315,6 +322,7 @@ using the `.dd` classes from `style.css`:
 | `quad`, `quad-box`, `twin`, `twin-col`, `dd-big-quad` | helpers for deliberately bad examples (four equal boxes, twin columns) |
 | `w-red`, `w-green`, `w-blue`, `w-amber` | word-colour abuse, for the Don't side only |
 
+<!-- demo: layouts-dd -->
 ```md
 ---
 layout: dd

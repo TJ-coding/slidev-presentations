@@ -18,6 +18,7 @@ Most of the time you want [GovChain](gov-chain.html), which places boxes and tex
 
 ## Quick start
 
+<!-- demo: gov-triangle-quick-start -->
 ```html
 <GovTriangle />
 <GovTriangle color="green" label="When $n$ is large" animated />
@@ -44,6 +45,7 @@ None.
 
 ### Colours
 
+<!-- demo: gov-triangle-colours -->
 ```html
 <GovTriangle />
 <GovTriangle color="green" />
@@ -52,16 +54,20 @@ None.
 
 ### Direction
 
+<!-- demo: gov-triangle-direction -->
 ```html
-<GovTriangle dir="up" />
-<GovTriangle dir="left" />
-<GovTriangle dir="right" />
+<div style="display: flex; align-items: center; justify-content: center; gap: 4rem; margin-top: 5rem">
+  <GovTriangle dir="up" />
+  <GovTriangle dir="left" />
+  <GovTriangle dir="right" />
+</div>
 ```
 
 Horizontal triangles are rotated from a wide layout box; the stylesheet compensates with negative margins (`-5.5rem` on the labelled form), so they sit tight against neighbours in a flex row.
 
 ### Labelled triangle (the condition)
 
+<!-- demo: gov-triangle-labelled-triangle-the-condition -->
 ```html
 <GovTriangle label="When $n$ is large" />
 <GovTriangle color="red" label="When the state dimension is very large" />
@@ -73,6 +79,7 @@ The label is typeset with KaTeX; write single backslashes in a plain attribute a
 
 ### Animated drop
 
+<!-- demo: gov-triangle-animated-drop -->
 ```html
 <GovTriangle animated label="Therefore" />
 ```

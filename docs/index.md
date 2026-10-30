@@ -5,6 +5,8 @@ nav_order: 0
 
 # Quiet Slidev Kit
 
+<div class="hero"><p>Slides that <strong>show</strong> instead of tell: equations that morph, diagrams that build up, figures that follow the click. Every example on this site is <strong>live</strong>: press <em>Next ▶</em> to step through it.</p></div>
+
 A GOV.UK-inspired [Slidev](https://sli.dev) deck kit: navy ink, crimson keyword,
 Poppins, white ground. It ships a deck template, animated diagram components,
 equation morphs, TikZ/D3 figures that follow the click clock, presenter sync, and
@@ -28,6 +30,7 @@ kit/skills/slidev-presentation/scripts/new-deck.sh "My Talk" my-talk
 cd my-talk && npm run dev          # http://localhost:3030
 ```
 
+<!-- demo: index-thirty-second-tour -->
 ```html
 ---
 layout: govuk

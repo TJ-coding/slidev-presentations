@@ -16,6 +16,7 @@ Use it for "what goes into this component and what comes out". Do not use it for
 
 ## Quick start
 
+<!-- demo: gov-pipe-quick-start -->
 ```html
 <GovPipe
   :inputs="[
@@ -48,6 +49,7 @@ Each `value` / `label` goes to [GovArrow](gov-arrow.html), which renders it as *
 
 ### Icon stage
 
+<!-- demo: gov-pipe-icon-stage -->
 ```html
 <GovPipe
   :inputs="[{ value: 'こんにちは', label: 'x₁ · hypothesis' }, { value: 'Hello', label: 'x₂ · reference' }]"
@@ -65,6 +67,7 @@ The `carbon:filter` icon comes from Slidev's icon integration (any `collection:n
 
 ### Box stage
 
+<!-- demo: gov-pipe-box-stage -->
 ```html
 <GovPipe :inputs="[{ value: '0.82', label: 'score' }]" :outputs="[{ value: 'accept', label: 'verdict' }]" stage-box="Threshold" />
 ```
@@ -73,6 +76,7 @@ Use a custom `#stage` slot with `<GovBox inverted label="…" />` for a white bo
 
 ### Rich arrows
 
+<!-- demo: gov-pipe-rich-arrows -->
 ```html
 <GovPipe stage-box="Model">
   <template #inputs>
